@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_dashboard"
+        android:icon="@drawable/ic_dashboard"
+        android:title="Dashboard"/>
+    <item
+        android:id="@+id/navigation_clients"
+        android:icon="@drawable/ic_clients"
+        android:title="Clientes"/>
+    <item
+        android:id="@+id/navigation_appointments"
+        android:icon="@drawable/ic_appointments"
+        android:title="Citas"/>
+    <item
+        android:id="@+id/navigation_settings"
+        android:icon="@drawable/ic_settings"
+        android:title="Configuraciones"/>
+</menu>
