@@ -24,7 +24,6 @@ import androidx.fragment.app.Fragment;
 
 import com.example.happypets.R;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -159,6 +158,7 @@ public class AgregarProducto extends Fragment {
                         .addFormDataPart("descripcion", descripcion)
                         .addFormDataPart("categoria", categoria)
                         .addFormDataPart("precio", precio)
+                        .addFormDataPart("descuento", null) // Descuento como nulo
                         .addFormDataPart("stock", stock)
                         .addFormDataPart("imagen", uriImagen.getLastPathSegment(), RequestBody.create(MediaType.parse("image/jpeg"), new File(uriImagen.getPath())));
 
