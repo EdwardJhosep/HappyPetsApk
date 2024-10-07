@@ -8,10 +8,11 @@ android {
 
     defaultConfig {
         applicationId = "com.example.happypets"
-        minSdk = 21
+        minSdk = 24
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
+
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -25,6 +26,7 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -32,13 +34,12 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
-    implementation ("com.squareup.picasso:picasso:2.8")
-    implementation (libs.material)
-    implementation (libs.volley)
-    implementation (libs.material) // Use an older version
+    implementation("com.squareup.picasso:picasso:2.8")
+    implementation("com.squareup.okhttp3:okhttp:4.10.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
+    implementation("com.android.volley:volley:1.2.1") // Última versión de Volley
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     testImplementation(libs.junit)
