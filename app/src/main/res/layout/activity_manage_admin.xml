@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".view_admin.ManageAdmin"
+    android:background="@android:color/white">
+
+    <!-- ScrollView para permitir desplazamiento -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Título del Panel de Administración -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="16dp">
+
+                <!-- Logo -->
+                <ImageView
+                    android:id="@+id/logo"
+                    android:layout_width="273dp"
+                    android:layout_height="43dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/logo" />
+
+                <!-- Título -->
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Panel de Administración de HappyPets"
+                    android:textSize="24sp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:paddingTop="8dp"
+                    android:gravity="center" /> <!-- Centrado del título -->
+            </LinearLayout>
+
+            <!-- Contenedor de Administrar -->
+            <LinearLayout
+                android:id="@+id/container_admin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/container_background"
+                android:layout_margin="16dp"
+                android:padding="16dp"
+                android:elevation="4dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Administrar"
+                    android:textSize="24sp"
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold"
+                    android:paddingBottom="8dp"
+                    android:gravity="center" /> <!-- Centrado del título -->
+
+                <!-- Administrar Personal -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Administrar Personal"
+                        android:textColor="@android:color/black"
+                        android:layout_weight="1"
+                        android:paddingEnd="8dp" />
+
+                    <Button
+                        android:id="@+id/button_admin_personal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:text=">"
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+
+                <!-- Administrar Productos -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Administrar Productos"
+                        android:textColor="@android:color/black"
+                        android:layout_weight="1"
+                        android:paddingEnd="8dp" />
+
+                    <Button
+                        android:id="@+id/button_admin_productos"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:text=">"
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+
+                <!-- Administrar Servicios -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Administrar Servicios"
+                        android:textColor="@android:color/black"
+                        android:layout_weight="1"
+                        android:paddingEnd="8dp" />
+
+                    <Button
+                        android:id="@+id/button_admin_servicios"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:text=">"
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+
+                <!-- Administrar Mascotas -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Administrar Mascotas"
+                        android:textColor="@android:color/black"
+                        android:layout_weight="1"
+                        android:paddingEnd="8dp" />
+
+                    <Button
+                        android:id="@+id/button_admin_mascotas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:text=">"
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

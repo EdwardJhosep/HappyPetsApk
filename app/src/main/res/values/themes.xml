@@ -1,10 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme without DayNight support. -->
     <style name="Base.Theme.HappyPets" parent="Theme.Material3.Light.NoActionBar">
-        <!-- Personaliza los colores de tu tema aquí. -->
         <item name="colorPrimary">@color/primary_color</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimaryVariant">@color/secondary_color</item>
+        <item name="colorOnPrimary">@color/tertiary_color</item>
+        <item name="colorSecondary">@color/secondary_color</item>
+        <item name="colorOnSecondary">@color/tertiary_color</item>
+        <item name="colorOnBackground">@color/primary_text_color</item>
+        <item name="colorError">@color/secondary_color</item>
+        <item name="colorOnError">@color/tertiary_color</item>
+        <item name="android:textColorHint">@color/hint_text_color</item>
     </style>
 
     <style name="Theme.HappyPets" parent="Base.Theme.HappyPets" />

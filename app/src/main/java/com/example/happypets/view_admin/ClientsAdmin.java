@@ -1,4 +1,4 @@
-package com.example.happypets;
+package com.example.happypets.view_admin;
 
 import androidx.fragment.app.Fragment;
 import android.os.Bundle;
@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-public class SettingsAdmin extends Fragment {
+import com.example.happypets.R;
+
+public class ClientsAdmin extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Infla el diseño para este fragmento
-        return inflater.inflate(R.layout.activity_settings_admin, container, false);
+        return inflater.inflate(R.layout.activity_clients_admin, container, false);
     }
 }

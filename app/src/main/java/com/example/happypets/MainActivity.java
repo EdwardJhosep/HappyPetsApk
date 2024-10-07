@@ -1,13 +1,17 @@
 package com.example.happypets;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,60 +24,67 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.happypets.view_cliente.MenuCliente;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Iterator;
+
 public class MainActivity extends DialogFragment {
 
+    private TextView tvErrorMessage;
+    private ProgressBar progressBar; // Declarar ProgressBar
+
     public MainActivity() {
-        // Constructor público requerido
+        // Constructor vacío
     }
 
+    @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_main, container, false);
 
-        // Referencias a los campos del formulario
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText etDni = view.findViewById(R.id.etDni);
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText etTelefono = view.findViewById(R.id.etTelefono);
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText etPassword = view.findViewById(R.id.etPassword);
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText etConfirmPassword = view.findViewById(R.id.etConfirmPassword);
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) Button btnRegister = view.findViewById(R.id.btnRegister);
+        EditText etDni = view.findViewById(R.id.etDni);
+        EditText etTelefono = view.findViewById(R.id.etTelefono);
+        EditText etPassword = view.findViewById(R.id.etPassword);
+        EditText etConfirmPassword = view.findViewById(R.id.etConfirmPassword);
+        Button btnRegister = view.findViewById(R.id.btnRegister);
         Button btnClose = view.findViewById(R.id.btnClose);
+        tvErrorMessage = view.findViewById(R.id.tvErrorMessage);
+        progressBar = view.findViewById(R.id.progressBar); // Inicializar ProgressBar
 
-        // Acción al pulsar el botón de registro
         btnRegister.setOnClickListener(v -> {
             String dni = etDni.getText().toString().trim();
             String telefono = etTelefono.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
             String confirmPassword = etConfirmPassword.getText().toString().trim();
 
+            // Limpiar mensajes de error anteriores
+            tvErrorMessage.setText("");
+
             // Validaciones
-            if (!areFieldsFilled(dni, telefono, password, confirmPassword)) {
-                Toast.makeText(getContext(), "Todos los campos son obligatorios", Toast.LENGTH_SHORT).show();
-            } else if (!isDniValid(dni)) {
-                Toast.makeText(getContext(), "El DNI debe contener solo números y tener 8 dígitos", Toast.LENGTH_SHORT).show();
-            } else if (!isPhoneValid(telefono)) {
-                Toast.makeText(getContext(), "El número de teléfono debe contener solo números y tener 9 dígitos", Toast.LENGTH_SHORT).show();
+            if (TextUtils.isEmpty(dni) || TextUtils.isEmpty(telefono) || TextUtils.isEmpty(password) || TextUtils.isEmpty(confirmPassword)) {
+                showError(tvErrorMessage, "Todos los campos son obligatorios");
+            } else if (dni.length() != 8) {
+                showError(tvErrorMessage, "El DNI debe tener 8 dígitos");
+            } else if (telefono.length() != 9) {
+                showError(tvErrorMessage, "El número de teléfono debe tener 9 dígitos");
             } else if (!isPasswordSecure(password)) {
-                Toast.makeText(getContext(), "La contraseña debe contener solo letras y números", Toast.LENGTH_SHORT).show();
+                showError(tvErrorMessage, "La contraseña debe contener solo letras y números");
             } else if (!password.equals(confirmPassword)) {
-                Toast.makeText(getContext(), "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show();
+                showError(tvErrorMessage, "Las contraseñas no coinciden");
             } else {
-                // Si las validaciones son exitosas, se registra al usuario
                 registerUser(dni, telefono, password);
             }
         });
 
-        // Acción al pulsar el botón de cerrar
         btnClose.setOnClickListener(v -> dismiss());
 
         return view;
     }
 
-    // Método para registrar al usuario
     private void registerUser(String dni, String telefono, String password) {
         String url = "https://api-happypetshco-com.preview-domain.com/api/Registro";
 
@@ -85,52 +96,69 @@ public class MainActivity extends DialogFragment {
             jsonObject.put("password_confirmation", password);
         } catch (JSONException e) {
             e.printStackTrace();
+            showError(tvErrorMessage, "Error al crear el objeto JSON");
+            return; // Salir si hubo un error
         }
 
+        progressBar.setVisibility(View.VISIBLE); // Mostrar ProgressBar
         RequestQueue queue = Volley.newRequestQueue(getContext());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                 response -> {
-                    try {
-                        String mensaje = response.getString("mensaje");
-                        String nombres = response.getString("nombres");
-                        String telefonoRespuesta = response.getString("telefono");
-
-                        Toast.makeText(getContext(), "Registro exitoso: " + mensaje, Toast.LENGTH_SHORT).show();
-                        dismiss();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Toast.makeText(getContext(), "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show();
-                    }
+                    progressBar.setVisibility(View.GONE); // Ocultar ProgressBar
+                    handleResponse(response);
                 },
-                error -> handleError(error)
+                error -> {
+                    progressBar.setVisibility(View.GONE); // Ocultar ProgressBar
+                    handleError(error);
+                }
         );
 
         queue.add(jsonObjectRequest);
     }
 
-    // Método para manejar los errores del servidor
+    private void handleResponse(JSONObject response) {
+        try {
+            if (response.has("error")) {
+                // Manejo de errores de validación
+                JSONObject errorObject = response.getJSONObject("error");
+                StringBuilder errorMessages = new StringBuilder("Errores de validación:\n");
+                for (Iterator<String> it = errorObject.keys(); it.hasNext(); ) {
+                    String key = it.next();
+                    errorMessages.append(key).append(": ")
+                            .append(errorObject.getJSONArray(key).join(", ")).append("\n");
+                }
+                Toast.makeText(getContext(), errorMessages.toString(), Toast.LENGTH_LONG).show();
+            } else {
+                String mensaje = response.getString("mensaje");
+                Toast.makeText(getContext(), "Registro exitoso: " + mensaje, Toast.LENGTH_SHORT).show();
+
+                // Redirigir a MenuCliente después del registro exitoso
+                Intent intent = new Intent(getActivity(), MenuCliente.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+
+                // Cerrar el diálogo
+                dismiss();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            showError(tvErrorMessage, "Error en la respuesta del servidor");
+        }
+    }
+
     private void handleError(VolleyError error) {
         String errorMessage = "Error en el registro: " + error.getMessage();
         if (error.networkResponse != null && error.networkResponse.data != null) {
             String responseData = new String(error.networkResponse.data);
             errorMessage += ": " + responseData; // Muestra la respuesta del servidor
         }
-        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+        showError(tvErrorMessage, errorMessage);
     }
 
-    // Método para verificar que todos los campos están llenos
-    private boolean areFieldsFilled(String dni, String telefono, String password, String confirmPassword) {
-        return !dni.isEmpty() && !telefono.isEmpty() && !password.isEmpty() && !confirmPassword.isEmpty();
-    }
-
-    // Método para validar el DNI
-    private boolean isDniValid(String dni) {
-        return dni.matches("\\d{8}"); // El DNI debe tener exactamente 8 dígitos
-    }
-
-    // Método para validar el teléfono
-    private boolean isPhoneValid(String telefono) {
-        return telefono.matches("\\d{9}"); // El teléfono debe tener exactamente 9 dígitos
+    // Método para mostrar mensajes de error
+    private void showError(TextView tvErrorMessage, String message) {
+        tvErrorMessage.setText(message);
+        tvErrorMessage.setVisibility(View.VISIBLE); // Asegúrate de que el TextView sea visible
     }
 
     // Método para verificar la seguridad de la contraseña

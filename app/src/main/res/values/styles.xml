@@ -1,19 +1,66 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Definir un tema claro para la aplicación -->
-    <style name="Theme.App.Light" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Color de fondo blanco para toda la app -->
-        <item name="android:windowBackground">@android:color/white</item>
+    <!-- Estilos generales -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryDark">@color/secondary_color</item>
+        <item name="colorAccent">@color/quaternary_color</item>
+        <item name="android:windowBackground">@color/background_color</item>
+        <item name="android:textColor">@color/primary_text_color</item>
+    </style>
 
-        <!-- Color del texto y elementos -->
-        <item name="android:textColorPrimary">@android:color/black</item>
-        <item name="android:textColorSecondary">@android:color/darker_gray</item>
+    <!-- Estilos para botones -->
+    <style name="ButtonStyle">
+        <item name="android:background">@color/primary_color</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
 
-        <!-- Color del ActionBar o Toolbar -->
-        <item name="colorPrimary">@android:color/white</item>
-        <item name="colorPrimaryDark">@android:color/black</item>
-        <item name="colorAccent">@android:color/black</item>
+    <style name="ButtonSecondaryStyle">
+        <item name="android:background">@color/secondary_color</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:layout_margin">8dp</item>
+    </style>
 
-        <!-- Otras configuraciones del tema claro -->
+    <!-- Estilos para texto -->
+    <style name="TextStyle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/primary_text_color</item>
+    </style>
+
+    <style name="TextStyleLarge">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textColor">@color/primary_text_color</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextStyleSmall">
+        <item name="android:textSize">14sp</item>
+        <item name="android:textColor">@color/hint_text_color</item>
+    </style>
+
+    <!-- Estilo para tarjetas -->
+    <style name="CardStyle">
+        <item name="android:background">@color/tertiary_color</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:elevation">4dp</item>
+    </style>
+
+    <!-- Estilo para imágenes -->
+    <style name="ImageStyle">
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:contentDescription">Veterinary Image</item>
+    </style>
+
+    <!-- Estilo para EditText -->
+    <style name="EditTextStyle">
+        <item name="android:background">@color/white</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:textColor">@color/primary_text_color</item>
+        <item name="android:textSize">16sp</item>
     </style>
 </resources>
