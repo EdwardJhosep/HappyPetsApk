@@ -158,7 +158,6 @@ public class AgregarProducto extends Fragment {
                         .addFormDataPart("descripcion", descripcion)
                         .addFormDataPart("categoria", categoria)
                         .addFormDataPart("precio", precio)
-                        .addFormDataPart("descuento", null) // Descuento como nulo
                         .addFormDataPart("stock", stock)
                         .addFormDataPart("imagen", uriImagen.getLastPathSegment(), RequestBody.create(MediaType.parse("image/jpeg"), new File(uriImagen.getPath())));
 
