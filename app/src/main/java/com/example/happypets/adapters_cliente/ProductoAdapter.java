@@ -43,7 +43,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
 
         // Establecer el descuento
         String descuento = producto.getDescuento();
-        if (TextUtils.isEmpty(descuento) || descuento.equals("0")) {
+        if (TextUtils.isEmpty(descuento) || descuento.equals("0") || "null".equals(descuento)) {
             holder.descuentoProducto.setVisibility(View.GONE); // Ocultar si no hay descuento
         } else {
             holder.descuentoProducto.setVisibility(View.VISIBLE);
@@ -68,9 +68,16 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
                 });
     }
 
+
     @Override
     public int getItemCount() {
         return productos.size();
+    }
+
+    // Método para actualizar la lista
+    public void updateList(ArrayList<Producto> newList) {
+        productos = newList;
+        notifyDataSetChanged();
     }
 
     public static class ProductoViewHolder extends RecyclerView.ViewHolder {

@@ -22,10 +22,10 @@ public class Submenu_AdminProductos extends AppCompatActivity {
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     Fragment selectedFragment = null;
 
-                    if (item.getItemId() == R.id.Agregar) {
-                        selectedFragment = new AgregarProducto(); // Cambiar el nombre aquí
-                    } else if (item.getItemId() == R.id.Editar) {
-                        selectedFragment = new EditarProdcuto(); // Asegúrate de que esta clase también sea correcta
+                    if (item.getItemId() == R.id.Editar) {
+                        selectedFragment = new EditarProdcuto(); // Cambiar el nombre aquí
+                    } else if (item.getItemId() == R.id.Agregar) {
+                        selectedFragment = new AgregarProducto(); // Asegúrate de que esta clase también sea correcta
                     } else if (item.getItemId() == R.id.Salir) {
                         Intent intent = new Intent(Submenu_AdminProductos.this, MenuAdmin.class);
                         startActivity(intent);
@@ -53,7 +53,7 @@ public class Submenu_AdminProductos extends AppCompatActivity {
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AgregarProducto()).commit(); // Cambiar el nombre aquí
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new EditarProdcuto()).commit(); // Cambiar el nombre aquí
         }
     }
 }

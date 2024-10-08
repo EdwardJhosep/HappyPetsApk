@@ -14,7 +14,9 @@
     <color name="background_color_dark">#121212</color>
     <color name="hint_text_color_dark">#B3B3B3</color>
 
-    <color name="image_placeholder">#D3D3D3</color> <!-- Color de fondo para la imagen (gris claro) -->
-    <color name="price_color">#FF6200EE</color> <!-- Color para el precio (morado) -->
-    <color name="discount_color">#FF0000FF</color> <!-- Color para el descuento (azul) -->
+    <color name="image_placeholder">#D3D3D3</color>
+    <color name="price_color">#FF6200EE</color>
+    <color name="discount_color">#FF0000FF</color>
+
+
 </resources>

@@ -32,6 +32,7 @@ public class MenuCliente extends AppCompatActivity {
     private String phoneNumber;
     private String nombres;
     private String token; // Supongamos que tienes un token
+    private String userId; // Añadir una variable para el ID del usuario
 
     // Listener para manejar la selección de los items del BottomNavigationView
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
@@ -43,10 +44,11 @@ public class MenuCliente extends AppCompatActivity {
                     // Manejo de selección de fragmentos usando if-else
                     if (item.getItemId() == R.id.navigation_product) {
                         selectedFragment = new ProductoCliente();
-                    }else if (item.getItemId() == R.id.navigation_appointments) {
+                    } else if (item.getItemId() == R.id.navigation_appointments) {
                         selectedFragment = new CitasCliente();
                     } else if (item.getItemId() == R.id.navigation_profile) {
-                        selectedFragment = PerfilCliente.newInstance(dni, phoneNumber, nombres);
+                        // Pasar el dni, phoneNumber, nombres y userId al fragmento
+                        selectedFragment = PerfilCliente.newInstance(dni, phoneNumber, nombres, userId);
                     }
 
                     if (selectedFragment != null) {
@@ -74,6 +76,7 @@ public class MenuCliente extends AppCompatActivity {
                             dni = user.getString("dni");
                             nombres = user.getString("nombres");
                             phoneNumber = user.getString("telefono");
+                            userId = user.getString("id"); // Obtener el ID del usuario
 
                             // Obtener permisos
                             String permisos = user.has("permisos") ? user.getString("permisos") : "Sin permisos";

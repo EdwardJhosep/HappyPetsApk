@@ -11,9 +11,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-
-
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -24,6 +21,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HappyPets"
         tools:targetApi="31">
+        <activity
+            android:name=".view_cliente.AgregarMascotaDialogFragment"
+            android:exported="false" />
         <activity
             android:name=".submenu_admin.AgregarProducto"
             android:exported="false" />

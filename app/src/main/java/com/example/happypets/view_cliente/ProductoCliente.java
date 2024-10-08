@@ -3,10 +3,13 @@ package com.example.happypets.view_cliente;
 import androidx.fragment.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,19 +33,35 @@ public class ProductoCliente extends Fragment {
     private RecyclerView recyclerView;
     private ProductoAdapter productoAdapter;
     private ArrayList<Producto> productoList = new ArrayList<>();
+    private EditText editTextSearch; // EditText para la búsqueda
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_producto_cliente, container, false);
 
+        editTextSearch = view.findViewById(R.id.editTextSearch);
         recyclerView = view.findViewById(R.id.recyclerViewProductos);
-        // Cambia a GridLayoutManager para mostrar 3 columnas
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
         productoAdapter = new ProductoAdapter(productoList);
         recyclerView.setAdapter(productoAdapter);
 
+        // Llamada a la API
         new GetProductosTask().execute("https://api-happypetshco-com.preview-domain.com/api/ListarProductos");
+
+        // Agregar TextWatcher para la búsqueda en tiempo real
+        editTextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filter(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
         return view;
     }
@@ -96,5 +115,15 @@ public class ProductoCliente extends Fragment {
                 e.printStackTrace();
             }
         }
+    }
+
+    private void filter(String text) {
+        ArrayList<Producto> filteredList = new ArrayList<>();
+        for (Producto producto : productoList) {
+            if (producto.getNombre().toLowerCase().contains(text.toLowerCase())) {
+                filteredList.add(producto);
+            }
+        }
+        productoAdapter.updateList(filteredList);
     }
 }

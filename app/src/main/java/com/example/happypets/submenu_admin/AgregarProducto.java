@@ -127,6 +127,7 @@ public class AgregarProducto extends Fragment {
     }
 
     // Método para agregar un producto
+    // Método para agregar un producto
     private void agregarProducto() {
         final String nmProducto = editTextNombre.getText().toString().trim();
         final String descripcion = editTextDescripcion.getText().toString().trim();
@@ -175,8 +176,11 @@ public class AgregarProducto extends Fragment {
                     Log.d("AgregarProducto", "Respuesta del servidor: " + response.code());
                     if (response.isSuccessful()) {
                         Log.d("AgregarProducto", "Producto agregado correctamente");
-                        getActivity().runOnUiThread(() ->
-                                Toast.makeText(getContext(), "Producto agregado correctamente", Toast.LENGTH_SHORT).show());
+                        getActivity().runOnUiThread(() -> {
+                            // Limpiar los campos y la imagen
+                            limpiarCampos();
+                            Toast.makeText(getContext(), "Producto agregado correctamente", Toast.LENGTH_SHORT).show();
+                        });
                     } else {
                         String errorResponse = response.body() != null ? response.body().string() : "Sin respuesta del servidor";
                         Log.e("AgregarProducto", "Error al agregar el producto: " + errorResponse);
@@ -195,6 +199,18 @@ public class AgregarProducto extends Fragment {
             }
         }).start();
     }
+
+    // Método para limpiar los campos de entrada y la imagen
+    private void limpiarCampos() {
+        editTextNombre.setText("");
+        editTextDescripcion.setText("");
+        editTextCategoria.setText("");
+        editTextPrecio.setText("");
+        editTextStock.setText("");
+        imageViewProducto.setImageDrawable(null); // Limpiar la imagen
+        uriImagen = null; // Resetear el URI de la imagen
+    }
+
 
     // Manejar la respuesta de permisos solicitados
     @Override
