@@ -3,6 +3,7 @@ package com.example.happypets.adapters_cliente;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,11 +85,24 @@ public class FormularioEditarAdapter {
             dialog.dismiss();
         });
 
-        // Configurar el botón de eliminar
         botonEliminar.setOnClickListener(v -> {
-            // Llamar a la función para eliminar el producto en la API
-            eliminarProductoEnAPI(producto.getId());
-            dialog.dismiss(); // Cerrar el diálogo después de eliminar
+            // Mostrar un diálogo de confirmación
+            new AlertDialog.Builder(context)
+                    .setTitle("Confirmar Eliminación")
+                    .setMessage("¿Estás seguro de que deseas eliminar este producto?")
+                    .setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Llamar a la función para eliminar el producto en la API
+                            eliminarProductoEnAPI(producto.getId());
+                            dialog.dismiss(); // Cerrar el diálogo después de eliminar
+                        }
+                    })
+                    .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel(); // Cancelar la eliminación
+                        }
+                    })
+                    .show();
         });
     }
 
@@ -133,11 +147,8 @@ public class FormularioEditarAdapter {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     if (context instanceof Submenu_AdminProductos) {
-                        ((Submenu_AdminProductos) context).runOnUiThread(() -> {
-                            Toast.makeText(context, "Producto editado correctamente", Toast.LENGTH_SHORT).show();
-                            // Aquí puedes llamar a un método para actualizar la lista de productos
-                            ((Submenu_AdminProductos) context).actualizarListaProductos();
-                        });
+                        ((Submenu_AdminProductos) context).runOnUiThread(() ->
+                                Toast.makeText(context, "Producto editado correctamente", Toast.LENGTH_SHORT).show());
                     }
                 } else {
                     String errorResponse = response.body().string();
@@ -180,11 +191,8 @@ public class FormularioEditarAdapter {
 
                 if (response.isSuccessful()) {
                     if (context instanceof Submenu_AdminProductos) {
-                        ((Submenu_AdminProductos) context).runOnUiThread(() -> {
-                            Toast.makeText(context, "Producto eliminado correctamente", Toast.LENGTH_SHORT).show();
-                            // Llamar a un método para actualizar la lista de productos
-                            ((Submenu_AdminProductos) context).actualizarListaProductos();
-                        });
+                        ((Submenu_AdminProductos) context).runOnUiThread(() ->
+                                Toast.makeText(context, "Producto eliminado correctamente", Toast.LENGTH_SHORT).show());
                     }
                 } else {
                     if (context instanceof Submenu_AdminProductos) {
@@ -194,14 +202,5 @@ public class FormularioEditarAdapter {
                 }
             }
         });
-
     }
-    public void actualizarListaProductos() {
-        // Hacer una solicitud a la API para obtener los productos actualizados
-        obtenerProductosDesdeAPI();
-
-        // Luego de obtener los productos actualizados, asegúrate de notificar al adaptador
-        adaptador.notifyDataSetChanged();
-    }
-
 }

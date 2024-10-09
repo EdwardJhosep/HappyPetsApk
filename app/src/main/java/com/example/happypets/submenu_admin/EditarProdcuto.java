@@ -28,10 +28,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class EditarProdcuto extends Fragment {
+public class EditarProducto extends Fragment {
 
     private RecyclerView recyclerView;
-    private ProductoAdapterEditar ProductoAdapterEditar;
+    private ProductoAdapterEditar productoAdapterEditar;
     private ArrayList<Producto> productoList = new ArrayList<>();
     private EditText editTextSearch; // EditText para la búsqueda
 
@@ -43,8 +43,8 @@ public class EditarProdcuto extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewProductos);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-        ProductoAdapterEditar = new ProductoAdapterEditar(productoList);
-        recyclerView.setAdapter(ProductoAdapterEditar);
+        productoAdapterEditar = new ProductoAdapterEditar(productoList);
+        recyclerView.setAdapter(productoAdapterEditar);
 
         // Llamada a la API
         new GetProductosTask().execute("https://api-happypetshco-com.preview-domain.com/api/ListarProductos");
@@ -95,6 +95,7 @@ public class EditarProdcuto extends Fragment {
             try {
                 JSONObject jsonObject = new JSONObject(result);
                 JSONArray jsonArray = jsonObject.getJSONArray("productos");
+                productoList.clear(); // Limpiar la lista antes de agregar nuevos productos
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject productoJson = jsonArray.getJSONObject(i);
                     Producto producto = new Producto(
@@ -109,7 +110,7 @@ public class EditarProdcuto extends Fragment {
                     );
                     productoList.add(producto);
                 }
-                ProductoAdapterEditar.notifyDataSetChanged();
+                productoAdapterEditar.notifyDataSetChanged(); // Notificar el cambio en los datos
             } catch (JSONException e) {
                 Toast.makeText(getContext(), "Error al procesar datos", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
@@ -124,6 +125,6 @@ public class EditarProdcuto extends Fragment {
                 filteredList.add(producto);
             }
         }
-        ProductoAdapterEditar.updateList(filteredList);
+        productoAdapterEditar.updateList(filteredList);
     }
 }

@@ -116,4 +116,5 @@ public class ProductoAdapterEditar extends RecyclerView.Adapter<ProductoAdapterE
             imageButtonEditar = itemView.findViewById(R.id.imageButtonEditar); // Referencia al botón de editar
         }
     }
+
 }
