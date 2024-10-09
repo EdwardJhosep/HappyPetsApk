@@ -75,10 +75,10 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/imageButtonAgregar"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/logo_agregar"
+                android:id="@+id/imageButtonEditar"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/logo_editar"
                 android:background="@null"
                 android:contentDescription="Agregar al carrito"
                 android:padding="8dp"/>

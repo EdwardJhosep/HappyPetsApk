@@ -1,0 +1,161 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/background_color"
+    android:gravity="center_horizontal">
+
+    <!-- Título de la sección -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Editar Producto"
+        android:textColor="@color/primary_color"
+        android:textSize="24sp"
+        android:layout_marginBottom="20dp"
+        android:textStyle="bold"/>
+
+    <!-- Campo oculto para el ID del producto -->
+    <TextView
+        android:id="@+id/idProductoTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ID Producto"
+        android:visibility="gone"/>
+
+    <!-- Texto de nombre del producto -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nombre del Producto"
+        android:textColor="@color/primary_color"
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp"/>
+
+    <!-- Campo de nombre del producto -->
+    <EditText
+        android:id="@+id/editarNombre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nombre del producto"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/container_background"
+        android:textColor="@color/background_color_dark"
+        android:textSize="16sp"
+        android:inputType="text"
+        android:text="Nombre del Producto Ejemplo"/>
+
+    <!-- Texto de descripción del producto -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Descripción del Producto"
+        android:textColor="@color/primary_color"
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp"/>
+
+    <!-- Campo de descripción del producto -->
+    <EditText
+        android:id="@+id/editarDescripcion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Descripción del producto"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/container_background"
+        android:textColor="@color/background_color_dark"
+        android:textSize="16sp"
+        android:inputType="textMultiLine"
+        android:text="Descripción del producto aquí..."/>
+
+    <!-- Texto de precio del producto -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Precio"
+        android:textColor="@color/primary_color"
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp"/>
+
+    <!-- Campo de precio del producto -->
+    <EditText
+        android:id="@+id/editarPrecio"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Precio"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/container_background"
+        android:textColor="@color/background_color_dark"
+        android:textSize="16sp"
+        android:inputType="numberDecimal"
+        android:text="0.00"/>
+
+    <!-- Texto de descuento del producto -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Descuento (%)"
+        android:textColor="@color/primary_color"
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp"/>
+
+    <!-- Campo de descuento del producto -->
+    <EditText
+        android:id="@+id/editarDescuento"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Descuento (%)"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/container_background"
+        android:textColor="@color/background_color_dark"
+        android:textSize="16sp"
+        android:inputType="number"
+        android:text="0"/>
+
+    <!-- Texto de stock del producto -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stock Disponible"
+        android:textColor="@color/primary_color"
+        android:textSize="16sp"
+        android:layout_marginBottom="4dp"/>
+
+    <!-- Campo de stock del producto -->
+    <EditText
+        android:id="@+id/editarStock"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Stock disponible"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/container_background"
+        android:textColor="@color/background_color_dark"
+        android:textSize="16sp"
+        android:inputType="number"
+        android:text="0"/>
+
+    <!-- Botón para guardar los cambios -->
+    <Button
+        android:id="@+id/botonGuardar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:padding="12dp"
+        android:text="Guardar"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/primary_color"
+        android:layout_gravity="center"/>
+    <Button
+        android:id="@+id/botonEliminar"
+        android:layout_width="wrap_content"
+        android:background="@drawable/logo_eliminar"
+        android:layout_height="wrap_content"
+        android:text="Guardar" />
+
+</LinearLayout>

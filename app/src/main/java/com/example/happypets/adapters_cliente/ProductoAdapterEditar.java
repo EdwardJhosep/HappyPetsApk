@@ -4,9 +4,10 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,18 +18,18 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ProductoViewHolder> {
+public class ProductoAdapterEditar extends RecyclerView.Adapter<ProductoAdapterEditar.ProductoViewHolder> {
 
     private ArrayList<Producto> productos;
 
-    public ProductoAdapter(ArrayList<Producto> productos) {
+    public ProductoAdapterEditar(ArrayList<Producto> productos) {
         this.productos = productos;
     }
 
     @NonNull
     @Override
     public ProductoViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_producto, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_producto_editar, parent, false);
         return new ProductoViewHolder(view);
     }
 
@@ -80,8 +81,12 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
                     }
                 });
 
+        // Configurar el botón de editar
+        holder.imageButtonEditar.setOnClickListener(view -> {
+            FormularioEditarAdapter formularioEditarAdapter = new FormularioEditarAdapter(view.getContext(), producto);
+            formularioEditarAdapter.showEditDialog();
+        });
     }
-
 
 
     @Override
@@ -99,7 +104,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
 
         TextView nombreProducto, descripcionProducto, precioProducto, descuentoProducto;
         ImageView imagenProducto;
-        Button botonComprar; // Botón para comprar el producto
+        ImageButton imageButtonEditar; // Botón para editar el producto
 
         public ProductoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -108,6 +113,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
             precioProducto = itemView.findViewById(R.id.precioProducto);
             descuentoProducto = itemView.findViewById(R.id.descuentoProducto); // Añade el descuento
             imagenProducto = itemView.findViewById(R.id.imagenProducto);
+            imageButtonEditar = itemView.findViewById(R.id.imageButtonEditar); // Referencia al botón de editar
         }
     }
 }
