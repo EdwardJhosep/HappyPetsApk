@@ -7,7 +7,6 @@
     android:background="@color/background_color"
     android:gravity="center_horizontal">
 
-    <!-- Título de la sección -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -17,7 +16,6 @@
         android:layout_marginBottom="20dp"
         android:textStyle="bold"/>
 
-    <!-- Campo oculto para el ID del producto -->
     <TextView
         android:id="@+id/idProductoTextView"
         android:layout_width="wrap_content"
@@ -25,7 +23,6 @@
         android:text="ID Producto"
         android:visibility="gone"/>
 
-    <!-- Texto de nombre del producto -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -34,7 +31,6 @@
         android:textSize="16sp"
         android:layout_marginBottom="4dp"/>
 
-    <!-- Campo de nombre del producto -->
     <EditText
         android:id="@+id/editarNombre"
         android:layout_width="match_parent"
@@ -48,7 +44,6 @@
         android:inputType="text"
         android:text="Nombre del Producto Ejemplo"/>
 
-    <!-- Texto de descripción del producto -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -57,7 +52,6 @@
         android:textSize="16sp"
         android:layout_marginBottom="4dp"/>
 
-    <!-- Campo de descripción del producto -->
     <EditText
         android:id="@+id/editarDescripcion"
         android:layout_width="match_parent"
@@ -69,9 +63,10 @@
         android:textColor="@color/background_color_dark"
         android:textSize="16sp"
         android:inputType="textMultiLine"
-        android:text="Descripción del producto aquí..."/>
+        android:text="Descripción del producto aquí..."
+        android:minLines="3"
+        android:maxLines="5"/>
 
-    <!-- Texto de precio del producto -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -80,7 +75,6 @@
         android:textSize="16sp"
         android:layout_marginBottom="4dp"/>
 
-    <!-- Campo de precio del producto -->
     <EditText
         android:id="@+id/editarPrecio"
         android:layout_width="match_parent"
@@ -94,7 +88,6 @@
         android:inputType="numberDecimal"
         android:text="0.00"/>
 
-    <!-- Texto de descuento del producto -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -103,7 +96,6 @@
         android:textSize="16sp"
         android:layout_marginBottom="4dp"/>
 
-    <!-- Campo de descuento del producto -->
     <EditText
         android:id="@+id/editarDescuento"
         android:layout_width="match_parent"
@@ -117,7 +109,6 @@
         android:inputType="number"
         android:text="0"/>
 
-    <!-- Texto de stock del producto -->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -126,7 +117,6 @@
         android:textSize="16sp"
         android:layout_marginBottom="4dp"/>
 
-    <!-- Campo de stock del producto -->
     <EditText
         android:id="@+id/editarStock"
         android:layout_width="match_parent"
@@ -140,22 +130,29 @@
         android:inputType="number"
         android:text="0"/>
 
-    <!-- Botón para guardar los cambios -->
     <Button
         android:id="@+id/botonGuardar"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:padding="12dp"
         android:text="Guardar"
         android:textColor="@color/white"
         android:backgroundTint="@color/primary_color"
-        android:layout_gravity="center"/>
+        android:layout_gravity="center"
+        android:drawableLeft="@drawable/ic_save"
+        android:drawablePadding="8dp"/>
+
     <Button
         android:id="@+id/botonEliminar"
-        android:layout_width="wrap_content"
-        android:background="@drawable/logo_eliminar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Guardar" />
-
+        android:layout_marginTop="8dp"
+        android:padding="12dp"
+        android:text="Eliminar Producto"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/red_color"
+        android:layout_gravity="center"
+        android:drawableLeft="@drawable/logo_eliminar"
+        android:drawablePadding="8dp"/>
 </LinearLayout>

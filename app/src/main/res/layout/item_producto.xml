@@ -65,7 +65,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="@android:color/holo_green_dark"/>
+            android:textColor="#19B400"/>
 
         <LinearLayout
             android:layout_width="match_parent"

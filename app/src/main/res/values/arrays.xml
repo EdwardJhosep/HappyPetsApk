@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="servicios_array">
+        <item>VACUNAS</item>
+        <item>ANAMNESIS</item>
+        <item>ASEO</item>
+        <item>CIRUGÍA</item>
+        <item>DESPARASITACIONES</item>
+        <item>HOSPEDAJE</item>
+        <item>INTERNADO</item>
+        <item>LABORATORIO</item>
+        <item>TRATAMIENTO</item>
+    </string-array>
+</resources>

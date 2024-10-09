@@ -2,33 +2,52 @@ package com.example.happypets.view_cliente;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.happypets.R;
+import com.example.happypets.adapters_cliente.MascotaAdapter; // Importar el adaptador personalizado
+import com.example.happypets.models.Mascota; // Importar el modelo de datos
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class PerfilCliente extends Fragment {
 
     private String dni;
     private String phoneNumber;
-    private String nombreCompleto; // Variable para el nombre completo
-    private String userId;         // Variable para el ID del usuario
+    private String nombreCompleto;
+    private String userId;
+    private RecyclerView petsListView; // Cambiar a RecyclerView
+    private MascotaAdapter petsAdapter; // Usar el adaptador personalizado
+    private ArrayList<Mascota> petsList; // Lista de mascotas
 
-    // Utilizar el patrón newInstance para pasar parámetros
     public static PerfilCliente newInstance(String dni, String phoneNumber, String nombreCompleto, String userId) {
         PerfilCliente fragment = new PerfilCliente();
         Bundle args = new Bundle();
         args.putString("dni", dni);
         args.putString("phoneNumber", phoneNumber);
-        args.putString("nombreCompleto", nombreCompleto); // Pasar el nombre completo
-        args.putString("userId", userId);                 // Pasar el ID del usuario
+        args.putString("nombreCompleto", nombreCompleto);
+        args.putString("userId", userId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -38,35 +57,111 @@ public class PerfilCliente extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_perfil_cliente, container, false);
 
-        // Obtener los argumentos del Bundle
         if (getArguments() != null) {
             dni = getArguments().getString("dni");
             phoneNumber = getArguments().getString("phoneNumber");
-            nombreCompleto = getArguments().getString("nombreCompleto"); // Obtener el nombre completo
-            userId = getArguments().getString("userId");                 // Obtener el ID del usuario
+            nombreCompleto = getArguments().getString("nombreCompleto");
+            userId = getArguments().getString("userId");
         }
 
-        // Mostrar los datos del usuario
         TextView dniTextView = view.findViewById(R.id.dniTextView);
         TextView phoneTextView = view.findViewById(R.id.phoneTextView);
-        TextView nombreTextView = view.findViewById(R.id.nombreTextView); // TextView para mostrar el nombre completo
+        TextView nombreTextView = view.findViewById(R.id.nombreTextView);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
-        TextView userIdTextView = view.findViewById(R.id.userIdTextView); // TextView para mostrar el ID del usuario
+        TextView userIdTextView = view.findViewById(R.id.userIdTextView);
 
-        // Establecer el texto en los TextViews
         dniTextView.setText("DNI: " + dni);
         phoneTextView.setText("Teléfono: " + phoneNumber);
-        nombreTextView.setText("Nombre completo: " + nombreCompleto); // Mostrar el nombre completo
-        userIdTextView.setText("ID de Usuario: " + userId);           // Mostrar el ID del usuario
+        nombreTextView.setText("Nombre completo: " + nombreCompleto);
+        userIdTextView.setText("ID de Usuario: " + userId);
+
+        // Inicializar el RecyclerView y la lista de mascotas
+        petsListView = view.findViewById(R.id.petsListView);
+        petsList = new ArrayList<>();
+        petsAdapter = new MascotaAdapter(getContext(), petsList); // Usar el adaptador personalizado
+
+        // Configurar el RecyclerView
+        petsListView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)); // Configura la orientación horizontal
+        petsListView.setAdapter(petsAdapter);
+
+        // Obtener el historial de mascotas
+        obtenerHistorialMascotas(userId);
 
         // Configurar el botón para agregar mascota
         ImageButton addPetButton = view.findViewById(R.id.addPetButton);
-        // En el método onCreateView de PerfilCliente, cambia esto
         addPetButton.setOnClickListener(v -> {
-            // Mostrar el DialogFragment de agregar mascota
             AgregarMascotaDialogFragment agregarMascotaDialogFragment = AgregarMascotaDialogFragment.newInstance(userId);
             agregarMascotaDialogFragment.show(getChildFragmentManager(), "agregarMascota");
         });
+
         return view;
+    }
+
+    private void obtenerHistorialMascotas(String userId) {
+        if (userId == null || userId.isEmpty()) {
+            Log.e("API_ERROR", "El userId es nulo o vacío");
+            if (getContext() != null) {
+                Toast.makeText(getContext(), "El ID de usuario es inválido.", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+
+        // URL con el parámetro userId en la cadena de consulta
+        String url = "https://api-happypetshco-com.preview-domain.com/api/Historial?id_usuario=" + userId;
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                null, // No se envían parámetros adicionales en el cuerpo
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("API_RESPONSE", response.toString()); // Log de la respuesta completa
+                        try {
+                            JSONArray mascotasArray = response.getJSONArray("mascotas");
+                            petsList.clear(); // Limpiar la lista antes de agregar nuevos elementos
+
+                            if (mascotasArray.length() > 0) {
+                                for (int i = 0; i < mascotasArray.length(); i++) {
+                                    JSONObject mascota = mascotasArray.getJSONObject(i);
+                                    // Crear un objeto Mascota con la información requerida
+                                    petsList.add(new Mascota(
+                                            mascota.getString("nombre"),
+                                            mascota.getString("edad"),
+                                            mascota.getString("especie"),
+                                            mascota.getString("raza"),
+                                            mascota.getString("sexo"),
+                                            mascota.getString("estado")
+                                    ));
+                                }
+                                petsAdapter.notifyDataSetChanged(); // Notificar al adaptador que los datos han cambiado
+                            } else {
+                                if (getContext() != null) {
+                                    Toast.makeText(getContext(), "No se encontraron mascotas", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            Log.e("API_RESPONSE_ERROR", "Error al procesar JSON: " + e.getMessage());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("API_ERROR", "Error de red: " + error.getMessage());
+                        if (error.networkResponse != null) {
+                            Log.e("API_ERROR", "Código de estado: " + error.networkResponse.statusCode);
+                            Log.e("API_ERROR", "Contenido: " + new String(error.networkResponse.data));
+                        }
+                        if (getContext() != null) {
+                            Toast.makeText(getContext(), "Error al obtener el historial de mascotas", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
+
+        // Agregar la solicitud a la cola de Volley
+        Volley.newRequestQueue(getContext()).add(jsonObjectRequest);
     }
 }

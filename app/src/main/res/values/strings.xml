@@ -17,6 +17,7 @@
     <string name="promo_text">#Encuentra lo mejor para tu mascota aquí.</string>
     <string name="login_icon">Icono de inicio de sesión</string>
     <string name="promo_image">Imagen promocional</string>
+    <string name="selecciona_servicio">Selecciona un servicio</string>
 
     <string-array name="inventory_categories">
         <!-- Categorías de servicios -->

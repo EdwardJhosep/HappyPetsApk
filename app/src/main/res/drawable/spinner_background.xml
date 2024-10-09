@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#E0E0E0"/> <!-- Cambia el color según tus necesidades -->
+    <corners android:radius="8dp"/> <!-- Cambia el radio para ajustar la curvatura -->
+    <padding android:left="8dp" android:right="8dp" android:top="8dp" android:bottom="8dp"/> <!-- Padding interno -->
+</shape>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bordemascota"
+    android:padding="11dp"
+    android:layout_margin="8dp">
+
+    <ImageView
+        android:id="@+id/mascotaImageView"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:contentDescription="Imagen de la mascota"
+        android:scaleType="centerCrop"
+        android:clipToOutline="true"
+        android:background="@drawable/circle_background"
+        android:padding="4dp"/>
+
+    <TextView
+        android:id="@+id/nombreTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:textColor="#FF5722"
+        android:textStyle="bold"
+        android:layout_marginTop="4dp"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:id="@+id/edadTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#FFC107"
+        android:layout_marginTop="2dp"/>
+
+    <TextView
+        android:id="@+id/especieTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#4CAF50"
+        android:layout_marginTop="2dp"/>
+
+    <TextView
+        android:id="@+id/razaTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#2196F3"
+        android:layout_marginTop="2dp"/>
+
+    <TextView
+        android:id="@+id/sexoTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#9C27B0"
+        android:layout_marginTop="2dp"/>
+
+    <TextView
+        android:id="@+id/estadoTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="#FF9800"
+        android:layout_marginTop="2dp"/>
+</LinearLayout>
