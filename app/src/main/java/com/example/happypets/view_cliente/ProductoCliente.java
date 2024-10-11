@@ -1,5 +1,6 @@
 package com.example.happypets.view_cliente;
 
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,7 +24,6 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -33,10 +34,16 @@ public class ProductoCliente extends Fragment {
     private ProductoAdapter productoAdapter;
     private ArrayList<Producto> productoList = new ArrayList<>();
     private EditText editTextSearch; // EditText para la búsqueda
+    private CardView cardView1;
+    private CardView cardView2;
+    private TextView textViewMensaje; // TextView para mostrar mensajes
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_producto_cliente, container, false);
+        cardView1 = view.findViewById(R.id.cardView1);
+        cardView2 = view.findViewById(R.id.cardView2);
+        textViewMensaje = view.findViewById(R.id.textViewMensaje); // Asegúrate de que exista en el layout
 
         editTextSearch = view.findViewById(R.id.editTextSearch);
         recyclerView = view.findViewById(R.id.recyclerViewProductos);
@@ -47,6 +54,11 @@ public class ProductoCliente extends Fragment {
 
         // Llamada a la API
         new GetProductosTask().execute("https://api-happypetshco-com.preview-domain.com/api/ListarProductos");
+
+        // Inicialmente mostrar los CardViews y ocultar el RecyclerView
+        recyclerView.setVisibility(View.GONE);
+        cardView1.setVisibility(View.VISIBLE);
+        cardView2.setVisibility(View.VISIBLE);
 
         // Agregar TextWatcher para la búsqueda en tiempo real
         editTextSearch.addTextChangedListener(new TextWatcher() {
@@ -118,62 +130,36 @@ public class ProductoCliente extends Fragment {
 
     private void filter(String text) {
         ArrayList<Producto> filteredList = new ArrayList<>();
+
+        // Filtrar los productos según la búsqueda
         for (Producto producto : productoList) {
             if (producto.getNombre().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(producto);
             }
         }
+
         productoAdapter.updateList(filteredList);
-    }
 
-    // Método para actualizar un producto
-    public void updateProducto(Producto producto) {
-        new UpdateProductoTask().execute(producto);
-    }
-
-    private class UpdateProductoTask extends AsyncTask<Producto, Void, String> {
-
-        @Override
-        protected String doInBackground(Producto... productos) {
-            Producto producto = productos[0];
-            StringBuilder result = new StringBuilder();
-            try {
-                URL url = new URL("https://api-happypetshco-com.preview-domain.com/api/EditarProducto");
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setRequestMethod("POST");
-                connection.setRequestProperty("Content-Type", "application/json");
-                connection.setDoOutput(true);
-
-                // Crear el JSON
-                String jsonInputString = String.format(
-                        "{\"id\": %d, \"nm_producto\": \"%s\", \"descripcion\": \"%s\", \"categoria\": \"Categoria\", \"precio\": \"%s\", \"descuento\": \"%s\", \"stock\": 1}",
-                        producto.getId(), producto.getNombre(), producto.getDescripcion(), producto.getPrecio(), producto.getDescuento()
-                );
-
-                // Enviar el JSON
-                try (OutputStream os = connection.getOutputStream()) {
-                    byte[] input = jsonInputString.getBytes("utf-8");
-                    os.write(input, 0, input.length);
-                }
-
-                // Leer la respuesta
-                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    result.append(line);
-                }
-                reader.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return result.toString();
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            Log.d("Update API Response", result);
-            Toast.makeText(getContext(), "Producto actualizado correctamente", Toast.LENGTH_SHORT).show();
+        // Mostrar u ocultar el RecyclerView, los CardViews y el mensaje
+        if (text.isEmpty()) {
+            // Si el campo de búsqueda está vacío
+            recyclerView.setVisibility(View.GONE); // Ocultar el RecyclerView
+            textViewMensaje.setVisibility(View.GONE); // Ocultar mensaje
+            cardView1.setVisibility(View.VISIBLE); // Mostrar el primer CardView
+            cardView2.setVisibility(View.VISIBLE); // Mostrar el segundo CardView
+        } else if (filteredList.isEmpty()) {
+            // Si no hay resultados para la búsqueda
+            recyclerView.setVisibility(View.GONE); // Ocultar el RecyclerView
+            textViewMensaje.setText("Producto no conseguido."); // Mensaje de no encontrado
+            textViewMensaje.setVisibility(View.VISIBLE); // Mostrar mensaje
+            cardView1.setVisibility(View.VISIBLE); // Mostrar el primer CardView
+            cardView2.setVisibility(View.VISIBLE); // Mostrar el segundo CardView
+        } else {
+            // Si hay resultados
+            recyclerView.setVisibility(View.VISIBLE); // Mostrar el RecyclerView
+            textViewMensaje.setVisibility(View.GONE); // Ocultar mensaje
+            cardView1.setVisibility(View.GONE); // Ocultar el primer CardView
+            cardView2.setVisibility(View.GONE); // Ocultar el segundo CardView
         }
     }
 }
