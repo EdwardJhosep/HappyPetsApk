@@ -1,26 +1,105 @@
-<!-- res/layout/dialog_carrito.xml -->
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:padding="16dp"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@drawable/container_background">
 
     <TextView
-        android:id="@+id/tv_carrito_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Carrito de Compras"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
-
-    <ListView
-        android:id="@+id/lv_productos"
+        android:id="@+id/textViewTitle"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
-    <Button
-        android:id="@+id/btn_cerrar"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cerrar" />
+        android:text="Detalles del Carrito"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:paddingBottom="16dp"
+        android:textColor="@color/secondary_color" />
+
+    <TextView
+        android:id="@+id/textViewProductPrice"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Precio:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:padding="8dp"
+        android:textColor="@color/primary_color" />
+
+    <TextView
+        android:id="@+id/textViewCantidad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cantidad:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:padding="8dp"
+        android:textColor="@color/primary_color" />
+
+    <EditText
+        android:id="@+id/editTextCantidad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ingrese Cantidad"
+        android:padding="12dp"
+        android:inputType="number"
+        android:background="@drawable/container_background" />
+
+    <TextView
+        android:id="@+id/textViewColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Color:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:padding="8dp"
+        android:textColor="@color/primary_color" />
+
+    <EditText
+        android:id="@+id/editTextColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ingrese Color"
+        android:padding="12dp"
+        android:background="@drawable/container_background" />
+
+    <TextView
+        android:id="@+id/textViewImporte"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Importe:"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:padding="8dp"
+        android:textColor="#19B400"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="end"
+        android:layout_marginTop="16dp">
+
+        <Button
+            android:id="@+id/buttonClose"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cerrar"
+            android:layout_marginEnd="8dp"
+            android:backgroundTint="@color/red_color"
+            android:padding="12dp"
+            android:textColor="@android:color/white"
+            android:fontFamily="sans-serif-medium" />
+
+        <Button
+            android:id="@+id/buttonConfirm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Confirmar Pedido"
+            android:backgroundTint="@color/discount_color"
+            android:padding="12dp"
+            android:textColor="@android:color/white"
+            android:fontFamily="sans-serif-medium" />
+    </LinearLayout>
 </LinearLayout>

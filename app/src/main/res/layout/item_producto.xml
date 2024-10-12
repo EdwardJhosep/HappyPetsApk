@@ -75,7 +75,7 @@
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/imageButtonAgregar"
+                android:id="@+id/imageButtonCarrito"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/logo_agregar"

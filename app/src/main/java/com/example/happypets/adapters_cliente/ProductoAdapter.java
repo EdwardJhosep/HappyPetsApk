@@ -2,14 +2,15 @@ package com.example.happypets.adapters_cliente;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import com.example.happypets.R;
 import com.example.happypets.models.Producto;
@@ -48,23 +49,19 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
         String precio = producto.getPrecio();
         String descuento = producto.getDescuento();
 
-        if (TextUtils.isEmpty(precio)) {
-            holder.precioProducto.setText("Precio no disponible");
-        } else {
-            double precioOriginal = Double.parseDouble(precio);
-            double descuentoValor = TextUtils.isEmpty(descuento) || descuento.equals("0") || "null".equals(descuento)
-                    ? 0
-                    : Double.parseDouble(descuento);
+        double precioOriginal = TextUtils.isEmpty(precio) ? 0 : Double.parseDouble(precio);
+        double descuentoValor = TextUtils.isEmpty(descuento) || descuento.equals("0") || "null".equals(descuento)
+                ? 0
+                : Double.parseDouble(descuento);
 
-            if (descuentoValor > 0) {
-                double precioConDescuento = precioOriginal - descuentoValor;
-                holder.precioProducto.setText("Antes: S/. " + precioOriginal + "\nAhora: S/. " + precioConDescuento);
-                holder.descuentoProducto.setVisibility(View.VISIBLE);
-                holder.descuentoProducto.setText("Descuento: S/. " + descuentoValor);
-            } else {
-                holder.precioProducto.setText("S/. " + precioOriginal);
-                holder.descuentoProducto.setVisibility(View.GONE); // Ocultar si no hay descuento
-            }
+        if (descuentoValor > 0 && descuentoValor <= precioOriginal) {
+            double precioConDescuento = precioOriginal - descuentoValor;
+            holder.precioProducto.setText("Antes: S/. " + precioOriginal + "\nAhora: S/. " + precioConDescuento);
+            holder.descuentoProducto.setVisibility(View.VISIBLE);
+            holder.descuentoProducto.setText("Descuento: S/. " + descuentoValor);
+        } else {
+            holder.precioProducto.setText("S/. " + precioOriginal);
+            holder.descuentoProducto.setVisibility(View.GONE); // Ocultar si no hay descuento
         }
 
         // Cargar la imagen con Picasso
@@ -80,7 +77,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
 
                     @Override
                     public void onError(Exception e) {
-                        // Manejo de errores, puedes registrar el error o mostrar un mensaje
+                        Log.e("ProductoAdapter", "Error loading image: " + e.getMessage());
                     }
                 });
 
@@ -89,7 +86,14 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
             // Obtener el contexto desde el holder
             Context context = holder.itemView.getContext();
             // Mostrar un Toast con el userId
-            Toast.makeText(v.getContext(), "Producto ID: " + producto.getId() + ", User ID: " + userId, Toast.LENGTH_SHORT).show();
+        });
+
+        holder.imageButtonCarrito.setOnClickListener(v -> {
+            // Obtener el precio del producto
+            String productPrice = producto.getPrecio(); // Asegúrate de que este método existe y devuelve el precio como String
+            // Crear y mostrar el CarritoAdapter
+            CarritoAdapter carritoDialog = CarritoAdapter.newInstance(userId, String.valueOf(producto.getId()), productPrice);
+            carritoDialog.show(((AppCompatActivity) holder.itemView.getContext()).getSupportFragmentManager(), "CarritoDialog");
         });
     }
 
@@ -100,14 +104,15 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
 
     // Método para actualizar la lista
     public void updateList(ArrayList<Producto> newList) {
-        productos = newList;
+        productos.clear();
+        productos.addAll(newList);
         notifyDataSetChanged();
     }
 
     public static class ProductoViewHolder extends RecyclerView.ViewHolder {
 
         TextView nombreProducto, descripcionProducto, precioProducto, descuentoProducto;
-        ImageView imagenProducto;
+        ImageView imagenProducto, imageButtonCarrito; // Añadir el botón del carrito
 
         public ProductoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -116,6 +121,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
             precioProducto = itemView.findViewById(R.id.precioProducto);
             descuentoProducto = itemView.findViewById(R.id.descuentoProducto); // Añade el descuento
             imagenProducto = itemView.findViewById(R.id.imagenProducto);
+            imageButtonCarrito = itemView.findViewById(R.id.imageButtonCarrito); // Asegúrate de que este ID es correcto
         }
     }
 }
