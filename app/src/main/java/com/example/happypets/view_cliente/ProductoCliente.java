@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -27,28 +28,42 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import android.os.Handler;
 
 public class ProductoCliente extends Fragment {
 
     private RecyclerView recyclerView;
     private ProductoAdapter productoAdapter;
     private ArrayList<Producto> productoList = new ArrayList<>();
-    private EditText editTextSearch; // EditText para la búsqueda
+    private EditText editTextSearch;
     private CardView cardView1;
     private CardView cardView2;
-    private TextView textViewMensaje; // TextView para mostrar mensajes
+    private TextView textViewMensaje;
+    private ImageView imageViewCard1;
+    private ImageView imageViewCard2;
+
+    // Arrays de imágenes para cada CardView
+    private int[] imagesCard1 = {R.drawable.image1};
+    private int[] imagesCard2 = {R.drawable.image4, R.drawable.image5, R.drawable.image6};
+    private int currentImageIndex1 = 0;
+    private int currentImageIndex2 = 0;
+    private Handler handler1 = new Handler();
+    private Handler handler2 = new Handler();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_producto_cliente, container, false);
+
+        // Inicialización de vistas
         cardView1 = view.findViewById(R.id.cardView1);
         cardView2 = view.findViewById(R.id.cardView2);
-        textViewMensaje = view.findViewById(R.id.textViewMensaje); // Asegúrate de que exista en el layout
-
+        textViewMensaje = view.findViewById(R.id.textViewMensaje);
         editTextSearch = view.findViewById(R.id.editTextSearch);
         recyclerView = view.findViewById(R.id.recyclerViewProductos);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        imageViewCard1 = view.findViewById(R.id.imageViewCard1);
+        imageViewCard2 = view.findViewById(R.id.imageViewCard2);
 
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
         productoAdapter = new ProductoAdapter(productoList);
         recyclerView.setAdapter(productoAdapter);
 
@@ -74,7 +89,21 @@ public class ProductoCliente extends Fragment {
             public void afterTextChanged(Editable s) {}
         });
 
+        startImageSliderCard2();
+
         return view;
+    }
+
+
+    private void startImageSliderCard2() {
+        handler2.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                currentImageIndex2 = (currentImageIndex2 + 1) % imagesCard2.length;
+                imageViewCard2.setImageResource(imagesCard2[currentImageIndex2]);
+                handler2.postDelayed(this, 3000); // Repetir cada 3 segundos
+            }
+        }, 3000); // Primer cambio después de 3 segundos
     }
 
     private class GetProductosTask extends AsyncTask<String, Void, String> {
@@ -143,23 +172,23 @@ public class ProductoCliente extends Fragment {
         // Mostrar u ocultar el RecyclerView, los CardViews y el mensaje
         if (text.isEmpty()) {
             // Si el campo de búsqueda está vacío
-            recyclerView.setVisibility(View.GONE); // Ocultar el RecyclerView
-            textViewMensaje.setVisibility(View.GONE); // Ocultar mensaje
-            cardView1.setVisibility(View.VISIBLE); // Mostrar el primer CardView
-            cardView2.setVisibility(View.VISIBLE); // Mostrar el segundo CardView
+            recyclerView.setVisibility(View.GONE);
+            textViewMensaje.setVisibility(View.GONE);
+            cardView1.setVisibility(View.VISIBLE);
+            cardView2.setVisibility(View.VISIBLE);
         } else if (filteredList.isEmpty()) {
             // Si no hay resultados para la búsqueda
-            recyclerView.setVisibility(View.GONE); // Ocultar el RecyclerView
-            textViewMensaje.setText("Producto no conseguido."); // Mensaje de no encontrado
-            textViewMensaje.setVisibility(View.VISIBLE); // Mostrar mensaje
-            cardView1.setVisibility(View.VISIBLE); // Mostrar el primer CardView
-            cardView2.setVisibility(View.VISIBLE); // Mostrar el segundo CardView
+            recyclerView.setVisibility(View.GONE);
+            textViewMensaje.setText("Producto no conseguido.");
+            textViewMensaje.setVisibility(View.VISIBLE);
+            cardView1.setVisibility(View.VISIBLE);
+            cardView2.setVisibility(View.VISIBLE);
         } else {
             // Si hay resultados
-            recyclerView.setVisibility(View.VISIBLE); // Mostrar el RecyclerView
-            textViewMensaje.setVisibility(View.GONE); // Ocultar mensaje
-            cardView1.setVisibility(View.GONE); // Ocultar el primer CardView
-            cardView2.setVisibility(View.GONE); // Ocultar el segundo CardView
+            recyclerView.setVisibility(View.VISIBLE);
+            textViewMensaje.setVisibility(View.GONE);
+            cardView1.setVisibility(View.GONE);
+            cardView2.setVisibility(View.GONE);
         }
     }
 }
