@@ -1,5 +1,6 @@
 package com.example.happypets.adapters_cliente;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,9 +8,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.happypets.R;
 import com.example.happypets.models.Producto;
 import com.squareup.picasso.Callback;
@@ -20,9 +21,12 @@ import java.util.ArrayList;
 public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ProductoViewHolder> {
 
     private ArrayList<Producto> productos;
+    private String userId; // Añadir el userId
 
-    public ProductoAdapter(ArrayList<Producto> productos) {
+    // Modificar el constructor para aceptar userId
+    public ProductoAdapter(ArrayList<Producto> productos, String userId) {
         this.productos = productos;
+        this.userId = userId;
     }
 
     @NonNull
@@ -80,9 +84,14 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
                     }
                 });
 
+        // Configurar el clic en el producto para mostrar el userId en un Toast
+        holder.itemView.setOnClickListener(v -> {
+            // Obtener el contexto desde el holder
+            Context context = holder.itemView.getContext();
+            // Mostrar un Toast con el userId
+            Toast.makeText(v.getContext(), "Producto ID: " + producto.getId() + ", User ID: " + userId, Toast.LENGTH_SHORT).show();
+        });
     }
-
-
 
     @Override
     public int getItemCount() {
@@ -99,7 +108,6 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
 
         TextView nombreProducto, descripcionProducto, precioProducto, descuentoProducto;
         ImageView imagenProducto;
-        Button botonComprar; // Botón para comprar el producto
 
         public ProductoViewHolder(@NonNull View itemView) {
             super(itemView);

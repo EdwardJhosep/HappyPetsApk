@@ -16,9 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.happypets.R;
 import com.example.happypets.adapters_cliente.ProductoAdapter;
 import com.example.happypets.models.Producto;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,17 +44,29 @@ public class ProductoCliente extends Fragment {
     private ImageView imageViewCard1;
     private ImageView imageViewCard2;
 
-    // Arrays de imágenes para cada CardView
-    private int[] imagesCard1 = {R.drawable.image1};
+    private String userId;
+
     private int[] imagesCard2 = {R.drawable.image4, R.drawable.image5, R.drawable.image6};
-    private int currentImageIndex1 = 0;
     private int currentImageIndex2 = 0;
-    private Handler handler1 = new Handler();
     private Handler handler2 = new Handler();
+
+    // Método para crear una instancia del fragmento
+    public static ProductoCliente newInstance(String userId) {
+        ProductoCliente fragment = new ProductoCliente();
+        Bundle args = new Bundle();
+        args.putString("userId", userId);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_producto_cliente, container, false);
+
+        // Obtener el userId de los argumentos
+        if (getArguments() != null) {
+            userId = getArguments().getString("userId");
+        }
 
         // Inicialización de vistas
         cardView1 = view.findViewById(R.id.cardView1);
@@ -64,7 +78,9 @@ public class ProductoCliente extends Fragment {
         imageViewCard2 = view.findViewById(R.id.imageViewCard2);
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        productoAdapter = new ProductoAdapter(productoList);
+
+        // Pasar userId al crear el adaptador
+        productoAdapter = new ProductoAdapter(productoList, userId);
         recyclerView.setAdapter(productoAdapter);
 
         // Llamada a la API
@@ -93,7 +109,6 @@ public class ProductoCliente extends Fragment {
 
         return view;
     }
-
 
     private void startImageSliderCard2() {
         handler2.postDelayed(new Runnable() {
@@ -160,7 +175,6 @@ public class ProductoCliente extends Fragment {
     private void filter(String text) {
         ArrayList<Producto> filteredList = new ArrayList<>();
 
-        // Filtrar los productos según la búsqueda
         for (Producto producto : productoList) {
             if (producto.getNombre().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(producto);
@@ -171,20 +185,17 @@ public class ProductoCliente extends Fragment {
 
         // Mostrar u ocultar el RecyclerView, los CardViews y el mensaje
         if (text.isEmpty()) {
-            // Si el campo de búsqueda está vacío
             recyclerView.setVisibility(View.GONE);
             textViewMensaje.setVisibility(View.GONE);
             cardView1.setVisibility(View.VISIBLE);
             cardView2.setVisibility(View.VISIBLE);
         } else if (filteredList.isEmpty()) {
-            // Si no hay resultados para la búsqueda
             recyclerView.setVisibility(View.GONE);
             textViewMensaje.setText("Producto no conseguido.");
             textViewMensaje.setVisibility(View.VISIBLE);
             cardView1.setVisibility(View.VISIBLE);
             cardView2.setVisibility(View.VISIBLE);
         } else {
-            // Si hay resultados
             recyclerView.setVisibility(View.VISIBLE);
             textViewMensaje.setVisibility(View.GONE);
             cardView1.setVisibility(View.GONE);

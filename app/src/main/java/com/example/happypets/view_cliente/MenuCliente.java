@@ -43,7 +43,7 @@ public class MenuCliente extends AppCompatActivity {
 
                     // Manejo de selección de fragmentos usando if-else
                     if (item.getItemId() == R.id.navigation_product) {
-                        selectedFragment = new ProductoCliente();
+                        selectedFragment = ProductoCliente.newInstance(userId); // Asegúrate de pasar userId aquí
                     } else if (item.getItemId() == R.id.navigation_appointments) {
                         selectedFragment = new CitasCliente();
                     } else if (item.getItemId() == R.id.navigation_profile) {
@@ -81,6 +81,9 @@ public class MenuCliente extends AppCompatActivity {
                             // Obtener permisos
                             String permisos = user.has("permisos") ? user.getString("permisos") : "Sin permisos";
 
+                            // Llamar a loadInitialFragment después de obtener los datos
+                            loadInitialFragment();
+
                         } else {
                             Toast.makeText(this, "No se encontraron datos de usuario.", Toast.LENGTH_SHORT).show();
                         }
@@ -113,6 +116,15 @@ public class MenuCliente extends AppCompatActivity {
         queue.add(jsonObjectRequest);
     }
 
+    private void loadInitialFragment() {
+        if (userId != null) {
+            Fragment initialFragment = ProductoCliente.newInstance(userId);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, initialFragment)
+                    .commit();
+        }
+    }
+
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,11 +147,6 @@ public class MenuCliente extends AppCompatActivity {
         // Inicializa el BottomNavigationView
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
-
-        // Cargar el fragmento inicial
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProductoCliente()).commit();
-        }
 
         // Llamar a getUserData() para obtener los datos del usuario
         getUserData();

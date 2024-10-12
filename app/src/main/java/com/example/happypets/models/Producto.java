@@ -21,8 +21,8 @@ public class Producto {
         this.imagen = imagen;
     }
 
-    // Getters y Setters
-    public int getId() {
+    // Métodos getter y setter
+    public int getId() {  // Asegúrate de tener este método
         return id;
     }
 
