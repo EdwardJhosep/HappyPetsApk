@@ -29,6 +29,9 @@ public class DashboardAdmin extends Fragment {
 
     private WebView chartWebView;
     private OkHttpClient client;
+    private int productCount = 0;
+    private int petCount = 0;  // Nueva variable para la cantidad de mascotas
+    private int userCount = 0;
 
     @SuppressLint("MissingInflatedId")
     @Nullable
@@ -48,12 +51,15 @@ public class DashboardAdmin extends Fragment {
         // Inicializa OkHttpClient
         client = new OkHttpClient();
 
-        // Llama a la API para obtener la cantidad de productos
+        // Llama a las API para obtener la cantidad de productos y mascotas
         fetchProductCount();
+        fetchPetCount();
+        fetchUserCount();
 
         return view;
     }
 
+    // Función para obtener la cantidad de productos
     private void fetchProductCount() {
         String url = "https://api-happypetshco-com.preview-domain.com/api/ListarProductos";
 
@@ -74,15 +80,9 @@ public class DashboardAdmin extends Fragment {
                     try {
                         JSONObject jsonObject = new JSONObject(responseData);
                         JSONArray productos = jsonObject.getJSONArray("productos");
-                        int productCount = productos.length();
+                        productCount = productos.length();
 
-                        // Crea el contenido HTML con la cantidad de productos
-                        String htmlContent = createHtmlContent(productCount);
-
-                        // Verifica si el fragmento está asociado a una actividad antes de actualizar el WebView
-                        if (isAdded()) {
-                            requireActivity().runOnUiThread(() -> chartWebView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null));
-                        }
+                        updateWebView();  // Actualiza el WebView con los datos
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -92,7 +92,83 @@ public class DashboardAdmin extends Fragment {
         });
     }
 
-    private String createHtmlContent(int productCount) {
+    // Nueva función para obtener la cantidad de mascotas
+    private void fetchPetCount() {
+        String url = "https://api-happypetshco-com.preview-domain.com/api/ListarMascotas";
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseData = response.body().string();
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseData);
+                        JSONArray mascotas = jsonObject.getJSONArray("mascotas");
+                        petCount = mascotas.length();
+
+                        updateWebView();  // Actualiza el WebView con los datos
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+    private void fetchUserCount() {
+        String url = "https://api-happypetshco-com.preview-domain.com/api/Usuarios";
+
+        Request request = new Request.Builder()
+                .url(url)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseData = response.body().string();
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseData);
+                        JSONArray usuarios = jsonObject.getJSONArray("usuarios");
+                        userCount = usuarios.length();
+
+                        updateWebView();  // Actualiza el WebView con los datos
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+    }
+    // Función para actualizar el WebView con los nuevos datos
+    private void updateWebView() {
+        // Verifica si el fragmento está asociado a una actividad antes de actualizar el WebView
+        if (isAdded()) {
+            requireActivity().runOnUiThread(() -> {
+                // Crea el contenido HTML con las cantidades de productos y mascotas
+                String htmlContent = createHtmlContent(productCount, petCount,userCount);
+                chartWebView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null);
+            });
+        }
+    }
+
+    // Función para crear el contenido HTML con las cantidades de productos y mascotas
+    private String createHtmlContent(int productCount, int petCount , int userCount) {
         return "<html>" +
                 "<head>" +
                 "<script src='https://cdn.jsdelivr.net/npm/apexcharts'></script>" +
@@ -121,7 +197,7 @@ public class DashboardAdmin extends Fragment {
                 "    background: #ffffff; " +
                 "    border-radius: 12px; " +
                 "    padding: 20px; " +
-                "    margin: 10px; " + // Espaciado aumentado
+                "    margin: 10px; " +
                 "    text-align: center; " +
                 "    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); " +
                 "    transition: transform 0.3s, box-shadow 0.3s; " +
@@ -133,6 +209,7 @@ public class DashboardAdmin extends Fragment {
                 ".card:nth-child(1) { background: #FF6F61; } " +
                 ".card:nth-child(2) { background: #88B04B; } " +
                 ".card:nth-child(3) { background: #3498db; } " +
+                ".card i { margin-bottom: 10px; color: #000; }" +
                 "h1 { " +
                 "    color: #333; " +
                 "    margin: 0; " +
@@ -148,12 +225,12 @@ public class DashboardAdmin extends Fragment {
                 "<div class='header'>" +
                 "<h1>Dashboard Admin</h1>" +
                 "</div>" +
-                "<div style='display: flex; justify-content: space-around; flex-wrap: wrap;'>" + // Ajustar diseño
+                "<div style='display: flex; justify-content: space-around; flex-wrap: wrap;'>" +
                 "<div class='card' style='flex: 1; min-width: 150px;'><i class='fas fa-box fa-2x'></i><br>Cantidad de Productos<br><strong>" + productCount + "</strong></div>" +
+                "<div class='card' style='flex: 1; min-width: 150px;'><i class='fas fa-paw fa-2x'></i><br>Cantidad de Mascotas<br><strong>" + petCount + "</strong></div>" +  // Muestra la cantidad de mascotas
                 "<div class='card' style='flex: 1; min-width: 150px;'><i class='fas fa-dollar-sign fa-2x'></i><br>Ganancias<br><strong>S/ 10,000</strong></div>" +
-                "<div class='card' style='flex: 1; min-width: 150px;'><i class='fas fa-user fa-2x'></i><br>Clientes<br><strong>200</strong></div>" +
+                "<div class='card' style='flex: 1; min-width: 150px;'><i class='fas fa-user fa-2x'></i><br>Clientes<br><strong>"+userCount+"</strong></div>" +
                 "</div>" +
-
                 // Gráfico de Ventas
                 "<h2 style='text-align:center;'>Ventas Semanales</h2>" +
                 "<div id='chart1' style='max-width:650px; margin: 35px auto;'></div>" +
@@ -196,7 +273,7 @@ public class DashboardAdmin extends Fragment {
                 "    var chart2 = new ApexCharts(document.querySelector('#chart2'), options2);" +
                 "    chart2.render();" +
 
-                // Gráfico de Clientes Nuevos
+                // Gráfico de Clientes Nuevos por Mes
                 "    var options3 = {" +
                 "        chart: {" +
                 "            type: 'line'," +
@@ -204,10 +281,10 @@ public class DashboardAdmin extends Fragment {
                 "        }," +
                 "        series: [{" +
                 "            name: 'Clientes Nuevos'," +
-                "            data: [10, 20, 30, 40, 50, 60, 70]" +
+                "            data: [10, 41, 35, 51, 49, 62, 69, 91, 148]" +
                 "        }]," +
                 "        xaxis: {" +
-                "            categories: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul']" +
+                "            categories: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep']" +
                 "        }" +
                 "    };" +
                 "    var chart3 = new ApexCharts(document.querySelector('#chart3'), options3);" +
