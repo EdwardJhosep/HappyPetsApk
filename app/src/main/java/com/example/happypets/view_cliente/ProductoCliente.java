@@ -37,6 +37,7 @@ public class ProductoCliente extends Fragment {
     private RecyclerView recyclerView;
     private ProductoAdapter productoAdapter;
     private ArrayList<Producto> productoList = new ArrayList<>();
+    private ArrayList<Producto> productoListOriginal = new ArrayList<>(); // Lista original para el filtrado
     private EditText editTextSearch;
     private CardView cardView1;
     private CardView cardView2;
@@ -164,6 +165,7 @@ public class ProductoCliente extends Fragment {
                     );
                     productoList.add(producto);
                 }
+                productoListOriginal.addAll(productoList); // Guarda la lista original
                 productoAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 Toast.makeText(getContext(), "Error al procesar datos", Toast.LENGTH_SHORT).show();
@@ -175,31 +177,39 @@ public class ProductoCliente extends Fragment {
     private void filter(String text) {
         ArrayList<Producto> filteredList = new ArrayList<>();
 
-        for (Producto producto : productoList) {
+        // Filtrar los productos según el texto ingresado
+        for (Producto producto : productoListOriginal) { // Filtrar usando la lista original
             if (producto.getNombre().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(producto);
             }
         }
 
+        // Actualizar el adaptador con la lista filtrada
         productoAdapter.updateList(filteredList);
 
-        // Mostrar u ocultar el RecyclerView, los CardViews y el mensaje
+        // Mostrar u ocultar el RecyclerView y el mensaje de acuerdo al resultado de la búsqueda
         if (text.isEmpty()) {
-            recyclerView.setVisibility(View.GONE);
-            textViewMensaje.setVisibility(View.GONE);
-            cardView1.setVisibility(View.VISIBLE);
-            cardView2.setVisibility(View.VISIBLE);
-        } else if (filteredList.isEmpty()) {
-            recyclerView.setVisibility(View.GONE);
-            textViewMensaje.setText("Producto no conseguido.");
-            textViewMensaje.setVisibility(View.VISIBLE);
-            cardView1.setVisibility(View.VISIBLE);
-            cardView2.setVisibility(View.VISIBLE);
-        } else {
+            // Si no hay texto, ocultar el mensaje y mostrar todo
             recyclerView.setVisibility(View.VISIBLE);
             textViewMensaje.setVisibility(View.GONE);
-            cardView1.setVisibility(View.GONE);
-            cardView2.setVisibility(View.GONE);
+            cardView1.setVisibility(View.VISIBLE);
+            cardView2.setVisibility(View.VISIBLE);
+            productoAdapter.updateList(productoListOriginal); // Asegúrate de mostrar todos los productos
+        } else {
+            if (filteredList.isEmpty()) {
+                // Si no hay productos coincidentes, mostrar el mensaje y ocultar el RecyclerView
+                recyclerView.setVisibility(View.GONE);
+                textViewMensaje.setText("Producto no conseguido.");
+                textViewMensaje.setVisibility(View.VISIBLE);
+                cardView1.setVisibility(View.VISIBLE);
+                cardView2.setVisibility(View.VISIBLE);
+            } else {
+                // Si hay productos coincidentes, ocultar el mensaje y mostrar el RecyclerView
+                recyclerView.setVisibility(View.VISIBLE);
+                textViewMensaje.setVisibility(View.GONE);
+                cardView1.setVisibility(View.GONE);
+                cardView2.setVisibility(View.GONE);
+            }
         }
     }
 }

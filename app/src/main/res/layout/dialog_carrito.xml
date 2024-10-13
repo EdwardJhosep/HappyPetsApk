@@ -6,6 +6,7 @@
     android:orientation="vertical"
     android:background="@drawable/container_background">
 
+    <!-- Título del formulario -->
     <TextView
         android:id="@+id/textViewTitle"
         android:layout_width="match_parent"
@@ -17,6 +18,7 @@
         android:paddingBottom="16dp"
         android:textColor="@color/secondary_color" />
 
+    <!-- Precio del producto -->
     <TextView
         android:id="@+id/textViewProductPrice"
         android:layout_width="match_parent"
@@ -27,6 +29,7 @@
         android:padding="8dp"
         android:textColor="@color/primary_color" />
 
+    <!-- Cantidad -->
     <TextView
         android:id="@+id/textViewCantidad"
         android:layout_width="match_parent"
@@ -41,11 +44,13 @@
         android:id="@+id/editTextCantidad"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Ingrese Cantidad"
+        android:hint="Ingrese cantidad de productos"
         android:padding="12dp"
         android:inputType="number"
-        android:background="@drawable/container_background" />
+        android:background="@drawable/container_background"
+        android:layout_marginBottom="16dp" />
 
+    <!-- Selección de color -->
     <TextView
         android:id="@+id/textViewColor"
         android:layout_width="match_parent"
@@ -56,14 +61,57 @@
         android:padding="8dp"
         android:textColor="@color/primary_color" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:gravity="center">
+
+        <ImageButton
+            android:id="@+id/buttonColorRed"
+            android:layout_width="56dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:contentDescription="Rojo"
+            android:src="@drawable/circle_red" />
+
+        <ImageButton
+            android:id="@+id/buttonColorGreen"
+            android:layout_width="56dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:contentDescription="Verde"
+            android:src="@drawable/circle_green" />
+
+        <ImageButton
+            android:id="@+id/buttonColorBlue"
+            android:layout_width="56dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:contentDescription="Azul"
+            android:src="@drawable/circle_blue" />
+
+        <ImageButton
+            android:id="@+id/buttonColorOtro"
+            android:layout_width="56dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:contentDescription="Otro"
+            android:src="@drawable/circle_otro" />
+    </LinearLayout>
+
     <EditText
         android:id="@+id/editTextColor"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Ingrese Color"
+        android:hint="Color Seleccionado"
         android:padding="12dp"
-        android:background="@drawable/container_background" />
+        android:background="@drawable/container_background"
+        android:focusable="false"
+        android:layout_marginBottom="16dp" />
 
+    <!-- Importe -->
     <TextView
         android:id="@+id/textViewImporte"
         android:layout_width="match_parent"
@@ -72,19 +120,22 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:padding="8dp"
-        android:textColor="#19B400"/>
+        android:textColor="#19B400" />
 
+    <!-- Botones de acción -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="end"
-        android:layout_marginTop="16dp">
+        android:layout_marginTop="16dp"
+        android:gravity="center">
 
         <Button
             android:id="@+id/buttonClose"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Cerrar"
             android:layout_marginEnd="8dp"
             android:backgroundTint="@color/red_color"
@@ -93,13 +144,14 @@
             android:fontFamily="sans-serif-medium" />
 
         <Button
-            android:id="@+id/buttonConfirm"
-            android:layout_width="wrap_content"
+            android:id="@+id/buttonAddToCart"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Confirmar Pedido"
             android:backgroundTint="@color/discount_color"
             android:padding="12dp"
             android:textColor="@android:color/white"
-            android:fontFamily="sans-serif-medium" />
+            android:fontFamily="sans-serif-medium"/>
     </LinearLayout>
 </LinearLayout>

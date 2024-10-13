@@ -34,7 +34,7 @@ import java.util.Iterator;
 public class MainActivity extends DialogFragment {
 
     private TextView tvErrorMessage;
-    private ProgressBar progressBar; // Declarar ProgressBar
+    private ProgressBar progressBar;
 
     public MainActivity() {
         // Constructor vacío
