@@ -19,5 +19,9 @@
     <color name="discount_color">#FF0000FF</color>
 
     <color name="red_color">#F44336</color>
+    <color name="container_color">#F5F5F5</color>
+    <color name="border_color">#CCCCCC</color>
+    <color name="edittext_border_color">#DDDDDD</color>
+
 
 </resources>

@@ -2,6 +2,8 @@ package com.example.happypets.view_cliente;
 
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -18,6 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.happypets.R;
+import com.example.happypets.adapters_cliente.CarritoFragment;
 import com.example.happypets.adapters_cliente.ProductoAdapter;
 import com.example.happypets.models.Producto;
 
@@ -44,6 +47,7 @@ public class ProductoCliente extends Fragment {
     private TextView textViewMensaje;
     private ImageView imageViewCard1;
     private ImageView imageViewCard2;
+    private ImageView iconCarrito;
 
     private String userId;
 
@@ -77,10 +81,10 @@ public class ProductoCliente extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewProductos);
         imageViewCard1 = view.findViewById(R.id.imageViewCard1);
         imageViewCard2 = view.findViewById(R.id.imageViewCard2);
+        iconCarrito = view.findViewById(R.id.iconCarrito);
 
+        // Configuración del RecyclerView
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-
-        // Pasar userId al crear el adaptador
         productoAdapter = new ProductoAdapter(productoList, userId);
         recyclerView.setAdapter(productoAdapter);
 
@@ -105,8 +109,18 @@ public class ProductoCliente extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {}
         });
-
         startImageSliderCard2();
+// Cambiar el listener del icono del carrito
+        iconCarrito.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Crear una instancia del CarritoFragment y pasar el userId
+                CarritoFragment carritoFragment = CarritoFragment.newInstance(userId);
+
+                // Mostrar el BottomSheet
+                carritoFragment.show(getChildFragmentManager(), carritoFragment.getTag());
+            }
+        });
 
         return view;
     }
