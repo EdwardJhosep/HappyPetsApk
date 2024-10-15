@@ -1,4 +1,4 @@
-package com.example.happypets.adapters_cliente;
+package com.example.happypets.adapters_admin;
 
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.happypets.R;
-import com.example.happypets.adapters_admin.FormularioEditarAdapter;
 import com.example.happypets.models.Producto;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;

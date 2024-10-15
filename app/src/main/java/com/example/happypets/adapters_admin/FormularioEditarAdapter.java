@@ -1,9 +1,8 @@
-package com.example.happypets.adapters_cliente;
+package com.example.happypets.adapters_admin;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
