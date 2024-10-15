@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,7 +21,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.happypets.R;
+import com.example.happypets.adapters_cliente.ChatFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -146,6 +149,15 @@ public class MenuCliente extends AppCompatActivity {
         // Inicializa el BottomNavigationView
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
+
+        FloatingActionButton fabChat = findViewById(R.id.fab_chat);
+        fabChat.setOnClickListener(view -> {
+            // Crear una instancia de ChatDialogFragment
+            ChatFragment chatDialogFragment = new ChatFragment();
+            chatDialogFragment.show(getSupportFragmentManager(), "chatDialog");
+        });
+
+
 
         // Llamar a getUserData() para obtener los datos del usuario
         getUserData();

@@ -30,5 +30,16 @@
         app:itemIconTint="@color/selector_bottom_nav_color"
         app:itemTextColor="@color/selector_bottom_nav_color"/>
 
+    <!-- Botón flotante con imagen de chat -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_chat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_chat"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_margin="16dp"
+        app:tint="@android:color/white"
+        app:backgroundTint="@color/primary_color"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
