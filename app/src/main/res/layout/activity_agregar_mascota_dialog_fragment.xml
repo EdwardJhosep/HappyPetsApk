@@ -1,53 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="@android:color/white">
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Agregar Nueva Mascota"
-        android:textSize="20sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         android:layout_gravity="center"
-        android:paddingBottom="16dp"/>
+        android:paddingBottom="16dp"
+        android:textColor="@color/primary_color" />
 
-    <EditText
-        android:id="@+id/nombreEditText"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nombre"
-        android:inputType="text" />
+        android:hint="Nombre">
 
-    <EditText
-        android:id="@+id/edadEditText"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/nombreEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Edad"
-        android:inputType="number" />
+        android:hint="Edad">
 
-    <EditText
-        android:id="@+id/especieEditText"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/edadEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Especie"
-        android:inputType="text" />
+        android:hint="Especie">
 
-    <EditText
-        android:id="@+id/razaEditText"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/especieEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Raza"
-        android:inputType="text" />
+        android:hint="Raza">
 
-    <EditText
-        android:id="@+id/sexoEditText"
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/razaEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Sexo"
-        android:inputType="text" />
+        android:hint="Sexo">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/sexoEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text" />
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/agregarButton"
@@ -55,7 +94,9 @@
         android:layout_height="wrap_content"
         android:text="Agregar Mascota"
         android:layout_marginTop="16dp"
-        android:background="@color/primary_color"
-        android:textColor="@android:color/white" />
+        android:backgroundTint="@color/primary_color"
+        android:textColor="@android:color/white"
+        android:padding="12dp"
+        android:layout_gravity="center" />
 
 </LinearLayout>

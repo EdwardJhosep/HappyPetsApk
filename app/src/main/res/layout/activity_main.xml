@@ -133,7 +133,6 @@
             app:layout_constraintTop_toBottomOf="@id/tilConfirmPassword"
             android:textAlignment="center"/>
 
-
         <Button
             android:id="@+id/btnClose"
             android:layout_width="0dp"
@@ -147,6 +146,13 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnRegister" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" /> <!-- Oculto por defecto -->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

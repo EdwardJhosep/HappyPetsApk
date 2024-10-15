@@ -30,6 +30,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PerfilCliente extends Fragment {
 
@@ -37,17 +39,19 @@ public class PerfilCliente extends Fragment {
     private String phoneNumber;
     private String nombreCompleto;
     private String userId;
+    private String token; // Agrega esta línea para almacenar el token
     private RecyclerView petsListView; // Cambiar a RecyclerView
     private MascotaAdapter petsAdapter; // Usar el adaptador personalizado
     private ArrayList<Mascota> petsList; // Lista de mascotas
 
-    public static PerfilCliente newInstance(String dni, String phoneNumber, String nombreCompleto, String userId) {
+    public static PerfilCliente newInstance(String dni, String phoneNumber, String nombreCompleto, String userId, String token) {
         PerfilCliente fragment = new PerfilCliente();
         Bundle args = new Bundle();
         args.putString("dni", dni);
         args.putString("phoneNumber", phoneNumber);
         args.putString("nombreCompleto", nombreCompleto);
         args.putString("userId", userId);
+        args.putString("token", token); // Agrega el token a los argumentos
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,6 +66,7 @@ public class PerfilCliente extends Fragment {
             phoneNumber = getArguments().getString("phoneNumber");
             nombreCompleto = getArguments().getString("nombreCompleto");
             userId = getArguments().getString("userId");
+            token = getArguments().getString("token"); // Obtén el token de los argumentos
         }
 
         TextView dniTextView = view.findViewById(R.id.dniTextView);
@@ -78,7 +83,7 @@ public class PerfilCliente extends Fragment {
         // Inicializar el RecyclerView y la lista de mascotas
         petsListView = view.findViewById(R.id.petsListView);
         petsList = new ArrayList<>();
-        petsAdapter = new MascotaAdapter(getContext(), petsList); // Usar el adaptador personalizado
+        petsAdapter = new MascotaAdapter(getContext(), petsList); // Pasa el token al adaptador
 
         // Configurar el RecyclerView
         petsListView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)); // Configura la orientación horizontal
@@ -90,7 +95,7 @@ public class PerfilCliente extends Fragment {
         // Configurar el botón para agregar mascota
         ImageButton addPetButton = view.findViewById(R.id.addPetButton);
         addPetButton.setOnClickListener(v -> {
-            AgregarMascotaDialogFragment agregarMascotaDialogFragment = AgregarMascotaDialogFragment.newInstance(userId);
+            AgregarMascotaDialogFragment agregarMascotaDialogFragment = AgregarMascotaDialogFragment.newInstance(userId, token); // Pasa el token
             agregarMascotaDialogFragment.show(getChildFragmentManager(), "agregarMascota");
         });
 
@@ -109,6 +114,7 @@ public class PerfilCliente extends Fragment {
         // URL con el parámetro userId en la cadena de consulta
         String url = "https://api-happypetshco-com.preview-domain.com/api/Historial?id_usuario=" + userId;
 
+        // Crear un objeto JsonObjectRequest con los encabezados
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.POST,
                 url,
@@ -159,7 +165,14 @@ public class PerfilCliente extends Fragment {
                         }
                     }
                 }
-        );
+        ) {
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", "Bearer " + token); // Agregar el token en los encabezados
+                return headers;
+            }
+        };
 
         // Agregar la solicitud a la cola de Volley
         Volley.newRequestQueue(getContext()).add(jsonObjectRequest);

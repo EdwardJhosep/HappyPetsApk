@@ -25,13 +25,6 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <CheckBox
-                android:id="@+id/checkBoxSeleccionar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-            android:textColor="@android:color/black" />
-
             <TextView
                 android:id="@+id/tvNombreProducto"
                 android:layout_width="wrap_content"
@@ -43,7 +36,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="end"> <!-- Alinea el contenido a la derecha -->
 
                 <TextView
                     android:id="@+id/tvCantidad"
@@ -69,5 +63,29 @@
                     android:textSize="10sp"/>
             </LinearLayout>
         </LinearLayout>
+
+        <!-- Contenedor para el CheckBox y el botón de eliminar -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="end"
+        android:gravity="center_vertical">
+
+        <CheckBox
+            android:id="@+id/checkBoxSeleccionar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black" />
+
+        <ImageButton
+            android:id="@+id/buttonEliminar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/ic_delete"
+            android:padding="8dp" />
     </LinearLayout>
 </LinearLayout>
+    </LinearLayout>

@@ -23,11 +23,13 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
 
     private ArrayList<Producto> productos;
     private String userId; // Añadir el userId
+    private String token;   // Añadir el token
 
-    // Modificar el constructor para aceptar userId
-    public ProductoAdapter(ArrayList<Producto> productos, String userId) {
+    // Modificar el constructor para aceptar userId y token
+    public ProductoAdapter(ArrayList<Producto> productos, String userId, String token) {
         this.productos = productos;
         this.userId = userId;
+        this.token = token; // Inicializar el token
     }
 
     @NonNull
@@ -54,12 +56,14 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
                 ? 0
                 : Double.parseDouble(descuento);
 
+        double precioConDescuento; // Declarar la variable sin inicializar
         if (descuentoValor > 0 && descuentoValor <= precioOriginal) {
-            double precioConDescuento = precioOriginal - descuentoValor;
-            holder.precioProducto.setText("Antes: S/. " + precioOriginal + "\nAhora: S/. " + precioConDescuento);
+            precioConDescuento = precioOriginal - descuentoValor; // Calcular el precio con descuento
+            holder.precioProducto.setText(" ̶A̶n̶t̶:̶S̶/̶:̶" + precioOriginal + "\nS/. " + precioConDescuento);
             holder.descuentoProducto.setVisibility(View.VISIBLE);
             holder.descuentoProducto.setText("Descuento: S/. " + descuentoValor);
         } else {
+            precioConDescuento = precioOriginal; // Asignar precioOriginal si no hay descuento
             holder.precioProducto.setText("S/. " + precioOriginal);
             holder.descuentoProducto.setVisibility(View.GONE); // Ocultar si no hay descuento
         }
@@ -86,13 +90,14 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
             // Obtener el contexto desde el holder
             Context context = holder.itemView.getContext();
             // Mostrar un Toast con el userId
+            Toast.makeText(context, "User ID: " + userId, Toast.LENGTH_SHORT).show();
         });
 
+        // Cambiar para usar el precioConDescuento si está disponible
+        final String productPrice = (descuentoValor > 0) ? String.valueOf(precioConDescuento) : String.valueOf(precioOriginal);
         holder.imageButtonCarrito.setOnClickListener(v -> {
-            // Obtener el precio del producto
-            String productPrice = producto.getPrecio(); // Asegúrate de que este método existe y devuelve el precio como String
             // Crear y mostrar el CarritoAdapter
-            CarritoAdapter carritoDialog = CarritoAdapter.newInstance(userId, String.valueOf(producto.getId()), productPrice);
+            CarritoAdapter carritoDialog = CarritoAdapter.newInstance(userId, String.valueOf(producto.getId()), productPrice, token); // Añadir token aquí
             carritoDialog.show(((AppCompatActivity) holder.itemView.getContext()).getSupportFragmentManager(), "CarritoDialog");
         });
     }

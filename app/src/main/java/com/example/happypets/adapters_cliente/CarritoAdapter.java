@@ -30,15 +30,17 @@ public class CarritoAdapter extends DialogFragment {
     private String userId;
     private String productId;
     private String productPrice; // Variable para precio del producto
+    private String token; // Variable para el token
     private TextView textViewImporte; // Añadir variable para el TextView del importe
     private EditText editTextColor; // Añadir variable para el EditText del color
 
-    public static CarritoAdapter newInstance(String userId, String productId, String productPrice) {
+    public static CarritoAdapter newInstance(String userId, String productId, String productPrice, String token) {
         CarritoAdapter fragment = new CarritoAdapter();
         Bundle args = new Bundle();
         args.putString("USER_ID", userId);
         args.putString("PRODUCT_ID", productId);
         args.putString("PRODUCT_PRICE", productPrice); // Agregar el precio del producto
+        args.putString("TOKEN", token); // Agregar el token
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,6 +54,7 @@ public class CarritoAdapter extends DialogFragment {
             userId = getArguments().getString("USER_ID");
             productId = getArguments().getString("PRODUCT_ID");
             productPrice = getArguments().getString("PRODUCT_PRICE"); // Obtener el precio del producto
+            token = getArguments().getString("TOKEN"); // Leer el token
 
             // Vincular los TextViews y establecer el texto
             TextView textViewProductPrice = view.findViewById(R.id.textViewProductPrice);
@@ -161,6 +164,7 @@ public class CarritoAdapter extends DialogFragment {
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json; utf-8");
                 conn.setRequestProperty("Accept", "application/json");
+                conn.setRequestProperty("Authorization", "Bearer " + token); // Usar el token en el encabezado
                 conn.setDoOutput(true);
 
                 // Enviar el JSON

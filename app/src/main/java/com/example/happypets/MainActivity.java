@@ -46,6 +46,7 @@ public class MainActivity extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_main, container, false);
 
+        // Inicialización de los EditText y botones
         EditText etDni = view.findViewById(R.id.etDni);
         EditText etTelefono = view.findViewById(R.id.etTelefono);
         EditText etPassword = view.findViewById(R.id.etPassword);
@@ -55,6 +56,7 @@ public class MainActivity extends DialogFragment {
         tvErrorMessage = view.findViewById(R.id.tvErrorMessage);
         progressBar = view.findViewById(R.id.progressBar); // Inicializar ProgressBar
 
+        // Listener para el botón de registro
         btnRegister.setOnClickListener(v -> {
             String dni = etDni.getText().toString().trim();
             String telefono = etTelefono.getText().toString().trim();
@@ -76,11 +78,11 @@ public class MainActivity extends DialogFragment {
             } else if (!password.equals(confirmPassword)) {
                 showError(tvErrorMessage, "Las contraseñas no coinciden");
             } else {
-                registerUser(dni, telefono, password);
+                registerUser(dni, telefono, password); // Llama a registerUser
             }
         });
 
-        btnClose.setOnClickListener(v -> dismiss());
+        btnClose.setOnClickListener(v -> dismiss()); // Cierra el diálogo
 
         return view;
     }
@@ -105,7 +107,7 @@ public class MainActivity extends DialogFragment {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                 response -> {
                     progressBar.setVisibility(View.GONE); // Ocultar ProgressBar
-                    handleResponse(response);
+                    handleResponse(response, dni, telefono);
                 },
                 error -> {
                     progressBar.setVisibility(View.GONE); // Ocultar ProgressBar
@@ -116,7 +118,7 @@ public class MainActivity extends DialogFragment {
         queue.add(jsonObjectRequest);
     }
 
-    private void handleResponse(JSONObject response) {
+    private void handleResponse(JSONObject response, String dni, String telefono) {
         try {
             if (response.has("error")) {
                 // Manejo de errores de validación
@@ -130,11 +132,15 @@ public class MainActivity extends DialogFragment {
                 Toast.makeText(getContext(), errorMessages.toString(), Toast.LENGTH_LONG).show();
             } else {
                 String mensaje = response.getString("mensaje");
+                String token = response.getString("token"); // Asegúrate de obtener el token de la respuesta
                 Toast.makeText(getContext(), "Registro exitoso: " + mensaje, Toast.LENGTH_SHORT).show();
 
                 // Redirigir a MenuCliente después del registro exitoso
                 Intent intent = new Intent(getActivity(), MenuCliente.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra("token", token); // Pasar el token al MenuCliente
+                intent.putExtra("dni", dni); // Pasar el dni
+                intent.putExtra("phoneNumber", telefono); // Pasar el número de teléfono
                 startActivity(intent);
 
                 // Cerrar el diálogo

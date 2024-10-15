@@ -31,8 +31,8 @@ public class MenuCliente extends AppCompatActivity {
     private String dni;
     private String phoneNumber;
     private String nombres;
-    private String token; // Supongamos que tienes un token
-    private String userId; // Añadir una variable para el ID del usuario
+    private String token; // Token de inicio de sesión o registro
+    private String userId; // ID del usuario
 
     // Listener para manejar la selección de los items del BottomNavigationView
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
@@ -43,12 +43,12 @@ public class MenuCliente extends AppCompatActivity {
 
                     // Manejo de selección de fragmentos usando if-else
                     if (item.getItemId() == R.id.navigation_product) {
-                        selectedFragment = ProductoCliente.newInstance(userId); // Asegúrate de pasar userId aquí
+                        selectedFragment = ProductoCliente.newInstance(userId, token); // Pasar userId y token
                     } else if (item.getItemId() == R.id.navigation_appointments) {
-                        selectedFragment = new CitasCliente();
+                        selectedFragment = CitasCliente.newInstance(userId, token); // Pasar userId y token
                     } else if (item.getItemId() == R.id.navigation_profile) {
-                        // Pasar el dni, phoneNumber, nombres y userId al fragmento
-                        selectedFragment = PerfilCliente.newInstance(dni, phoneNumber, nombres, userId);
+                        // Pasar dni, phoneNumber, nombres, userId y token al fragmento
+                        selectedFragment = PerfilCliente.newInstance(dni, phoneNumber, nombres, userId, token);
                     }
 
                     if (selectedFragment != null) {
@@ -83,7 +83,6 @@ public class MenuCliente extends AppCompatActivity {
 
                             // Llamar a loadInitialFragment después de obtener los datos
                             loadInitialFragment();
-
                         } else {
                             Toast.makeText(this, "No se encontraron datos de usuario.", Toast.LENGTH_SHORT).show();
                         }
@@ -107,7 +106,7 @@ public class MenuCliente extends AppCompatActivity {
             @Override
             public java.util.Map<String, String> getHeaders() {
                 java.util.HashMap<String, String> headers = new java.util.HashMap<>();
-                headers.put("Authorization", "Bearer " + token);
+                headers.put("Authorization", "Bearer " + token); // Usar el token correctamente
                 return headers;
             }
         };
@@ -118,7 +117,7 @@ public class MenuCliente extends AppCompatActivity {
 
     private void loadInitialFragment() {
         if (userId != null) {
-            Fragment initialFragment = ProductoCliente.newInstance(userId);
+            Fragment initialFragment = ProductoCliente.newInstance(userId, token);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, initialFragment)
                     .commit();
@@ -135,7 +134,7 @@ public class MenuCliente extends AppCompatActivity {
         dni = getIntent().getStringExtra("dni");
         phoneNumber = getIntent().getStringExtra("phoneNumber");
         nombres = getIntent().getStringExtra("nombres");
-        token = getIntent().getStringExtra("token"); // Asegúrate de obtener el token si lo necesitas
+        token = getIntent().getStringExtra("token"); // Obtener el token si es necesario
 
         // Configura los insets para evitar que la UI se superponga con las barras de sistema
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {

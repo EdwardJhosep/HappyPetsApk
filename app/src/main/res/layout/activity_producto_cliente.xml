@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"> <!-- Esto asegura que el contenido se expanda para llenar el ScrollView -->
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
@@ -67,7 +67,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             tools:ignore="MissingConstraints" />
 
-        <!-- Primer CardView -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView1"
             android:layout_width="375dp"
@@ -100,12 +99,11 @@
                     android:id="@+id/imageViewCard1"
                     android:layout_width="match_parent"
                     android:layout_height="142dp"
-                    android:scaleType="centerCrop"
+                    android:scaleType="centerInside"
                     android:src="@drawable/image1" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Segundo CardView -->
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView2"
             android:layout_width="345dp"
@@ -128,7 +126,7 @@
                     android:layout_height="65dp"
                     android:layout_gravity="center"
                     android:layout_marginBottom="12dp"
-                    android:scaleType="centerCrop"
+                    android:scaleType="centerInside"
                     android:src="@drawable/clientefeliz" />
 
                 <ImageView
@@ -136,7 +134,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingTop="10dp"
-                    android:scaleType="centerCrop"
+                    android:scaleType="centerInside"
                     android:src="@drawable/image4" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>

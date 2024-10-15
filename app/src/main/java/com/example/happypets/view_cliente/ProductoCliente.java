@@ -50,16 +50,18 @@ public class ProductoCliente extends Fragment {
     private ImageView iconCarrito;
 
     private String userId;
+    private String token; // Agregar variable para el token
 
     private int[] imagesCard2 = {R.drawable.image4, R.drawable.image5, R.drawable.image6};
     private int currentImageIndex2 = 0;
     private Handler handler2 = new Handler();
 
     // Método para crear una instancia del fragmento
-    public static ProductoCliente newInstance(String userId) {
+    public static ProductoCliente newInstance(String userId, String token) {
         ProductoCliente fragment = new ProductoCliente();
         Bundle args = new Bundle();
         args.putString("userId", userId);
+        args.putString("token", token); // Agregar el token a los argumentos
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,9 +70,10 @@ public class ProductoCliente extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_producto_cliente, container, false);
 
-        // Obtener el userId de los argumentos
+        // Obtener el userId y token de los argumentos
         if (getArguments() != null) {
             userId = getArguments().getString("userId");
+            token = getArguments().getString("token"); // Obtener el token
         }
 
         // Inicialización de vistas
@@ -85,7 +88,7 @@ public class ProductoCliente extends Fragment {
 
         // Configuración del RecyclerView
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        productoAdapter = new ProductoAdapter(productoList, userId);
+        productoAdapter = new ProductoAdapter(productoList, userId, token); // Pasar el token al adaptador
         recyclerView.setAdapter(productoAdapter);
 
         // Llamada a la API
@@ -109,14 +112,15 @@ public class ProductoCliente extends Fragment {
             @Override
             public void afterTextChanged(Editable s) {}
         });
+
         startImageSliderCard2();
-// Cambiar el listener del icono del carrito
+
+        // Cambiar el listener del icono del carrito
         iconCarrito.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Crear una instancia del CarritoFragment y pasar el userId
-                CarritoFragment carritoFragment = CarritoFragment.newInstance(userId);
-
+                // Crear una instancia del CarritoFragment y pasar el userId y el token
+                CarritoFragment carritoFragment = CarritoFragment.newInstance(userId, token);
                 // Mostrar el BottomSheet
                 carritoFragment.show(getChildFragmentManager(), carritoFragment.getTag());
             }
@@ -145,6 +149,9 @@ public class ProductoCliente extends Fragment {
                 URL url = new URL(urls[0]);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
+
+                // Establecer el token en el encabezado de autorización
+                connection.setRequestProperty("Authorization", "Bearer " + token);
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String line;
