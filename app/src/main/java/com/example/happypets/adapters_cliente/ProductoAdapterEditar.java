@@ -21,9 +21,11 @@ import java.util.ArrayList;
 public class ProductoAdapterEditar extends RecyclerView.Adapter<ProductoAdapterEditar.ProductoViewHolder> {
 
     private ArrayList<Producto> productos;
+    private String token;
 
-    public ProductoAdapterEditar(ArrayList<Producto> productos) {
+    public ProductoAdapterEditar(ArrayList<Producto> productos, String token) {
         this.productos = productos;
+        this.token = token;
     }
 
     @NonNull
@@ -36,12 +38,9 @@ public class ProductoAdapterEditar extends RecyclerView.Adapter<ProductoAdapterE
     @Override
     public void onBindViewHolder(@NonNull ProductoViewHolder holder, int position) {
         Producto producto = productos.get(position);
-
-        // Establecer los valores de texto solo si no están vacíos
         holder.nombreProducto.setText(TextUtils.isEmpty(producto.getNombre()) ? "Nombre no disponible" : producto.getNombre());
         holder.descripcionProducto.setText(TextUtils.isEmpty(producto.getDescripcion()) ? "Descripción no disponible" : producto.getDescripcion());
 
-        // Obtener el precio y el descuento
         String precio = producto.getPrecio();
         String descuento = producto.getDescuento();
 
@@ -60,41 +59,33 @@ public class ProductoAdapterEditar extends RecyclerView.Adapter<ProductoAdapterE
                 holder.descuentoProducto.setText("Descuento: S/. " + descuentoValor);
             } else {
                 holder.precioProducto.setText("S/. " + precioOriginal);
-                holder.descuentoProducto.setVisibility(View.GONE); // Ocultar si no hay descuento
+                holder.descuentoProducto.setVisibility(View.GONE);
             }
         }
 
-        // Cargar la imagen con Picasso
         Picasso.get()
                 .load("https://api-happypetshco-com.preview-domain.com/ServidorProductos/" + producto.getImagen())
-                .placeholder(R.drawable.logo) // Reemplaza con tu drawable de marcador de posición
-                .error(R.drawable.logo) // Reemplaza con tu drawable de error
+                .placeholder(R.drawable.logo)
+                .error(R.drawable.logo)
                 .into(holder.imagenProducto, new Callback() {
                     @Override
-                    public void onSuccess() {
-                        // La imagen se cargó correctamente
-                    }
+                    public void onSuccess() {}
 
                     @Override
-                    public void onError(Exception e) {
-                        // Manejo de errores, puedes registrar el error o mostrar un mensaje
-                    }
+                    public void onError(Exception e) {}
                 });
 
-        // Configurar el botón de editar
         holder.imageButtonEditar.setOnClickListener(view -> {
-            FormularioEditarAdapter formularioEditarAdapter = new FormularioEditarAdapter(view.getContext(), producto);
+            FormularioEditarAdapter formularioEditarAdapter = new FormularioEditarAdapter(view.getContext(), producto, token);
             formularioEditarAdapter.showEditDialog();
         });
     }
-
 
     @Override
     public int getItemCount() {
         return productos.size();
     }
 
-    // Método para actualizar la lista
     public void updateList(ArrayList<Producto> newList) {
         productos = newList;
         notifyDataSetChanged();
@@ -104,17 +95,16 @@ public class ProductoAdapterEditar extends RecyclerView.Adapter<ProductoAdapterE
 
         TextView nombreProducto, descripcionProducto, precioProducto, descuentoProducto;
         ImageView imagenProducto;
-        ImageButton imageButtonEditar; // Botón para editar el producto
+        ImageButton imageButtonEditar;
 
         public ProductoViewHolder(@NonNull View itemView) {
             super(itemView);
             nombreProducto = itemView.findViewById(R.id.nombreProducto);
             descripcionProducto = itemView.findViewById(R.id.descripcionProducto);
             precioProducto = itemView.findViewById(R.id.precioProducto);
-            descuentoProducto = itemView.findViewById(R.id.descuentoProducto); // Añade el descuento
+            descuentoProducto = itemView.findViewById(R.id.descuentoProducto);
             imagenProducto = itemView.findViewById(R.id.imagenProducto);
-            imageButtonEditar = itemView.findViewById(R.id.imageButtonEditar); // Referencia al botón de editar
+            imageButtonEditar = itemView.findViewById(R.id.imageButtonEditar);
         }
     }
-
 }

@@ -3,6 +3,7 @@ package com.example.happypets.submenu_admin;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +17,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class Submenu_AdminProductos extends AppCompatActivity {
 
+    private String token; // Variable para almacenar el token
+
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -23,9 +26,11 @@ public class Submenu_AdminProductos extends AppCompatActivity {
                     Fragment selectedFragment = null;
 
                     if (item.getItemId() == R.id.Editar) {
-                        selectedFragment = new EditarProdcuto(); // Cambiar el nombre aquí
+                        selectedFragment = new EditarProducto();
+                        ((EditarProducto) selectedFragment).setToken(token); // Enviar el token
                     } else if (item.getItemId() == R.id.Agregar) {
-                        selectedFragment = new AgregarProducto(); // Asegúrate de que esta clase también sea correcta
+                        selectedFragment = new AgregarProducto();
+                        ((AgregarProducto) selectedFragment).setToken(token); // Enviar el token
                     } else if (item.getItemId() == R.id.Salir) {
                         Intent intent = new Intent(Submenu_AdminProductos.this, MenuAdmin.class);
                         startActivity(intent);
@@ -44,16 +49,23 @@ public class Submenu_AdminProductos extends AppCompatActivity {
                 }
             };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_submenu_admin_productos);
 
+        // Obtener el token del Intent
+        token = getIntent().getStringExtra("token"); // Asegúrate de que la clave "token" coincida con la utilizada en ManageAdmin
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new EditarProdcuto()).commit(); // Cambiar el nombre aquí
+            // Crear una instancia de EditarProducto y establecer el token
+            EditarProducto editarProducto = new EditarProducto();
+            editarProducto.setToken(token); // Enviar el token al fragmento
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, editarProducto).commit();
         }
     }
+
 }

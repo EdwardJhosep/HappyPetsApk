@@ -18,22 +18,62 @@ import com.example.happypets.submenu_admin.Submenu_AdminServicios;
 
 public class ManageAdmin extends Fragment {
 
+    private static final String ARG_TOKEN = "token"; // Clave para el token
+    private String token; // Variable para almacenar el token
+
+    // Método estático para crear una nueva instancia del fragmento
+    public static ManageAdmin newInstance(String token) {
+        ManageAdmin fragment = new ManageAdmin();
+        Bundle args = new Bundle();
+        args.putString(ARG_TOKEN, token); // Almacenar el token en el Bundle
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // Obtener el token del Bundle
+        if (getArguments() != null) {
+            token = getArguments().getString(ARG_TOKEN);
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_manage_admin, container, false);
 
-        // References to buttons
+        // Referencias a los botones
         Button buttonAdminPersonal = view.findViewById(R.id.button_admin_personal);
         Button buttonAdminProductos = view.findViewById(R.id.button_admin_productos);
         Button buttonAdminServicios = view.findViewById(R.id.button_admin_servicios);
         Button buttonAdminMascotas = view.findViewById(R.id.button_admin_mascotas);
 
-        // Set click listeners for buttons
-        buttonAdminPersonal.setOnClickListener(v -> startActivity(new Intent(getActivity(), Submenu_AdminPersonal.class)));
-        buttonAdminProductos.setOnClickListener(v -> startActivity(new Intent(getActivity(), Submenu_AdminProductos.class)));
-        buttonAdminServicios.setOnClickListener(v -> startActivity(new Intent(getActivity(), Submenu_AdminServicios.class)));
-        buttonAdminMascotas.setOnClickListener(v -> startActivity(new Intent(getActivity(), Submenu_AdminMascotas.class)));
+        // Configurar los listeners para los botones
+        buttonAdminPersonal.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), Submenu_AdminPersonal.class);
+            intent.putExtra(ARG_TOKEN, token); // Pasar el token al submenú
+            startActivity(intent);
+        });
+
+        buttonAdminProductos.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), Submenu_AdminProductos.class);
+            intent.putExtra(ARG_TOKEN, token); // Pasar el token al submenú
+            startActivity(intent);
+        });
+
+        buttonAdminServicios.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), Submenu_AdminServicios.class);
+            intent.putExtra(ARG_TOKEN, token); // Pasar el token al submenú
+            startActivity(intent);
+        });
+
+        buttonAdminMascotas.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), Submenu_AdminMascotas.class);
+            intent.putExtra(ARG_TOKEN, token); // Pasar el token al submenú
+            startActivity(intent);
+        });
 
         return view;
     }

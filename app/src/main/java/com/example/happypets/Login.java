@@ -175,7 +175,7 @@ public class Login extends AppCompatActivity {
                 JSONObject user = response.getJSONObject("usuarios");
                 String permisos = user.has("permisos") ? user.getString("permisos") : "No tiene permisos";
                 Intent intent = "Administrador".equals(permisos) ? new Intent(this, MenuAdmin.class) : new Intent(this, MenuCliente.class);
-                intent.putExtra("token", token);
+                intent.putExtra("token", token); // Envío del token aquí
                 startActivity(intent);
             } else {
                 Toast.makeText(this, "No se encontraron datos de usuario.", Toast.LENGTH_SHORT).show();

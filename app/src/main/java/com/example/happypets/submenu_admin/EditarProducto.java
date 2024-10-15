@@ -28,12 +28,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class EditarProdcuto extends Fragment {
+public class EditarProducto extends Fragment {
 
     private RecyclerView recyclerView;
-    private ProductoAdapterEditar ProductoAdapterEditar;
+    private ProductoAdapterEditar productoAdapterEditar;
     private ArrayList<Producto> productoList = new ArrayList<>();
-    private EditText editTextSearch; // EditText para la búsqueda
+    private EditText editTextSearch;
+    private String token;
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,13 +48,11 @@ public class EditarProdcuto extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerViewProductos);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
-        ProductoAdapterEditar = new ProductoAdapterEditar(productoList);
-        recyclerView.setAdapter(ProductoAdapterEditar);
+        productoAdapterEditar = new ProductoAdapterEditar(productoList, token);
+        recyclerView.setAdapter(productoAdapterEditar);
 
-        // Llamada a la API
         new GetProductosTask().execute("https://api-happypetshco-com.preview-domain.com/api/ListarProductos");
 
-        // Agregar TextWatcher para la búsqueda en tiempo real
         editTextSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -75,6 +78,7 @@ public class EditarProdcuto extends Fragment {
                 URL url = new URL(urls[0]);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
+                connection.setRequestProperty("Authorization", "Bearer " + token);
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String line;
@@ -109,7 +113,7 @@ public class EditarProdcuto extends Fragment {
                     );
                     productoList.add(producto);
                 }
-                ProductoAdapterEditar.notifyDataSetChanged();
+                productoAdapterEditar.notifyDataSetChanged();
             } catch (JSONException e) {
                 Toast.makeText(getContext(), "Error al procesar datos", Toast.LENGTH_SHORT).show();
                 e.printStackTrace();
@@ -124,7 +128,6 @@ public class EditarProdcuto extends Fragment {
                 filteredList.add(producto);
             }
         }
-        ProductoAdapterEditar.updateList(filteredList);
+        productoAdapterEditar.updateList(filteredList);
     }
-
 }

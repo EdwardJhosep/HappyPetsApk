@@ -26,16 +26,16 @@
             android:exported="false" />
         <activity
             android:name=".submenu_admin.AgregarProducto"
-            android:exported="false" />
-        <activity
-            android:name=".submenu_admin.EditarProdcuto"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".submenu_admin.EditarMascota"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".submenu_admin.AgregarMascota"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".submenu_admin.Submenu_AdminMascotas"
             android:exported="false" />

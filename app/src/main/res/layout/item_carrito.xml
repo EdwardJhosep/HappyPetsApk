@@ -25,6 +25,7 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
+
             <TextView
                 android:id="@+id/tvNombreProducto"
                 android:layout_width="wrap_content"
@@ -70,22 +71,22 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="end"
-        android:gravity="center_vertical">
+            android:gravity="center_vertical">
 
-        <CheckBox
-            android:id="@+id/checkBoxSeleccionar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black" />
+            <CheckBox
+                android:id="@+id/checkBoxSeleccionar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black" />
 
-        <ImageButton
-            android:id="@+id/buttonEliminar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_delete"
-            android:padding="8dp" />
+            <ImageButton
+                android:id="@+id/buttonEliminar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_delete"
+                android:padding="8dp" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
-    </LinearLayout>

@@ -30,28 +30,34 @@ public class DashboardAdmin extends Fragment {
     private WebView chartWebView;
     private OkHttpClient client;
     private int productCount = 0;
-    private int petCount = 0;  // Nueva variable para la cantidad de mascotas
+    private int petCount = 0;
     private int userCount = 0;
+    private String token; // Variable para almacenar el token
+
+    public static DashboardAdmin newInstance(String token) {
+        DashboardAdmin fragment = new DashboardAdmin();
+        Bundle args = new Bundle();
+        args.putString("TOKEN", token); // Almacena el token en el Bundle
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Infla el diseño para este fragmento
         View view = inflater.inflate(R.layout.activity_dashboard_admin, container, false);
-
-        // Encuentra el WebView en el diseño
         chartWebView = view.findViewById(R.id.webview);
-
-        // Configura el WebView
         WebSettings webSettings = chartWebView.getSettings();
-        webSettings.setJavaScriptEnabled(true); // Habilita JavaScript
-        chartWebView.setWebViewClient(new WebViewClient()); // Evita abrir un navegador externo
-
-        // Inicializa OkHttpClient
+        webSettings.setJavaScriptEnabled(true);
+        chartWebView.setWebViewClient(new WebViewClient());
         client = new OkHttpClient();
 
-        // Llama a las API para obtener la cantidad de productos y mascotas
+        // Obtener el token del Bundle
+        if (getArguments() != null) {
+            token = getArguments().getString("TOKEN");
+        }
+
         fetchProductCount();
         fetchPetCount();
         fetchUserCount();
@@ -59,12 +65,11 @@ public class DashboardAdmin extends Fragment {
         return view;
     }
 
-    // Función para obtener la cantidad de productos
     private void fetchProductCount() {
         String url = "https://api-happypetshco-com.preview-domain.com/api/ListarProductos";
-
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("Authorization", "Bearer " + token) // Agregar el token a la cabecera
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -81,9 +86,7 @@ public class DashboardAdmin extends Fragment {
                         JSONObject jsonObject = new JSONObject(responseData);
                         JSONArray productos = jsonObject.getJSONArray("productos");
                         productCount = productos.length();
-
-                        updateWebView();  // Actualiza el WebView con los datos
-
+                        updateWebView();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -92,12 +95,11 @@ public class DashboardAdmin extends Fragment {
         });
     }
 
-    // Nueva función para obtener la cantidad de mascotas
     private void fetchPetCount() {
         String url = "https://api-happypetshco-com.preview-domain.com/api/ListarMascotas";
-
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("Authorization", "Bearer " + token)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -114,9 +116,7 @@ public class DashboardAdmin extends Fragment {
                         JSONObject jsonObject = new JSONObject(responseData);
                         JSONArray mascotas = jsonObject.getJSONArray("mascotas");
                         petCount = mascotas.length();
-
-                        updateWebView();  // Actualiza el WebView con los datos
-
+                        updateWebView();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -124,11 +124,12 @@ public class DashboardAdmin extends Fragment {
             }
         });
     }
+
     private void fetchUserCount() {
         String url = "https://api-happypetshco-com.preview-domain.com/api/Usuarios";
-
         Request request = new Request.Builder()
                 .url(url)
+                .addHeader("Authorization", "Bearer " + token)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -145,9 +146,7 @@ public class DashboardAdmin extends Fragment {
                         JSONObject jsonObject = new JSONObject(responseData);
                         JSONArray usuarios = jsonObject.getJSONArray("usuarios");
                         userCount = usuarios.length();
-
-                        updateWebView();  // Actualiza el WebView con los datos
-
+                        updateWebView();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -155,19 +154,16 @@ public class DashboardAdmin extends Fragment {
             }
         });
     }
-    // Función para actualizar el WebView con los nuevos datos
+
     private void updateWebView() {
-        // Verifica si el fragmento está asociado a una actividad antes de actualizar el WebView
         if (isAdded()) {
             requireActivity().runOnUiThread(() -> {
-                // Crea el contenido HTML con las cantidades de productos y mascotas
-                String htmlContent = createHtmlContent(productCount, petCount,userCount);
+                String htmlContent = createHtmlContent(productCount, petCount, userCount);
                 chartWebView.loadDataWithBaseURL(null, htmlContent, "text/html", "UTF-8", null);
             });
         }
     }
 
-    // Función para crear el contenido HTML con las cantidades de productos y mascotas
     private String createHtmlContent(int productCount, int petCount , int userCount) {
         return "<html>" +
                 "<head>" +
@@ -294,4 +290,5 @@ public class DashboardAdmin extends Fragment {
                 "</body>" +
                 "</html>";
     }
+
 }

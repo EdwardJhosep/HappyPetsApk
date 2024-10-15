@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -29,95 +30,89 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class FormularioEditarAdapter {
-
     private Context context;
     private Producto producto;
+    private String token;
 
-    public FormularioEditarAdapter(Context context, Producto producto) {
+    public FormularioEditarAdapter(Context context, Producto producto, String token) {
         this.context = context;
         this.producto = producto;
+        this.token = token;
     }
 
     public void showEditDialog() {
-        // Inflar el diálogo de edición
         View dialogView = LayoutInflater.from(context).inflate(R.layout.formulario_editar_producto, null);
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
         dialogBuilder.setView(dialogView);
 
-        // Obtener referencias a los campos del formulario
         EditText editarNombre = dialogView.findViewById(R.id.editarNombre);
         EditText editarDescripcion = dialogView.findViewById(R.id.editarDescripcion);
         EditText editarPrecio = dialogView.findViewById(R.id.editarPrecio);
         EditText editarDescuento = dialogView.findViewById(R.id.editarDescuento);
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText editarStock = dialogView.findViewById(R.id.editarStock); // Añadir stock
+        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText editarStock = dialogView.findViewById(R.id.editarStock);
         Button botonGuardar = dialogView.findViewById(R.id.botonGuardar);
-        Button botonEliminar = dialogView.findViewById(R.id.botonEliminar); // Botón para eliminar
+        Button botonEliminar = dialogView.findViewById(R.id.botonEliminar);
 
-        // Prellenar el formulario con los valores actuales
         editarNombre.setText(producto.getNombre());
         editarDescripcion.setText(producto.getDescripcion());
         editarPrecio.setText(producto.getPrecio());
         editarDescuento.setText(producto.getDescuento());
-        editarStock.setText(producto.getStock()); // Prellenar el stock
+        editarStock.setText(producto.getStock());
 
-        // Crear el diálogo
         AlertDialog dialog = dialogBuilder.create();
         dialog.show();
 
-        // Configurar el botón de guardar
         botonGuardar.setOnClickListener(v -> {
-            // Obtener los nuevos valores
             String nuevoNombre = editarNombre.getText().toString();
             String nuevaDescripcion = editarDescripcion.getText().toString();
             String nuevoPrecio = editarPrecio.getText().toString();
             String nuevoDescuento = editarDescuento.getText().toString();
-            String nuevoStock = editarStock.getText().toString(); // Obtener nuevo stock
+            String nuevoStock = editarStock.getText().toString();
 
-            // Validar y actualizar el producto
             if (!TextUtils.isEmpty(nuevoNombre) && !TextUtils.isEmpty(nuevaDescripcion) &&
                     !TextUtils.isEmpty(nuevoPrecio) && !TextUtils.isEmpty(nuevoStock)) {
-
-                // Llamar a la función para editar el producto en la API
-                editarProductoEnAPI(nuevoNombre, nuevaDescripcion, nuevoPrecio, nuevoDescuento, nuevoStock);
+                editarProductoEnAPI(nuevoNombre, nuevaDescripcion, nuevoPrecio, nuevoDescuento, nuevoStock, editarNombre, editarDescripcion, editarPrecio, editarDescuento, editarStock);
+            } else {
+                Toast.makeText(context, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
             }
-
-            // Cerrar el diálogo
-            dialog.dismiss();
         });
 
         botonEliminar.setOnClickListener(v -> {
-            // Mostrar un diálogo de confirmación
             new AlertDialog.Builder(context)
                     .setTitle("Confirmar Eliminación")
                     .setMessage("¿Estás seguro de que deseas eliminar este producto?")
-                    .setPositiveButton("Eliminar", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Llamar a la función para eliminar el producto en la API
-                            eliminarProductoEnAPI(producto.getId());
-                            dialog.dismiss(); // Cerrar el diálogo después de eliminar
-                        }
+                    .setPositiveButton("Eliminar", (dialog1, which) -> {
+                        eliminarProductoEnAPI(producto.getId());
+                        dialog1.dismiss();
                     })
-                    .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.cancel(); // Cancelar la eliminación
-                        }
-                    })
+                    .setNegativeButton("Cancelar", (dialog12, which) -> dialog12.cancel())
                     .show();
         });
     }
 
-    private void editarProductoEnAPI(String nombre, String descripcion, String precio, String descuento, String stock) {
-        // Crear cliente OkHttp
-        OkHttpClient client = new OkHttpClient();
+    // Método para limpiar el formulario
+    private void limpiarFormulario(EditText editarNombre, EditText editarDescripcion,
+                                   EditText editarPrecio, EditText editarDescuento,
+                                   EditText editarStock) {
+        editarNombre.setText("");
+        editarDescripcion.setText("");
+        editarPrecio.setText("");
+        editarDescuento.setText("");
+        editarStock.setText("");
+    }
 
-        // Crear el cuerpo de la solicitud
+    private void editarProductoEnAPI(String nombre, String descripcion, String precio, String descuento, String stock,
+                                     EditText editarNombre, EditText editarDescripcion,
+                                     EditText editarPrecio, EditText editarDescuento,
+                                     EditText editarStock) {
+        OkHttpClient client = new OkHttpClient();
         MediaType mediaType = MediaType.parse("application/json");
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("id", producto.getId()); // Suponiendo que 'id' está disponible en el objeto Producto
+            jsonObject.put("id", producto.getId());
             jsonObject.put("nm_producto", nombre);
             jsonObject.put("descripcion", descripcion);
-            jsonObject.put("categoria", producto.getCategoria()); // Suponiendo que la categoría se mantiene
+            jsonObject.put("categoria", producto.getCategoria());
             jsonObject.put("precio", precio);
             jsonObject.put("descuento", descuento);
             jsonObject.put("stock", stock);
@@ -125,12 +120,14 @@ public class FormularioEditarAdapter {
             e.printStackTrace();
         }
 
-        // Crear la solicitud
+        Log.d("FormularioEditarAdapter", "JSON Body: " + jsonObject.toString());
+
         RequestBody body = RequestBody.create(mediaType, jsonObject.toString());
         Request request = new Request.Builder()
                 .url("https://api-happypetshco-com.preview-domain.com/api/EditarProducto")
                 .post(body)
                 .addHeader("Content-Type", "application/json")
+                .addHeader("Authorization", "Bearer " + token)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -145,16 +142,22 @@ public class FormularioEditarAdapter {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                String responseBody = response.body().string();
+                Log.d("FormularioEditarAdapter", "Response Code: " + response.code());
+
                 if (response.isSuccessful()) {
                     if (context instanceof Submenu_AdminProductos) {
-                        ((Submenu_AdminProductos) context).runOnUiThread(() ->
-                                Toast.makeText(context, "Producto editado correctamente", Toast.LENGTH_SHORT).show());
+                        ((Submenu_AdminProductos) context).runOnUiThread(() -> {
+                            Toast.makeText(context, "Producto editado correctamente", Toast.LENGTH_SHORT).show();
+                            // Llamar al método para limpiar el formulario
+                            limpiarFormulario(editarNombre, editarDescripcion, editarPrecio, editarDescuento, editarStock);
+                        });
                     }
                 } else {
-                    String errorResponse = response.body().string();
+                    Log.d("FormularioEditarAdapter", "Error Response: " + responseBody);
                     if (context instanceof Submenu_AdminProductos) {
                         ((Submenu_AdminProductos) context).runOnUiThread(() ->
-                                Toast.makeText(context, "Error: " + errorResponse, Toast.LENGTH_SHORT).show());
+                                Toast.makeText(context, "Error: " + responseBody, Toast.LENGTH_SHORT).show());
                     }
                 }
             }
@@ -162,17 +165,14 @@ public class FormularioEditarAdapter {
     }
 
     private void eliminarProductoEnAPI(int id) {
-        // Crear cliente OkHttp
         OkHttpClient client = new OkHttpClient();
+        String url = "https://api-happypetshco-com.preview-domain.com/api/EliminarProducto?id=" + id;
 
-        // Construir la URL correctamente con el ID del producto
-        String url = "https://api-happypetshco-com.preview-domain.com/api/EliminarProducto=" + id;
-
-        // Crear la solicitud de eliminación
         Request request = new Request.Builder()
-                .url(url)  // Usar la URL construida
-                .get()     // Método GET para eliminar
+                .url(url)
+                .get() // Cambiar a GET para eliminar
                 .addHeader("Content-Type", "application/json")
+                .addHeader("Authorization", "Bearer " + token)
                 .build();
 
         client.newCall(request).enqueue(new Callback() {
@@ -187,8 +187,7 @@ public class FormularioEditarAdapter {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String responseBody = response.body().string(); // Obtener el cuerpo de la respuesta
-
+                String responseBody = response.body().string();
                 if (response.isSuccessful()) {
                     if (context instanceof Submenu_AdminProductos) {
                         ((Submenu_AdminProductos) context).runOnUiThread(() ->

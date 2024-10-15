@@ -28,11 +28,11 @@
 
         <ImageView
             android:id="@+id/iconCarrito"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="17dp"
+            android:layout_height="16dp"
             android:layout_marginStart="8dp"
+            android:background="@drawable/ic_carrito"
             android:contentDescription="Ícono del carrito"
-            android:src="@drawable/ic_carrito"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textViewTitle"
             app:layout_constraintTop_toTopOf="@id/textViewTitle" />

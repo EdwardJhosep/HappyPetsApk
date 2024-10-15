@@ -18,6 +18,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MenuAdmin extends AppCompatActivity {
 
+    private String token; // Declarar variable para almacenar el token
+
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -26,13 +28,13 @@ public class MenuAdmin extends AppCompatActivity {
 
                     // Manejo de selección de fragmentos usando if-else
                     if (item.getItemId() == R.id.navigation_dashboard) {
-                        selectedFragment = new DashboardAdmin();
+                        selectedFragment = DashboardAdmin.newInstance(token); // Pasar token
                     } else if (item.getItemId() == R.id.navigation_clients) {
-                        selectedFragment = new ClientsAdmin();
+                        selectedFragment = ClientsAdmin.newInstance(token); // Pasar token
                     } else if (item.getItemId() == R.id.navigation_appointments) {
-                        selectedFragment = new AppointmentsAdmin();
+                        selectedFragment = AppointmentsAdmin.newInstance(token); // Pasar token
                     } else if (item.getItemId() == R.id.navigation_administrar) {
-                        selectedFragment = new ManageAdmin();
+                        selectedFragment = ManageAdmin.newInstance(token); // Pasar token
                     }
 
                     if (selectedFragment != null) {
@@ -52,6 +54,9 @@ public class MenuAdmin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu_admin);
 
+        // Obtener el token del Intent
+        token = getIntent().getStringExtra("token");
+
         // Configura los insets para evitar que la UI se superponga con las barras de sistema
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -65,7 +70,7 @@ public class MenuAdmin extends AppCompatActivity {
 
         // Cargar el fragmento inicial
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new DashboardAdmin()).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, DashboardAdmin.newInstance(token)).commit();
         }
     }
 }

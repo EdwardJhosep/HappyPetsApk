@@ -45,12 +45,12 @@ public class AgregarProducto extends Fragment {
     private Button buttonAgregar, buttonSeleccionarImagen;
     private ImageView imageViewProducto;
     private Uri uriImagen;
+    private String token;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_agregar_producto, container, false);
 
-        // Inicializar los elementos de la interfaz
         editTextNombre = view.findViewById(R.id.editTextNombre);
         editTextDescripcion = view.findViewById(R.id.editTextDescripcion);
         editTextCategoria = view.findViewById(R.id.editTextCategoria);
@@ -60,7 +60,6 @@ public class AgregarProducto extends Fragment {
         buttonSeleccionarImagen = view.findViewById(R.id.buttonSeleccionarImagen);
         imageViewProducto = view.findViewById(R.id.imageViewProducto);
 
-        // Asignar listeners a los botones
         buttonSeleccionarImagen.setOnClickListener(v -> {
             if (hasCameraPermissions()) {
                 seleccionarImagen();
@@ -74,12 +73,10 @@ public class AgregarProducto extends Fragment {
         return view;
     }
 
-    // Método para verificar si los permisos de cámara están concedidos
     private boolean hasCameraPermissions() {
         return ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
     }
 
-    // Método para solicitar permisos de cámara
     private void requestCameraPermissions() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.CAMERA)) {
             Toast.makeText(getActivity(), "Se necesita el permiso de cámara para tomar una foto.", Toast.LENGTH_SHORT).show();
@@ -87,7 +84,6 @@ public class AgregarProducto extends Fragment {
         ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_PERMISSIONS);
     }
 
-    // Método para seleccionar una imagen usando la cámara
     private void seleccionarImagen() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -95,7 +91,6 @@ public class AgregarProducto extends Fragment {
         }
     }
 
-    // Obtener el resultado de la captura de imagen
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -103,17 +98,15 @@ public class AgregarProducto extends Fragment {
             Bundle extras = data.getExtras();
             if (extras != null) {
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
-                imageViewProducto.setImageBitmap(imageBitmap); // Muestra la imagen capturada
-                uriImagen = saveImageToFile(imageBitmap); // Guarda la imagen en un archivo
+                imageViewProducto.setImageBitmap(imageBitmap);
+                uriImagen = saveImageToFile(imageBitmap);
                 Log.d("AgregarProducto", "Imagen capturada desde la cámara");
             }
         }
     }
 
-    // Método para guardar la imagen en un archivo y obtener su URI
     private Uri saveImageToFile(Bitmap bitmap) {
         try {
-            // Crea un archivo para la imagen
             File imageFile = new File(getActivity().getExternalFilesDir(null), "imagen_" + System.currentTimeMillis() + ".jpg");
             FileOutputStream outputStream = new FileOutputStream(imageFile);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
@@ -126,8 +119,10 @@ public class AgregarProducto extends Fragment {
         }
     }
 
-    // Método para agregar un producto
-    // Método para agregar un producto
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     private void agregarProducto() {
         final String nmProducto = editTextNombre.getText().toString().trim();
         final String descripcion = editTextDescripcion.getText().toString().trim();
@@ -135,7 +130,6 @@ public class AgregarProducto extends Fragment {
         final String precio = editTextPrecio.getText().toString().trim();
         final String stock = editTextStock.getText().toString().trim();
 
-        // Validar que los campos no estén vacíos
         if (nmProducto.isEmpty() || descripcion.isEmpty() || categoria.isEmpty() ||
                 precio.isEmpty() || stock.isEmpty() || uriImagen == null) {
             Toast.makeText(getContext(), "Por favor completa todos los campos y selecciona una imagen", Toast.LENGTH_SHORT).show();
@@ -168,6 +162,7 @@ public class AgregarProducto extends Fragment {
 
                 Request request = new Request.Builder()
                         .url(url)
+                        .addHeader("Authorization", "Bearer " + token)
                         .post(requestBody)
                         .build();
 
@@ -177,7 +172,6 @@ public class AgregarProducto extends Fragment {
                     if (response.isSuccessful()) {
                         Log.d("AgregarProducto", "Producto agregado correctamente");
                         getActivity().runOnUiThread(() -> {
-                            // Limpiar los campos y la imagen
                             limpiarCampos();
                             Toast.makeText(getContext(), "Producto agregado correctamente", Toast.LENGTH_SHORT).show();
                         });
@@ -200,19 +194,16 @@ public class AgregarProducto extends Fragment {
         }).start();
     }
 
-    // Método para limpiar los campos de entrada y la imagen
     private void limpiarCampos() {
         editTextNombre.setText("");
         editTextDescripcion.setText("");
         editTextCategoria.setText("");
         editTextPrecio.setText("");
         editTextStock.setText("");
-        imageViewProducto.setImageDrawable(null); // Limpiar la imagen
-        uriImagen = null; // Resetear el URI de la imagen
+        imageViewProducto.setImageDrawable(null);
+        uriImagen = null;
     }
 
-
-    // Manejar la respuesta de permisos solicitados
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

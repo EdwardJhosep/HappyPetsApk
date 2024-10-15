@@ -29,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -40,7 +41,7 @@ public class ProductoCliente extends Fragment {
     private RecyclerView recyclerView;
     private ProductoAdapter productoAdapter;
     private ArrayList<Producto> productoList = new ArrayList<>();
-    private ArrayList<Producto> productoListOriginal = new ArrayList<>(); // Lista original para el filtrado
+    private ArrayList<Producto> productoListOriginal = new ArrayList<>();
     private EditText editTextSearch;
     private CardView cardView1;
     private CardView cardView2;
@@ -50,18 +51,17 @@ public class ProductoCliente extends Fragment {
     private ImageView iconCarrito;
 
     private String userId;
-    private String token; // Agregar variable para el token
+    private String token;
 
     private int[] imagesCard2 = {R.drawable.image4, R.drawable.image5, R.drawable.image6};
     private int currentImageIndex2 = 0;
     private Handler handler2 = new Handler();
 
-    // Método para crear una instancia del fragmento
     public static ProductoCliente newInstance(String userId, String token) {
         ProductoCliente fragment = new ProductoCliente();
         Bundle args = new Bundle();
         args.putString("userId", userId);
-        args.putString("token", token); // Agregar el token a los argumentos
+        args.putString("token", token);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,13 +70,11 @@ public class ProductoCliente extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_producto_cliente, container, false);
 
-        // Obtener el userId y token de los argumentos
         if (getArguments() != null) {
             userId = getArguments().getString("userId");
-            token = getArguments().getString("token"); // Obtener el token
+            token = getArguments().getString("token");
         }
 
-        // Inicialización de vistas
         cardView1 = view.findViewById(R.id.cardView1);
         cardView2 = view.findViewById(R.id.cardView2);
         textViewMensaje = view.findViewById(R.id.textViewMensaje);
@@ -86,20 +84,16 @@ public class ProductoCliente extends Fragment {
         imageViewCard2 = view.findViewById(R.id.imageViewCard2);
         iconCarrito = view.findViewById(R.id.iconCarrito);
 
-        // Configuración del RecyclerView
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-        productoAdapter = new ProductoAdapter(productoList, userId, token); // Pasar el token al adaptador
+        productoAdapter = new ProductoAdapter(productoList, userId, token);
         recyclerView.setAdapter(productoAdapter);
 
-        // Llamada a la API
         new GetProductosTask().execute("https://api-happypetshco-com.preview-domain.com/api/ListarProductos");
 
-        // Inicialmente mostrar los CardViews y ocultar el RecyclerView
         recyclerView.setVisibility(View.GONE);
         cardView1.setVisibility(View.VISIBLE);
         cardView2.setVisibility(View.VISIBLE);
 
-        // Agregar TextWatcher para la búsqueda en tiempo real
         editTextSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -115,13 +109,10 @@ public class ProductoCliente extends Fragment {
 
         startImageSliderCard2();
 
-        // Cambiar el listener del icono del carrito
         iconCarrito.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Crear una instancia del CarritoFragment y pasar el userId y el token
                 CarritoFragment carritoFragment = CarritoFragment.newInstance(userId, token);
-                // Mostrar el BottomSheet
                 carritoFragment.show(getChildFragmentManager(), carritoFragment.getTag());
             }
         });
@@ -135,9 +126,9 @@ public class ProductoCliente extends Fragment {
             public void run() {
                 currentImageIndex2 = (currentImageIndex2 + 1) % imagesCard2.length;
                 imageViewCard2.setImageResource(imagesCard2[currentImageIndex2]);
-                handler2.postDelayed(this, 3000); // Repetir cada 3 segundos
+                handler2.postDelayed(this, 3000);
             }
-        }, 3000); // Primer cambio después de 3 segundos
+        }, 3000);
     }
 
     private class GetProductosTask extends AsyncTask<String, Void, String> {
@@ -149,8 +140,6 @@ public class ProductoCliente extends Fragment {
                 URL url = new URL(urls[0]);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
-
-                // Establecer el token en el encabezado de autorización
                 connection.setRequestProperty("Authorization", "Bearer " + token);
 
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
@@ -186,7 +175,7 @@ public class ProductoCliente extends Fragment {
                     );
                     productoList.add(producto);
                 }
-                productoListOriginal.addAll(productoList); // Guarda la lista original
+                productoListOriginal.addAll(productoList);
                 productoAdapter.notifyDataSetChanged();
             } catch (JSONException e) {
                 Toast.makeText(getContext(), "Error al procesar datos", Toast.LENGTH_SHORT).show();
@@ -197,39 +186,90 @@ public class ProductoCliente extends Fragment {
 
     private void filter(String text) {
         ArrayList<Producto> filteredList = new ArrayList<>();
-
-        // Filtrar los productos según el texto ingresado
-        for (Producto producto : productoListOriginal) { // Filtrar usando la lista original
+        for (Producto producto : productoListOriginal) {
             if (producto.getNombre().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(producto);
             }
         }
 
-        // Actualizar el adaptador con la lista filtrada
         productoAdapter.updateList(filteredList);
 
-        // Mostrar u ocultar el RecyclerView y el mensaje de acuerdo al resultado de la búsqueda
         if (text.isEmpty()) {
-            // Si no hay texto, ocultar el mensaje y mostrar todo
             recyclerView.setVisibility(View.VISIBLE);
             textViewMensaje.setVisibility(View.GONE);
             cardView1.setVisibility(View.VISIBLE);
             cardView2.setVisibility(View.VISIBLE);
-            productoAdapter.updateList(productoListOriginal); // Asegúrate de mostrar todos los productos
+            productoAdapter.updateList(productoListOriginal);
         } else {
             if (filteredList.isEmpty()) {
-                // Si no hay productos coincidentes, mostrar el mensaje y ocultar el RecyclerView
                 recyclerView.setVisibility(View.GONE);
                 textViewMensaje.setText("Producto no conseguido.");
                 textViewMensaje.setVisibility(View.VISIBLE);
                 cardView1.setVisibility(View.VISIBLE);
                 cardView2.setVisibility(View.VISIBLE);
             } else {
-                // Si hay productos coincidentes, ocultar el mensaje y mostrar el RecyclerView
                 recyclerView.setVisibility(View.VISIBLE);
                 textViewMensaje.setVisibility(View.GONE);
                 cardView1.setVisibility(View.GONE);
                 cardView2.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private class ListarCarritoTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            String userId = params[0];
+            String apiUrl = "https://api-happypetshco-com.preview-domain.com/api/ListarCarrito=" + userId;
+
+            try {
+                URL url = new URL(apiUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setRequestProperty("Authorization", "Bearer " + token);
+                connection.setDoInput(true);
+                connection.connect();
+
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    try (InputStream inputStream = connection.getInputStream();
+                         InputStreamReader reader = new InputStreamReader(inputStream)) {
+                        StringBuilder response = new StringBuilder();
+                        int data;
+                        while ((data = reader.read()) != -1) {
+                            response.append((char) data);
+                        }
+                        return response.toString();
+                    }
+                } else {
+                    return null;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (result != null) {
+                try {
+                    JSONObject jsonObject = new JSONObject(result);
+                    JSONArray carritoArray = jsonObject.getJSONArray("productos");
+
+                    if (carritoArray.length() > 0) {
+                        iconCarrito.setImageResource(R.drawable.ic_carrito);
+                    } else {
+                        iconCarrito.setImageResource(R.drawable.ic_cart_full);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Error al procesar datos del carrito", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(getContext(), "Error en la conexión al listar el carrito", Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -1,6 +1,7 @@
 package com.example.happypets.view_cliente;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,11 +66,17 @@ public class AgregarMascotaDialogFragment extends DialogFragment {
         progressBar = view.findViewById(R.id.progressBar); // Inicializa el ProgressBar
 
         agregarButton.setOnClickListener(v -> {
-            String nombre = nombreEditText.getText().toString();
-            String edad = edadEditText.getText().toString();
-            String especie = especieEditText.getText().toString();
-            String raza = razaEditText.getText().toString();
-            String sexo = sexoEditText.getText().toString();
+            String nombre = nombreEditText.getText().toString().trim();
+            String edad = edadEditText.getText().toString().trim();
+            String especie = especieEditText.getText().toString().trim();
+            String raza = razaEditText.getText().toString().trim();
+            String sexo = sexoEditText.getText().toString().trim();
+
+            // Validar que todos los campos estén completos
+            if (nombre.isEmpty() || edad.isEmpty() || especie.isEmpty() || raza.isEmpty() || sexo.isEmpty()) {
+                Toast.makeText(getActivity(), "Por favor, completa todos los campos.", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             agregarMascota(nombre, edad, especie, raza, sexo, userId, token); // Pasa el token a la función
         });
