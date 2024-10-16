@@ -2,25 +2,48 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@color/white"> <!-- Cambia el color de fondo si es necesario -->
+
+    <!-- Título del chat -->
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chat Bot"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+    android:layout_marginBottom="8dp"
+    android:textAlignment="center" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_chat"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="8dp"/>
+        android:padding="8dp"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Espaciador para evitar que el EditText se pegue arriba -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="16dp" /> <!-- Ajusta la altura del espaciador si es necesario -->
 
     <EditText
         android:id="@+id/editTextMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Escribe un mensaje"/>
+        android:hint="Escribe un mensaje"
+        android:background="@drawable/container_background_rounded"
+    android:padding="8dp" />
 
     <Button
         android:id="@+id/buttonSend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Enviar"/>
+        android:text="Enviar"
+        android:layout_gravity="end"
+        android:layout_marginTop="8dp"/> <!-- Añade margen superior al botón para un mejor espaciado -->
 
 </LinearLayout>

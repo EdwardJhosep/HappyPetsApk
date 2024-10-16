@@ -90,7 +90,6 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
             // Obtener el contexto desde el holder
             Context context = holder.itemView.getContext();
             // Mostrar un Toast con el userId
-            Toast.makeText(context, "User ID: " + userId, Toast.LENGTH_SHORT).show();
         });
 
         // Cambiar para usar el precioConDescuento si está disponible

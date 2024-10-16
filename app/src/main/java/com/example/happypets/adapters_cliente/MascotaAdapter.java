@@ -1,5 +1,6 @@
 package com.example.happypets.adapters_cliente;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +14,23 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.happypets.models.Mascota;
 import com.example.happypets.R;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.MascotaViewHolder> {
 
     private final List<Mascota> mascotas;
     private final Context context;
+
+    // Mapa para almacenar el color de fondo según el estado
+    private static final Map<String, Integer> estadoColorMap = new HashMap<>();
+
+    static {
+        estadoColorMap.put("activo", R.drawable.circle_green);
+        estadoColorMap.put("inactivo", R.drawable.circle_red);
+        // Agrega más estados según sea necesario
+    }
 
     public MascotaAdapter(Context context, List<Mascota> mascotas) {
         this.context = context;
@@ -35,31 +47,7 @@ public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.MascotaV
     @Override
     public void onBindViewHolder(@NonNull MascotaViewHolder holder, int position) {
         Mascota mascota = mascotas.get(position);
-        holder.nombreTextView.setText(mascota.getNombre());
-        holder.edadTextView.setText("Edad: " + mascota.getEdad());
-        holder.especieTextView.setText("Especie: " + mascota.getEspecie());
-        holder.razaTextView.setText("Raza: " + mascota.getRaza());
-        holder.sexoTextView.setText("Sexo: " + mascota.getSexo());
-        holder.estadoTextView.setText("Estado: " + mascota.getEstado());
-
-        // Cambiar el color de fondo del estadoTextView si está activo
-        if (mascota.getEstado().equalsIgnoreCase("activo")) {
-            holder.estadoTextView.setBackgroundColor(context.getResources().getColor(android.R.color.holo_green_light));
-            holder.estadoTextView.setTextColor(context.getResources().getColor(android.R.color.white));
-        } else {
-            holder.estadoTextView.setBackgroundColor(context.getResources().getColor(android.R.color.transparent));
-            holder.estadoTextView.setTextColor(context.getResources().getColor(android.R.color.black));
-        }
-
-        // Establecer la imagen según la especie
-        String especie = mascota.getEspecie().toLowerCase();
-        if (especie.equals("perro")) {
-            holder.mascotaImageView.setImageResource(R.drawable.perro);
-        } else if (especie.equals("gato")) {
-            holder.mascotaImageView.setImageResource(R.drawable.gato);
-        } else {
-            holder.mascotaImageView.setImageResource(R.drawable.default_mascota);
-        }
+        holder.bind(mascota);
     }
 
     @Override
@@ -73,9 +61,10 @@ public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.MascotaV
         TextView especieTextView;
         TextView razaTextView;
         TextView sexoTextView;
-        TextView estadoTextView;
+        View estadoView;  // Mantenemos como View
         ImageView mascotaImageView;
 
+        @SuppressLint("WrongViewCast")
         public MascotaViewHolder(@NonNull View itemView) {
             super(itemView);
             nombreTextView = itemView.findViewById(R.id.nombreTextView);
@@ -83,8 +72,29 @@ public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.MascotaV
             especieTextView = itemView.findViewById(R.id.especieTextView);
             razaTextView = itemView.findViewById(R.id.razaTextView);
             sexoTextView = itemView.findViewById(R.id.sexoTextView);
-            estadoTextView = itemView.findViewById(R.id.estadoTextView);
+            estadoView = itemView.findViewById(R.id.estadoView);  // Asegúrate de que el ID sea correcto
             mascotaImageView = itemView.findViewById(R.id.mascotaImageView);
+        }
+
+        public void bind(Mascota mascota) {
+            nombreTextView.setText(mascota.getNombre());
+            edadTextView.setText("Edad: " + mascota.getEdad());
+            especieTextView.setText("Especie: " + mascota.getEspecie());
+            razaTextView.setText("Raza: " + mascota.getRaza());
+            sexoTextView.setText("Sexo: " + mascota.getSexo());
+
+            // Cambiar el color de fondo de estadoView según el estado
+            estadoView.setBackgroundResource(estadoColorMap.getOrDefault(mascota.getEstado().toLowerCase(), R.drawable.circle_background));
+
+            // Establecer la imagen según la especie
+            String especie = mascota.getEspecie().toLowerCase();
+            if (especie.equals("perro")) {
+                mascotaImageView.setImageResource(R.drawable.perro);
+            } else if (especie.equals("gato")) {
+                mascotaImageView.setImageResource(R.drawable.gato);
+            } else {
+                mascotaImageView.setImageResource(R.drawable.default_mascota);
+            }
         }
     }
 }

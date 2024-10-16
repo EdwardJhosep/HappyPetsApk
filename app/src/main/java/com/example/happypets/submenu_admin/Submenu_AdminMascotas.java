@@ -16,6 +16,28 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class Submenu_AdminMascotas extends AppCompatActivity {
 
+    private String token; // Variable para almacenar el token
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_submenu_admin_mascotas);
+
+        // Obtener el token del Intent
+        Intent intent = getIntent();
+        token = intent.getStringExtra("token"); // Asegúrate de usar la misma clave que en ManageAdmin
+
+        // Inicializa el BottomNavigationView
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
+
+        // Cargar el fragmento inicial como EditarMascota
+        if (savedInstanceState == null) {
+            EditarMascota editarMascotaFragment = EditarMascota.newInstance(token); // Pasar el token al fragmento
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, editarMascotaFragment).commit();
+        }
+    }
+
     // Listener para manejar la selección de los items del BottomNavigationView
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -23,10 +45,10 @@ public class Submenu_AdminMascotas extends AppCompatActivity {
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     Fragment selectedFragment = null;
 
-                    if (item.getItemId() == R.id.Agregar) {
-                        selectedFragment = new AgregarMascota();
-                    } else if (item.getItemId() == R.id.Editar) {
-                        selectedFragment = new EditarMascota();
+                    if (item.getItemId() == R.id.Editar) {
+                        selectedFragment = EditarMascota.newInstance(token); // Pasar el token
+                    } else if (item.getItemId() == R.id.Agregar) {
+                        selectedFragment = AgregarMascota.newInstance(token); // Pasar el token
                     } else if (item.getItemId() == R.id.Salir) {
                         // Cambiar a otra actividad en lugar de un fragmento
                         Intent intent = new Intent(Submenu_AdminMascotas.this, MenuAdmin.class);
@@ -42,23 +64,7 @@ public class Submenu_AdminMascotas extends AppCompatActivity {
                         transaction.commit();
                     }
 
-
                     return true;
                 }
             };
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_submenu_admin_mascotas);
-
-        // Inicializa el BottomNavigationView
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setOnNavigationItemSelectedListener(navListener);
-
-        // Cargar el fragmento inicial
-        if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new AgregarMascota()).commit();
-        }
-    }
 }

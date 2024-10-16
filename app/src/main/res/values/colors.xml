@@ -22,6 +22,6 @@
     <color name="container_color">#F5F5F5</color>
     <color name="border_color">#CCCCCC</color>
     <color name="edittext_border_color">#DDDDDD</color>
-
+    <color name="verde">#0AAF11</color>
 
 </resources>

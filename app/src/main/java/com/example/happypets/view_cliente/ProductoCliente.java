@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.happypets.R;
 import com.example.happypets.adapters_cliente.CarritoFragment;
+import com.example.happypets.adapters_cliente.ListarCarritoAdapter;
 import com.example.happypets.adapters_cliente.ProductoAdapter;
 import com.example.happypets.models.Producto;
 
@@ -56,6 +57,7 @@ public class ProductoCliente extends Fragment {
     private int[] imagesCard2 = {R.drawable.image4, R.drawable.image5, R.drawable.image6};
     private int currentImageIndex2 = 0;
     private Handler handler2 = new Handler();
+    private Object ListarCarritoTask;
 
     public static ProductoCliente newInstance(String userId, String token) {
         ProductoCliente fragment = new ProductoCliente();
@@ -94,6 +96,9 @@ public class ProductoCliente extends Fragment {
         cardView1.setVisibility(View.VISIBLE);
         cardView2.setVisibility(View.VISIBLE);
 
+        // Llamada a ListarCarritoTask al iniciar
+        new ListarCarritoTask().execute(userId);
+
         editTextSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -119,6 +124,7 @@ public class ProductoCliente extends Fragment {
 
         return view;
     }
+
 
     private void startImageSliderCard2() {
         handler2.postDelayed(new Runnable() {
@@ -218,21 +224,33 @@ public class ProductoCliente extends Fragment {
 
     private class ListarCarritoTask extends AsyncTask<String, Void, String> {
 
+        private static final String API_URL = "https://api-happypetshco-com.preview-domain.com/api/ListarCarrito=";
+
+        // Declare carritoArray as an ArrayList to hold the cart items
+        private ArrayList<JSONObject> carritoArray;
+
+        // Constructor
+        public ListarCarritoTask() {
+            carritoArray = new ArrayList<>(); // Initialize the carritoArray
+        }
+
         @Override
         protected String doInBackground(String... params) {
             String userId = params[0];
-            String apiUrl = "https://api-happypetshco-com.preview-domain.com/api/ListarCarrito=" + userId;
+            String apiUrl = API_URL + userId;
 
             try {
                 URL url = new URL(apiUrl);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
-                connection.setRequestProperty("Authorization", "Bearer " + token);
+                connection.setRequestProperty("Authorization", "Bearer " + token); // Establecer el token en el encabezado
                 connection.setDoInput(true);
                 connection.connect();
 
+                // Verificar el código de respuesta
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Leer la respuesta
                     try (InputStream inputStream = connection.getInputStream();
                          InputStreamReader reader = new InputStreamReader(inputStream)) {
                         StringBuilder response = new StringBuilder();
@@ -243,33 +261,41 @@ public class ProductoCliente extends Fragment {
                         return response.toString();
                     }
                 } else {
-                    return null;
+                    return null; // Retornar null si la respuesta no es OK
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                e.printStackTrace(); // Log the exception
+                return null; // Return null on exception
             }
-            return null;
         }
 
         @Override
         protected void onPostExecute(String result) {
-            super.onPostExecute(result);
             if (result != null) {
                 try {
-                    JSONObject jsonObject = new JSONObject(result);
-                    JSONArray carritoArray = jsonObject.getJSONArray("productos");
-
-                    if (carritoArray.length() > 0) {
-                        iconCarrito.setImageResource(R.drawable.ic_carrito);
+                    JSONObject jsonResponse = new JSONObject(result);
+                    // Verificar si la respuesta contiene el campo 'carrito'
+                    if (jsonResponse.has("carrito")) {
+                        JSONArray jsonArray = jsonResponse.getJSONArray("carrito");
+                        carritoArray.clear(); // Clear the array before adding new items
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            carritoArray.add(jsonArray.getJSONObject(i)); // Populate the carritoArray with products
+                        }
+                        // Check if carritoArray has products
+                        if (carritoArray.size() > 0) {
+                            iconCarrito.setImageResource(R.drawable.ic_cart_full); // Ícono para carrito con productos
+                        } else {
+                            iconCarrito.setImageResource(R.drawable.ic_carrito); // Ícono para carrito vacío
+                        }
                     } else {
-                        iconCarrito.setImageResource(R.drawable.ic_cart_full);
+                        Toast.makeText(getActivity(), "No hay productos en el carrito", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext(), "Error al procesar datos del carrito", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Error al parsear la respuesta", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(getContext(), "Error en la conexión al listar el carrito", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Error en la conexión o el servidor", Toast.LENGTH_SHORT).show();
             }
         }
     }
