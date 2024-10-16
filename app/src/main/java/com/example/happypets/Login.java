@@ -1,7 +1,7 @@
 package com.example.happypets;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -28,36 +28,53 @@ import org.json.JSONObject;
 
 public class Login extends AppCompatActivity {
 
-    private ProgressBar progressBar; // Declara el ProgressBar
     private EditText etUsername;
     private EditText etPassword;
+    private ProgressBar progressBar; // Agrega el ProgressBar aquí
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+
+        // Verificar si el usuario ya ha iniciado sesión
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false);
+        String token = sharedPreferences.getString("token", null); // Obtener el token guardado
+
+        if (isLoggedIn && token != null) {
+            // Aquí debes agregar la lógica para redirigir al usuario según sus permisos
+            getUserData(token); // Obtén los datos del usuario con el token guardado
+            return; // No continuar con la creación de la vista
+        }
+
         setContentView(R.layout.activity_login);
 
+        // Inicializa los EditTexts y el ProgressBar
+        etUsername = findViewById(R.id.etUsername);
+        etPassword = findViewById(R.id.etPassword);
+        progressBar = findViewById(R.id.progressBar); // Inicializa el ProgressBar
+
+        // Configura el Listener para el Padding en la vista principal
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // Inicializa el ProgressBar y EditTexts
-        progressBar = findViewById(R.id.progressBar);
-        etUsername = findViewById(R.id.etUsername);
-        etPassword = findViewById(R.id.etPassword);
-        progressBar.setVisibility(View.GONE); // Asegúrate de ocultar el ProgressBar al inicio
-
-        // Asignar el método al botón de registro
+        // Asigna el método al botón de registro
         Button btnRegister = findViewById(R.id.registro);
         btnRegister.setOnClickListener(this::onRegisterButtonClick);
 
-        // Asignar el método al botón de inicio de sesión
+        // Asigna el método al botón de inicio de sesión
         Button btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(this::onLoginButtonClick);
+    }
+
+    private void onRegisterButtonClick(View view) {
+        // Aquí puedes iniciar una nueva actividad para el registro
+        Intent intent = new Intent(this, MainActivity.class); // Cambia MainActivity por el nombre de tu actividad de registro
+        startActivity(intent);
     }
 
     // Método para manejar el clic en el botón de inicio de sesión
@@ -85,21 +102,17 @@ public class Login extends AppCompatActivity {
             return; // Salir si hay un error al crear la solicitud
         }
 
+        progressBar.setVisibility(View.VISIBLE); // Muestra el ProgressBar
         RequestQueue queue = Volley.newRequestQueue(this);
-
-        // Mostrar el ProgressBar antes de la solicitud
-        progressBar.setVisibility(View.VISIBLE);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                 response -> {
-                    // Ocultar el ProgressBar al recibir la respuesta
-                    progressBar.setVisibility(View.GONE);
                     handleResponse(response);
+                    progressBar.setVisibility(View.GONE); // Oculta el ProgressBar
                 },
                 error -> {
-                    // Ocultar el ProgressBar en caso de error
-                    progressBar.setVisibility(View.GONE);
                     handleError(error);
+                    progressBar.setVisibility(View.GONE); // Oculta el ProgressBar
                 }
         );
 
@@ -114,6 +127,7 @@ public class Login extends AppCompatActivity {
             } else {
                 String mensaje = response.getString("mensaje");
                 String token = response.getString("token");
+                saveLoginState(true, token); // Guarda el estado de inicio de sesión
                 getUserData(token);
                 Toast.makeText(this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
             }
@@ -150,11 +164,9 @@ public class Login extends AppCompatActivity {
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
-                    progressBar.setVisibility(View.GONE); // Ocultar el ProgressBar al recibir la respuesta
                     handleUserDataResponse(response, token);
                 },
                 error -> {
-                    progressBar.setVisibility(View.GONE); // Ocultar el ProgressBar en caso de error
                     Toast.makeText(this, "Error al obtener datos del usuario.", Toast.LENGTH_SHORT).show();
                 }
         ) {
@@ -174,9 +186,16 @@ public class Login extends AppCompatActivity {
             if (response.has("usuarios")) {
                 JSONObject user = response.getJSONObject("usuarios");
                 String permisos = user.has("permisos") ? user.getString("permisos") : "No tiene permisos";
+
+                // Guardar el estado de inicio de sesión y el token para usuarios no administradores
+                if (!"Administrador".equals(permisos)) {
+                    saveLoginState(true, token);
+                }
+
                 Intent intent = "Administrador".equals(permisos) ? new Intent(this, MenuAdmin.class) : new Intent(this, MenuCliente.class);
                 intent.putExtra("token", token); // Envío del token aquí
                 startActivity(intent);
+                finish(); // Finaliza la actividad de inicio de sesión para que no se pueda volver a ella
             } else {
                 Toast.makeText(this, "No se encontraron datos de usuario.", Toast.LENGTH_SHORT).show();
             }
@@ -186,8 +205,16 @@ public class Login extends AppCompatActivity {
         }
     }
 
-    public void onRegisterButtonClick(View view) {
-        MainActivity registerDialogFragment = new MainActivity();
-        registerDialogFragment.show(getSupportFragmentManager(), "registerDialog");
+    private void saveLoginState(boolean isLoggedIn, String token) {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isLoggedIn", isLoggedIn);
+        editor.putString("token", token); // Guardar el token
+        editor.apply();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 }
