@@ -1,10 +1,14 @@
 package com.example.happypets.view_cliente;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,10 +24,12 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.happypets.Login;
 import com.example.happypets.R;
 import com.example.happypets.adapters_cliente.ChatFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,7 +58,12 @@ public class MenuCliente extends AppCompatActivity {
                     } else if (item.getItemId() == R.id.navigation_profile) {
                         // Pasar dni, phoneNumber, nombres, userId y token al fragmento
                         selectedFragment = PerfilCliente.newInstance(dni, phoneNumber, nombres, userId, token);
+                    } else if (item.getItemId() == R.id.navigation_ubication) {
+                        selectedFragment = new Ubication();
+                    }else if (item.getItemId() == R.id.navigation_logout) {
+                        logout();
                     }
+
 
                     if (selectedFragment != null) {
                         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -64,6 +75,43 @@ public class MenuCliente extends AppCompatActivity {
                     return true;
                 }
             };
+    private void logout() {
+        // Crea un Snackbar
+        Snackbar snackbar = Snackbar.make(findViewById(R.id.main), "¿Está seguro de que desea cerrar sesión?", Snackbar.LENGTH_LONG);
+
+        // Cambia el color de fondo
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(getResources().getColor(R.color.red_color)); // Color rojo
+
+        // Cambia el texto del Snackbar
+        TextView textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
+        textView.setTextColor(getResources().getColor(R.color.white)); // Color del texto
+        textView.setTextSize(16); // Tamaño del texto
+        textView.setTypeface(textView.getTypeface(), Typeface.BOLD); // Texto en negrita
+
+        // Agrega un botón de acción
+        snackbar.setAction("Cerrar sesión", view -> {
+            // Limpia los datos de la sesión
+            SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear(); // Borra todos los datos guardados
+            editor.apply();
+
+            // Redirige al usuario a la actividad de inicio de sesión
+            Intent intent = new Intent(MenuCliente.this, Login.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish(); // Cierra la actividad actual
+        });
+
+        // Cambia el color del texto del botón de acción
+        snackbar.setActionTextColor(getResources().getColor(R.color.white)); // Color del botón
+
+        // Muestra el Snackbar
+        snackbar.show();
+    }
+
+
 
     private void getUserData() {
         String url = "https://api-happypetshco-com.preview-domain.com/api/DatosUsuario";

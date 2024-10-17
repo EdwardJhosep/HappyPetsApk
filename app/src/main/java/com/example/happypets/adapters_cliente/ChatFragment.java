@@ -61,7 +61,7 @@ public class ChatFragment extends DialogFragment {
     private void initializeFAQMap() {
         faqMap = new HashMap<>();
         faqMap.put("Hola, soy HappyPets. ¿En qué te puedo ayudar?", "¡Hola! Estoy aquí para responder tus preguntas sobre nuestros servicios y productos. ¿Cómo puedo ayudarte hoy?");
-        faqMap.put("¿Cuáles son los horarios de atención?", "Nuestro horario es de 9 AM a 5 PM de lunes a viernes.");
+        faqMap.put("¿Cuáles son los horarios  de atención?", "Nuestro horario es de 9 AM a 5 PM de lunes a viernes.");
         faqMap.put("¿Qué servicios ofrecen?", "Ofrecemos consultas, vacunaciones, tratamientos veterinarios y más. ¡Tu mascota estará en buenas manos!");
         faqMap.put("¿Cómo puedo hacer una cita , reserva , citas?", "Puedes hacer una cita llamando al 123-456-7890, a través de nuestra página web o en nuestra aplicación. ¡Es muy fácil!");
         faqMap.put("¿Tienen servicios de emergencia?", "No, contamos con servicios de emergencia disponibles 24/7");

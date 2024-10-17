@@ -1,7 +1,10 @@
 package com.example.happypets.view_cliente;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,9 +24,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.happypets.Login;
 import com.example.happypets.R;
-import com.example.happypets.adapters_cliente.MascotaAdapter; // Importar el adaptador personalizado
-import com.example.happypets.models.Mascota; // Importar el modelo de datos
+import com.example.happypets.adapters_cliente.MascotaAdapter;
+import com.example.happypets.models.Mascota;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,10 +43,10 @@ public class PerfilCliente extends Fragment {
     private String phoneNumber;
     private String nombreCompleto;
     private String userId;
-    private String token; // Agrega esta línea para almacenar el token
-    private RecyclerView petsListView; // Cambiar a RecyclerView
-    private MascotaAdapter petsAdapter; // Usar el adaptador personalizado
-    private ArrayList<Mascota> petsList; // Lista de mascotas
+    private String token;
+    private RecyclerView petsListView;
+    private MascotaAdapter petsAdapter;
+    private ArrayList<Mascota> petsList;
 
     public static PerfilCliente newInstance(String dni, String phoneNumber, String nombreCompleto, String userId, String token) {
         PerfilCliente fragment = new PerfilCliente();
@@ -51,7 +55,7 @@ public class PerfilCliente extends Fragment {
         args.putString("phoneNumber", phoneNumber);
         args.putString("nombreCompleto", nombreCompleto);
         args.putString("userId", userId);
-        args.putString("token", token); // Agrega el token a los argumentos
+        args.putString("token", token);
         fragment.setArguments(args);
         return fragment;
     }
@@ -66,7 +70,7 @@ public class PerfilCliente extends Fragment {
             phoneNumber = getArguments().getString("phoneNumber");
             nombreCompleto = getArguments().getString("nombreCompleto");
             userId = getArguments().getString("userId");
-            token = getArguments().getString("token"); // Obtén el token de los argumentos
+            token = getArguments().getString("token");
         }
 
         TextView dniTextView = view.findViewById(R.id.dniTextView);
@@ -77,27 +81,24 @@ public class PerfilCliente extends Fragment {
 
         dniTextView.setText("DNI: " + dni);
         phoneTextView.setText("Teléfono: " + phoneNumber);
-        nombreTextView.setText("Nombre completo: " + nombreCompleto);
+        nombreTextView.setText("Nombre: " + nombreCompleto);
         userIdTextView.setText("ID de Usuario: " + userId);
 
-        // Inicializar el RecyclerView y la lista de mascotas
         petsListView = view.findViewById(R.id.petsListView);
         petsList = new ArrayList<>();
-        petsAdapter = new MascotaAdapter(getContext(), petsList); // Pasa el token al adaptador
-
-        // Configurar el RecyclerView
-        petsListView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false)); // Configura la orientación horizontal
+        petsAdapter = new MascotaAdapter(getContext(), petsList);
+        petsListView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         petsListView.setAdapter(petsAdapter);
 
-        // Obtener el historial de mascotas
         obtenerHistorialMascotas(userId);
 
-        // Configurar el botón para agregar mascota
         ImageButton addPetButton = view.findViewById(R.id.addPetButton);
         addPetButton.setOnClickListener(v -> {
-            AgregarMascotaDialogFragment agregarMascotaDialogFragment = AgregarMascotaDialogFragment.newInstance(userId, token); // Pasa el token
+            AgregarMascotaDialogFragment agregarMascotaDialogFragment = AgregarMascotaDialogFragment.newInstance(userId, token);
             agregarMascotaDialogFragment.show(getChildFragmentManager(), "agregarMascota");
         });
+
+
 
         return view;
     }
@@ -111,26 +112,23 @@ public class PerfilCliente extends Fragment {
             return;
         }
 
-        // URL con el parámetro userId en la cadena de consulta
         String url = "https://api-happypetshco-com.preview-domain.com/api/Historial?id_usuario=" + userId;
 
-        // Crear un objeto JsonObjectRequest con los encabezados
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.POST,
                 url,
-                null, // No se envían parámetros adicionales en el cuerpo
+                null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d("API_RESPONSE", response.toString()); // Log de la respuesta completa
+                        Log.d("API_RESPONSE", response.toString());
                         try {
                             JSONArray mascotasArray = response.getJSONArray("mascotas");
-                            petsList.clear(); // Limpiar la lista antes de agregar nuevos elementos
+                            petsList.clear();
 
                             if (mascotasArray.length() > 0) {
                                 for (int i = 0; i < mascotasArray.length(); i++) {
                                     JSONObject mascota = mascotasArray.getJSONObject(i);
-                                    // Crear un objeto Mascota con la información requerida
                                     petsList.add(new Mascota(
                                             mascota.getString("nombre"),
                                             mascota.getString("edad"),
@@ -140,7 +138,7 @@ public class PerfilCliente extends Fragment {
                                             mascota.getString("estado")
                                     ));
                                 }
-                                petsAdapter.notifyDataSetChanged(); // Notificar al adaptador que los datos han cambiado
+                                petsAdapter.notifyDataSetChanged();
                             } else {
                                 if (getContext() != null) {
                                     Toast.makeText(getContext(), "No se encontraron mascotas", Toast.LENGTH_SHORT).show();
@@ -169,12 +167,11 @@ public class PerfilCliente extends Fragment {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "Bearer " + token); // Agregar el token en los encabezados
+                headers.put("Authorization", "Bearer " + token);
                 return headers;
             }
         };
 
-        // Agregar la solicitud a la cola de Volley
         Volley.newRequestQueue(getContext()).add(jsonObjectRequest);
     }
 }

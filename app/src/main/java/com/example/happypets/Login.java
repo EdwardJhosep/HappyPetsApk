@@ -127,7 +127,6 @@ public class Login extends AppCompatActivity {
             } else {
                 String mensaje = response.getString("mensaje");
                 String token = response.getString("token");
-                saveLoginState(true, token); // Guarda el estado de inicio de sesión
                 getUserData(token);
                 Toast.makeText(this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
             }
@@ -187,15 +186,23 @@ public class Login extends AppCompatActivity {
                 JSONObject user = response.getJSONObject("usuarios");
                 String permisos = user.has("permisos") ? user.getString("permisos") : "No tiene permisos";
 
-                // Guardar el estado de inicio de sesión y el token para usuarios no administradores
-                if (!"Administrador".equals(permisos)) {
-                    saveLoginState(true, token);
-                }
+                // Solo guarda sesión si el permiso es "usuarios"
+                if ("Usuario".equals(permisos)) {
+                    saveLoginState(true, token); // Guarda el estado de sesión solo si el usuario tiene permisos "usuarios"
 
-                Intent intent = "Administrador".equals(permisos) ? new Intent(this, MenuAdmin.class) : new Intent(this, MenuCliente.class);
-                intent.putExtra("token", token); // Envío del token aquí
-                startActivity(intent);
-                finish(); // Finaliza la actividad de inicio de sesión para que no se pueda volver a ella
+                    Intent intent = new Intent(this, MenuCliente.class);
+                    intent.putExtra("token", token); // Envío del token aquí
+                    startActivity(intent);
+                    finish(); // Finaliza la actividad de inicio de sesión para que no se pueda volver a ella
+                } else if ("Administrador".equals(permisos)) {
+                    Intent intent = new Intent(this, MenuAdmin.class);
+                    intent.putExtra("token", token); // Envío del token aquí
+                    startActivity(intent);
+                    finish(); // Finaliza la actividad actual
+                } else {
+                    Toast.makeText(this, "Permisos no reconocidos.", Toast.LENGTH_SHORT).show();
+                    // Aquí puedes manejar otros tipos de permisos si es necesario
+                }
             } else {
                 Toast.makeText(this, "No se encontraron datos de usuario.", Toast.LENGTH_SHORT).show();
             }
@@ -204,6 +211,8 @@ public class Login extends AppCompatActivity {
             Toast.makeText(this, "Error al procesar los datos del usuario.", Toast.LENGTH_SHORT).show();
         }
     }
+
+
 
     private void saveLoginState(boolean isLoggedIn, String token) {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
