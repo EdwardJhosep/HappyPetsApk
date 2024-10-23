@@ -159,7 +159,7 @@ public class CarritoAdapter extends DialogFragment {
         // Enviar la solicitud POST a la API
         new Thread(() -> {
             try {
-                URL url = new URL("https://api-happypetshco-com.preview-domain.com/api/AñadirCarrito");
+                URL url = new URL("https://api-happypetshco-com.preview-domain.com/api/AgregarCarrito");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json; utf-8");

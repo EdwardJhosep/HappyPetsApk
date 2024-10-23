@@ -73,6 +73,8 @@ public class MainActivity extends DialogFragment {
                 showError(tvErrorMessage, "El DNI debe tener 8 dígitos");
             } else if (telefono.length() != 9) {
                 showError(tvErrorMessage, "El número de teléfono debe tener 9 dígitos");
+            } else if (!telefono.startsWith("9")) {
+                    showError(tvErrorMessage, "El número de teléfono nu es valido");
             } else if (!isPasswordSecure(password)) {
                 showError(tvErrorMessage, "La contraseña debe contener solo letras y números");
             } else if (!password.equals(confirmPassword)) {
@@ -130,8 +132,13 @@ public class MainActivity extends DialogFragment {
                             .append(errorObject.getJSONArray(key).join(", ")).append("\n");
                 }
                 Toast.makeText(getContext(), errorMessages.toString(), Toast.LENGTH_LONG).show();
-            } else {
+            } else if (response.has("mensaje")) {
                 String mensaje = response.getString("mensaje");
+                if (mensaje.equals("DNI NO ENCONTRADO")) {
+                    showError(tvErrorMessage, "El DNI ingresado no fue encontrado. Por favor, verifica el DNI.");
+                    return; // Salir si se encuentra el error de DNI
+                }
+
                 String token = response.getString("token"); // Asegúrate de obtener el token de la respuesta
                 Toast.makeText(getContext(), "Registro exitoso: " + mensaje, Toast.LENGTH_SHORT).show();
 
@@ -151,6 +158,7 @@ public class MainActivity extends DialogFragment {
             showError(tvErrorMessage, "Error en la respuesta del servidor");
         }
     }
+
 
     private void handleError(VolleyError error) {
         String errorMessage = "Error en el registro: " + error.getMessage();

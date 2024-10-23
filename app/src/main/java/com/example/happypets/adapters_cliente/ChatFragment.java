@@ -144,6 +144,7 @@ public class ChatFragment extends DialogFragment {
         faqMap.put("¿Ofrecen servicios de cuidado y atención para mascotas mayores?", "Sí, ofrecemos servicios de cuidado y atención para mascotas mayores.");
         faqMap.put("¿Qué hacer si tengo preguntas sobre la salud de mi gato?", "Llama a nuestra clínica y habla con un veterinario. Estamos aquí para ayudar.");
         faqMap.put("¿Cuál es el número numero telefono?", "Llama al número 123456789. Estamos aquí para ayudar.");
+        faqMap.put("llamas Llamas nombre que eres tu ?", "Soy una IA entrenada para la veterinaria HappyPets. Desarrollado por RJ Enterprise.");
 
 
     }

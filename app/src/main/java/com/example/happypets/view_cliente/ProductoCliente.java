@@ -47,7 +47,6 @@ public class ProductoCliente extends Fragment {
     private CardView cardView1;
     private CardView cardView2;
     private TextView textViewMensaje;
-    private ImageView imageViewCard1;
     private ImageView imageViewCard2;
     private ImageView iconCarrito;
 
@@ -57,7 +56,6 @@ public class ProductoCliente extends Fragment {
     private int[] imagesCard2 = {R.drawable.image4, R.drawable.image5, R.drawable.image6};
     private int currentImageIndex2 = 0;
     private Handler handler2 = new Handler();
-    private Object ListarCarritoTask;
 
     public static ProductoCliente newInstance(String userId, String token) {
         ProductoCliente fragment = new ProductoCliente();
@@ -82,7 +80,6 @@ public class ProductoCliente extends Fragment {
         textViewMensaje = view.findViewById(R.id.textViewMensaje);
         editTextSearch = view.findViewById(R.id.editTextSearch);
         recyclerView = view.findViewById(R.id.recyclerViewProductos);
-        imageViewCard1 = view.findViewById(R.id.imageViewCard1);
         imageViewCard2 = view.findViewById(R.id.imageViewCard2);
         iconCarrito = view.findViewById(R.id.iconCarrito);
 
@@ -177,7 +174,8 @@ public class ProductoCliente extends Fragment {
                             productoJson.getString("precio"),
                             productoJson.getString("descuento"),
                             productoJson.getString("stock"),
-                            productoJson.getString("imagen")
+                            productoJson.getString("imagen"),
+                            productoJson.getString("colores") // Recuperar colores del JSON
                     );
                     productoList.add(producto);
                 }
@@ -224,7 +222,7 @@ public class ProductoCliente extends Fragment {
 
     private class ListarCarritoTask extends AsyncTask<String, Void, String> {
 
-        private static final String API_URL = "https://api-happypetshco-com.preview-domain.com/api/ListarCarrito=";
+        private static final String API_URL = "https://api-happypetshco-com.preview-domain.com/api/MostrarCarrito=";
 
         // Declare carritoArray as an ArrayList to hold the cart items
         private ArrayList<JSONObject> carritoArray;

@@ -43,6 +43,7 @@ public class ProductoAdapterEditar extends RecyclerView.Adapter<ProductoAdapterE
 
         String precio = producto.getPrecio();
         String descuento = producto.getDescuento();
+        String colores = producto.getColores();  // Obtén los colores
 
         if (TextUtils.isEmpty(precio)) {
             holder.precioProducto.setText("Precio no disponible");
@@ -61,6 +62,13 @@ public class ProductoAdapterEditar extends RecyclerView.Adapter<ProductoAdapterE
                 holder.precioProducto.setText("S/. " + precioOriginal);
                 holder.descuentoProducto.setVisibility(View.GONE);
             }
+        }
+
+        // Mostrar colores
+        if (TextUtils.isEmpty(colores)) {
+            holder.coloresProducto.setText("Colores no disponibles");
+        } else {
+            holder.coloresProducto.setText("Colores: " + colores);
         }
 
         Picasso.get()
@@ -93,7 +101,7 @@ public class ProductoAdapterEditar extends RecyclerView.Adapter<ProductoAdapterE
 
     public static class ProductoViewHolder extends RecyclerView.ViewHolder {
 
-        TextView nombreProducto, descripcionProducto, precioProducto, descuentoProducto;
+        TextView nombreProducto, descripcionProducto, precioProducto, descuentoProducto, coloresProducto;  // Nuevo TextView para colores
         ImageView imagenProducto;
         ImageButton imageButtonEditar;
 
@@ -103,6 +111,7 @@ public class ProductoAdapterEditar extends RecyclerView.Adapter<ProductoAdapterE
             descripcionProducto = itemView.findViewById(R.id.descripcionProducto);
             precioProducto = itemView.findViewById(R.id.precioProducto);
             descuentoProducto = itemView.findViewById(R.id.descuentoProducto);
+            coloresProducto = itemView.findViewById(R.id.coloresProducto);  // Enlaza el TextView para colores
             imagenProducto = itemView.findViewById(R.id.imagenProducto);
             imageButtonEditar = itemView.findViewById(R.id.imageButtonEditar);
         }

@@ -6,23 +6,25 @@ public class Producto {
     private String descripcion;
     private String categoria;
     private String precio;
-    private String descuento; // Campo para el descuento
+    private String descuento;
     private String stock;
     private String imagen;
+    private String colores; // Nuevo campo para los colores
 
-    public Producto(int id, String nombre, String descripcion, String categoria, String precio, String descuento, String stock, String imagen) {
+    public Producto(int id, String nombre, String descripcion, String categoria, String precio, String descuento, String stock, String imagen, String colores) {
         this.id = id;
         this.nombre = nombre;
         this.descripcion = descripcion;
         this.categoria = categoria;
         this.precio = precio;
-        this.descuento = descuento; // Inicializa el descuento
+        this.descuento = descuento;
         this.stock = stock;
         this.imagen = imagen;
+        this.colores = colores; // Inicializa el campo colores
     }
 
     // Métodos getter y setter
-    public int getId() {  // Asegúrate de tener este método
+    public int getId() {
         return id;
     }
 
@@ -63,11 +65,11 @@ public class Producto {
     }
 
     public String getDescuento() {
-        return descuento; // Método getter para el descuento
+        return descuento;
     }
 
     public void setDescuento(String descuento) {
-        this.descuento = descuento; // Método setter para el descuento
+        this.descuento = descuento;
     }
 
     public String getStock() {
@@ -84,5 +86,13 @@ public class Producto {
 
     public void setImagen(String imagen) {
         this.imagen = imagen;
+    }
+
+    public String getColores() { // Método getter para colores
+        return colores;
+    }
+
+    public void setColores(String colores) { // Método setter para colores
+        this.colores = colores;
     }
 }

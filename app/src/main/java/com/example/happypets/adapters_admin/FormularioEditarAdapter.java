@@ -29,9 +29,9 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class FormularioEditarAdapter {
-    private Context context;
-    private Producto producto;
-    private String token;
+    private final Context context;
+    private final Producto producto;
+    private final String token;
 
     public FormularioEditarAdapter(Context context, Producto producto, String token) {
         this.context = context;
@@ -48,10 +48,11 @@ public class FormularioEditarAdapter {
         EditText editarDescripcion = dialogView.findViewById(R.id.editarDescripcion);
         EditText editarPrecio = dialogView.findViewById(R.id.editarPrecio);
         EditText editarDescuento = dialogView.findViewById(R.id.editarDescuento);
-        @SuppressLint({"MissingInflatedId", "LocalSuppress"}) EditText editarStock = dialogView.findViewById(R.id.editarStock);
+        EditText editarStock = dialogView.findViewById(R.id.editarStock);
         Button botonGuardar = dialogView.findViewById(R.id.botonGuardar);
         Button botonEliminar = dialogView.findViewById(R.id.botonEliminar);
 
+        // Rellenar campos con los datos actuales del producto
         editarNombre.setText(producto.getNombre());
         editarDescripcion.setText(producto.getDescripcion());
         editarPrecio.setText(producto.getPrecio());
@@ -61,6 +62,7 @@ public class FormularioEditarAdapter {
         AlertDialog dialog = dialogBuilder.create();
         dialog.show();
 
+        // Listener para guardar cambios
         botonGuardar.setOnClickListener(v -> {
             String nuevoNombre = editarNombre.getText().toString();
             String nuevaDescripcion = editarDescripcion.getText().toString();
@@ -68,14 +70,14 @@ public class FormularioEditarAdapter {
             String nuevoDescuento = editarDescuento.getText().toString();
             String nuevoStock = editarStock.getText().toString();
 
-            if (!TextUtils.isEmpty(nuevoNombre) && !TextUtils.isEmpty(nuevaDescripcion) &&
-                    !TextUtils.isEmpty(nuevoPrecio) && !TextUtils.isEmpty(nuevoStock)) {
-                editarProductoEnAPI(nuevoNombre, nuevaDescripcion, nuevoPrecio, nuevoDescuento, nuevoStock, editarNombre, editarDescripcion, editarPrecio, editarDescuento, editarStock);
+            if (areFieldsValid(nuevoNombre, nuevaDescripcion, nuevoPrecio, nuevoStock)) {
+                editarProductoEnAPI(nuevoNombre, nuevaDescripcion, nuevoPrecio, nuevoDescuento, nuevoStock);
             } else {
                 Toast.makeText(context, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
             }
         });
 
+        // Listener para eliminar producto
         botonEliminar.setOnClickListener(v -> {
             new AlertDialog.Builder(context)
                     .setTitle("Confirmar Eliminación")
@@ -89,42 +91,41 @@ public class FormularioEditarAdapter {
         });
     }
 
-    // Método para limpiar el formulario
-    private void limpiarFormulario(EditText editarNombre, EditText editarDescripcion,
-                                   EditText editarPrecio, EditText editarDescuento,
-                                   EditText editarStock) {
-        editarNombre.setText("");
-        editarDescripcion.setText("");
-        editarPrecio.setText("");
-        editarDescuento.setText("");
-        editarStock.setText("");
+    private boolean areFieldsValid(String nombre, String descripcion, String precio, String stock) {
+        return !TextUtils.isEmpty(nombre) && !TextUtils.isEmpty(descripcion) &&
+                !TextUtils.isEmpty(precio) && !TextUtils.isEmpty(stock);
     }
 
-    private void editarProductoEnAPI(String nombre, String descripcion, String precio, String descuento, String stock,
-                                     EditText editarNombre, EditText editarDescripcion,
-                                     EditText editarPrecio, EditText editarDescuento,
-                                     EditText editarStock) {
+    private void editarProductoEnAPI(String nombre, String descripcion, String precio, String descuento, String stock) {
         OkHttpClient client = new OkHttpClient();
         MediaType mediaType = MediaType.parse("application/json");
         JSONObject jsonObject = new JSONObject();
+
         try {
-            jsonObject.put("id", producto.getId());
             jsonObject.put("nm_producto", nombre);
             jsonObject.put("descripcion", descripcion);
             jsonObject.put("categoria", producto.getCategoria());
             jsonObject.put("precio", precio);
             jsonObject.put("descuento", descuento);
+            jsonObject.put("colores", producto.getColores());
             jsonObject.put("stock", stock);
+
+            // Imprimir solo la categoría y el ID en un Toast
+            String categoria = producto.getCategoria();
+            int id = producto.getId();
+            showToast("Categoría: " + categoria + ", ID: " + id +"token"+token);
+
         } catch (JSONException e) {
             e.printStackTrace();
+            Toast.makeText(context, "Error al crear JSON: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            return;
         }
 
         Log.d("FormularioEditarAdapter", "JSON Body: " + jsonObject.toString());
 
-        RequestBody body = RequestBody.create(mediaType, jsonObject.toString());
         Request request = new Request.Builder()
-                .url("https://api-happypetshco-com.preview-domain.com/api/EditarProducto")
-                .post(body)
+                .url("https://api-happypetshco-com.preview-domain.com/api/ActualizarProducto=" + producto.getId())
+                .put(RequestBody.create(mediaType, jsonObject.toString()))
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -133,72 +134,77 @@ public class FormularioEditarAdapter {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                if (context instanceof Submenu_AdminProductos) {
-                    ((Submenu_AdminProductos) context).runOnUiThread(() ->
-                            Toast.makeText(context, "Error al editar producto", Toast.LENGTH_SHORT).show());
-                }
+                showToast("Error al editar producto");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String responseBody = response.body().string();
-                Log.d("FormularioEditarAdapter", "Response Code: " + response.code());
-
                 if (response.isSuccessful()) {
-                    if (context instanceof Submenu_AdminProductos) {
-                        ((Submenu_AdminProductos) context).runOnUiThread(() -> {
-                            Toast.makeText(context, "Producto editado correctamente", Toast.LENGTH_SHORT).show();
-                            // Llamar al método para limpiar el formulario
-                            limpiarFormulario(editarNombre, editarDescripcion, editarPrecio, editarDescuento, editarStock);
-                        });
-                    }
+                    showToast("Producto editado correctamente");
                 } else {
-                    Log.d("FormularioEditarAdapter", "Error Response: " + responseBody);
-                    if (context instanceof Submenu_AdminProductos) {
-                        ((Submenu_AdminProductos) context).runOnUiThread(() ->
-                                Toast.makeText(context, "Error: " + responseBody, Toast.LENGTH_SHORT).show());
-                    }
+                    String errorMessage = obtenerMensajeError(response);
+                    Log.d("FormularioEditarAdapter", "Error Response: " + errorMessage);
+                    showToast(errorMessage);
+                }
+                response.close(); // Cerrar el Response para liberar recursos
+            }
+        });
+    }
+
+
+    private String obtenerMensajeError(Response response) throws IOException {
+        String errorMessage;
+        switch (response.code()) {
+            case 400:
+                errorMessage = "Error en la solicitud: " + response.body().string();
+                break;
+            case 404:
+                errorMessage = "Producto no encontrado.";
+                break;
+            case 500:
+                errorMessage = "Error interno del servidor.";
+                break;
+            default:
+                errorMessage = "Error desconocido: " + response.body().string();
+                break;
+        }
+        return errorMessage;
+    }
+
+    private void eliminarProductoEnAPI(int id) {
+        OkHttpClient client = new OkHttpClient();
+        String url = "https://api-happypetshco-com.preview-domain.com/api/EliminarProducto=" + id;
+
+        Request request = new Request.Builder()
+                .url(url)
+                .delete()
+                .addHeader("Content-Type", "application/json")
+                .addHeader("Authorization", "Bearer " + token)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                showToast("Error al eliminar producto");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    showToast("Producto eliminado correctamente");
+                } else {
+                    String errorMessage = response.body().string();
+                    showToast("Error: " + errorMessage);
                 }
             }
         });
     }
 
-    private void eliminarProductoEnAPI(int id) {
-        OkHttpClient client = new OkHttpClient();
-        String url = "https://api-happypetshco-com.preview-domain.com/api/EliminarProducto?id=" + id;
-
-        Request request = new Request.Builder()
-                .url(url)
-                .get() // Cambiar a GET para eliminar
-                .addHeader("Content-Type", "application/json")
-                .addHeader("Authorization", "Bearer " + token)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-                if (context instanceof Submenu_AdminProductos) {
-                    ((Submenu_AdminProductos) context).runOnUiThread(() ->
-                            Toast.makeText(context, "Error al eliminar producto", Toast.LENGTH_SHORT).show());
-                }
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String responseBody = response.body().string();
-                if (response.isSuccessful()) {
-                    if (context instanceof Submenu_AdminProductos) {
-                        ((Submenu_AdminProductos) context).runOnUiThread(() ->
-                                Toast.makeText(context, "Producto eliminado correctamente", Toast.LENGTH_SHORT).show());
-                    }
-                } else {
-                    if (context instanceof Submenu_AdminProductos) {
-                        ((Submenu_AdminProductos) context).runOnUiThread(() ->
-                                Toast.makeText(context, "Error: " + responseBody, Toast.LENGTH_SHORT).show());
-                    }
-                }
-            }
-        });
+    private void showToast(String message) {
+        if (context instanceof Submenu_AdminProductos) {
+            ((Submenu_AdminProductos) context).runOnUiThread(() ->
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show());
+        }
     }
 }

@@ -69,7 +69,6 @@ public class DashboardAdmin extends Fragment {
         String url = "https://api-happypetshco-com.preview-domain.com/api/ListarProductos";
         Request request = new Request.Builder()
                 .url(url)
-                .addHeader("Authorization", "Bearer " + token) // Agregar el token a la cabecera
                 .build();
 
         client.newCall(request).enqueue(new Callback() {

@@ -47,6 +47,9 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
         holder.nombreProducto.setText(TextUtils.isEmpty(producto.getNombre()) ? "Nombre no disponible" : producto.getNombre());
         holder.descripcionProducto.setText(TextUtils.isEmpty(producto.getDescripcion()) ? "Descripción no disponible" : producto.getDescripcion());
 
+        // Asignar colores si están disponibles
+        holder.coloresProducto.setText(TextUtils.isEmpty(producto.getColores()) ? "Colores no disponibles" : producto.getColores());
+
         // Obtener el precio y el descuento
         String precio = producto.getPrecio();
         String descuento = producto.getDescuento();
@@ -87,19 +90,17 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
 
         // Configurar el clic en el producto para mostrar el userId en un Toast
         holder.itemView.setOnClickListener(v -> {
-            // Obtener el contexto desde el holder
             Context context = holder.itemView.getContext();
-            // Mostrar un Toast con el userId
+            Toast.makeText(context, "UserID: " + userId, Toast.LENGTH_SHORT).show();
         });
 
-        // Cambiar para usar el precioConDescuento si está disponible
         final String productPrice = (descuentoValor > 0) ? String.valueOf(precioConDescuento) : String.valueOf(precioOriginal);
         holder.imageButtonCarrito.setOnClickListener(v -> {
-            // Crear y mostrar el CarritoAdapter
             CarritoAdapter carritoDialog = CarritoAdapter.newInstance(userId, String.valueOf(producto.getId()), productPrice, token); // Añadir token aquí
             carritoDialog.show(((AppCompatActivity) holder.itemView.getContext()).getSupportFragmentManager(), "CarritoDialog");
         });
     }
+
 
     @Override
     public int getItemCount() {
@@ -115,13 +116,14 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
 
     public static class ProductoViewHolder extends RecyclerView.ViewHolder {
 
-        TextView nombreProducto, descripcionProducto, precioProducto, descuentoProducto;
+        TextView nombreProducto, descripcionProducto, precioProducto, coloresProducto, descuentoProducto;
         ImageView imagenProducto, imageButtonCarrito; // Añadir el botón del carrito
 
         public ProductoViewHolder(@NonNull View itemView) {
             super(itemView);
             nombreProducto = itemView.findViewById(R.id.nombreProducto);
             descripcionProducto = itemView.findViewById(R.id.descripcionProducto);
+            coloresProducto = itemView.findViewById(R.id.coloresProducto);
             precioProducto = itemView.findViewById(R.id.precioProducto);
             descuentoProducto = itemView.findViewById(R.id.descuentoProducto); // Añade el descuento
             imagenProducto = itemView.findViewById(R.id.imagenProducto);

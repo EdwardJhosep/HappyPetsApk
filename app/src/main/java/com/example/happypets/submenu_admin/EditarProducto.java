@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.happypets.R;
-import com.example.happypets.adapters_cliente.ProductoAdapterEditar;
+import com.example.happypets.adapters_admin.ProductoAdapterEditar;
 import com.example.happypets.models.Producto;
 
 import org.json.JSONArray;
@@ -109,7 +109,8 @@ public class EditarProducto extends Fragment {
                             productoJson.getString("precio"),
                             productoJson.getString("descuento"),
                             productoJson.getString("stock"),
-                            productoJson.getString("imagen")
+                            productoJson.getString("imagen"),
+                            productoJson.getString("colores") // Recuperar colores del JSON
                     );
                     productoList.add(producto);
                 }

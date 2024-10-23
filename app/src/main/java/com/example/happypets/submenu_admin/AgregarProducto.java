@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -47,6 +48,8 @@ public class AgregarProducto extends Fragment {
     private Uri uriImagen;
     private String token;
 
+    private CheckBox checkBlanco, checkRojo, checkAzul, checkVerde, checkMorado, checkAmarillo, checkNegro;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_agregar_producto, container, false);
@@ -59,6 +62,14 @@ public class AgregarProducto extends Fragment {
         buttonAgregar = view.findViewById(R.id.buttonAgregar);
         buttonSeleccionarImagen = view.findViewById(R.id.buttonSeleccionarImagen);
         imageViewProducto = view.findViewById(R.id.imageViewProducto);
+
+        checkBlanco = view.findViewById(R.id.checkBlanco);
+        checkRojo = view.findViewById(R.id.checkRojo);
+        checkAzul = view.findViewById(R.id.checkAzul);
+        checkVerde = view.findViewById(R.id.checkVerde);
+        checkMorado = view.findViewById(R.id.checkMorado);
+        checkAmarillo = view.findViewById(R.id.checkAmarillo);
+        checkNegro = view.findViewById(R.id.checkNegro);
 
         buttonSeleccionarImagen.setOnClickListener(v -> {
             if (hasCameraPermissions()) {
@@ -100,7 +111,6 @@ public class AgregarProducto extends Fragment {
                 Bitmap imageBitmap = (Bitmap) extras.get("data");
                 imageViewProducto.setImageBitmap(imageBitmap);
                 uriImagen = saveImageToFile(imageBitmap);
-                Log.d("AgregarProducto", "Imagen capturada desde la cámara");
             }
         }
     }
@@ -130,17 +140,27 @@ public class AgregarProducto extends Fragment {
         final String precio = editTextPrecio.getText().toString().trim();
         final String stock = editTextStock.getText().toString().trim();
 
+        StringBuilder coloresSeleccionados = new StringBuilder();
+        if (checkBlanco.isChecked()) coloresSeleccionados.append("Blanco,");
+        if (checkRojo.isChecked()) coloresSeleccionados.append("Rojo,");
+        if (checkAzul.isChecked()) coloresSeleccionados.append("Azul,");
+        if (checkVerde.isChecked()) coloresSeleccionados.append("Verde,");
+        if (checkMorado.isChecked()) coloresSeleccionados.append("Morado,");
+        if (checkAmarillo.isChecked()) coloresSeleccionados.append("Amarillo,");
+        if (checkNegro.isChecked()) coloresSeleccionados.append("Negro,");
+
+        if (coloresSeleccionados.length() > 0) {
+            coloresSeleccionados.setLength(coloresSeleccionados.length() - 2);
+        }
+
         if (nmProducto.isEmpty() || descripcion.isEmpty() || categoria.isEmpty() ||
-                precio.isEmpty() || stock.isEmpty() || uriImagen == null) {
+                precio.isEmpty() || stock.isEmpty() || coloresSeleccionados.length() == 0 || uriImagen == null) {
             Toast.makeText(getContext(), "Por favor completa todos los campos y selecciona una imagen", Toast.LENGTH_SHORT).show();
-            Log.e("AgregarProducto", "Campos vacíos o imagen no seleccionada");
             return;
         }
 
         new Thread(() -> {
             try {
-                Log.d("AgregarProducto", "Iniciando el proceso de agregar producto");
-
                 HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
                 loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
                 OkHttpClient client = new OkHttpClient.Builder()
@@ -154,11 +174,11 @@ public class AgregarProducto extends Fragment {
                         .addFormDataPart("categoria", categoria)
                         .addFormDataPart("precio", precio)
                         .addFormDataPart("stock", stock)
+                        .addFormDataPart("colores", coloresSeleccionados.toString())
                         .addFormDataPart("imagen", uriImagen.getLastPathSegment(), RequestBody.create(MediaType.parse("image/jpeg"), new File(uriImagen.getPath())));
 
                 RequestBody requestBody = builder.build();
                 String url = "https://api-happypetshco-com.preview-domain.com/api/NuevoProducto";
-                Log.d("AgregarProducto", "URL de la solicitud: " + url);
 
                 Request request = new Request.Builder()
                         .url(url)
@@ -166,28 +186,22 @@ public class AgregarProducto extends Fragment {
                         .post(requestBody)
                         .build();
 
-                Log.d("AgregarProducto", "Realizando la solicitud al servidor");
                 try (Response response = client.newCall(request).execute()) {
-                    Log.d("AgregarProducto", "Respuesta del servidor: " + response.code());
                     if (response.isSuccessful()) {
-                        Log.d("AgregarProducto", "Producto agregado correctamente");
                         getActivity().runOnUiThread(() -> {
                             limpiarCampos();
                             Toast.makeText(getContext(), "Producto agregado correctamente", Toast.LENGTH_SHORT).show();
                         });
                     } else {
                         String errorResponse = response.body() != null ? response.body().string() : "Sin respuesta del servidor";
-                        Log.e("AgregarProducto", "Error al agregar el producto: " + errorResponse);
                         getActivity().runOnUiThread(() ->
                                 Toast.makeText(getContext(), "Error al agregar el producto: " + errorResponse, Toast.LENGTH_SHORT).show());
                     }
                 }
             } catch (IOException e) {
-                Log.e("AgregarProducto", "Error en la conexión", e);
                 getActivity().runOnUiThread(() ->
-                        Toast.makeText(getContext(), "Error en la conexión: " + e.getMessage() + ", Causa: " + e.getCause(), Toast.LENGTH_SHORT).show());
+                        Toast.makeText(getContext(), "Error en la conexión: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             } catch (Exception e) {
-                Log.e("AgregarProducto", "Error inesperado", e);
                 getActivity().runOnUiThread(() ->
                         Toast.makeText(getContext(), "Error inesperado: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             }
@@ -200,6 +214,13 @@ public class AgregarProducto extends Fragment {
         editTextCategoria.setText("");
         editTextPrecio.setText("");
         editTextStock.setText("");
+        checkBlanco.setChecked(false);
+        checkRojo.setChecked(false);
+        checkAzul.setChecked(false);
+        checkVerde.setChecked(false);
+        checkMorado.setChecked(false);
+        checkAmarillo.setChecked(false);
+        checkNegro.setChecked(false);
         imageViewProducto.setImageDrawable(null);
         uriImagen = null;
     }

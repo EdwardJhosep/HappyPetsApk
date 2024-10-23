@@ -63,7 +63,7 @@ public class CarritoFragment extends BottomSheetDialogFragment {
         @Override
         protected String doInBackground(String... params) {
             String userId = params[0];
-            String apiUrl = "https://api-happypetshco-com.preview-domain.com/api/ListarCarrito=" + userId;
+            String apiUrl = "https://api-happypetshco-com.preview-domain.com/api/MostrarCarrito=" + userId;
 
             try {
                 URL url = new URL(apiUrl);

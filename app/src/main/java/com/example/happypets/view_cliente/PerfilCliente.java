@@ -112,7 +112,7 @@ public class PerfilCliente extends Fragment {
             return;
         }
 
-        String url = "https://api-happypetshco-com.preview-domain.com/api/Historial?id_usuario=" + userId;
+        String url = "https://api-happypetshco-com.preview-domain.com/api/HistorialMascota=" + userId;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.POST,

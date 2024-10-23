@@ -104,7 +104,9 @@ public class ClientsAdmin extends Fragment {
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
                 if (getActivity() != null) {
-                    getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "Error al obtener usuarios", Toast.LENGTH_SHORT).show());
+                    getActivity().runOnUiThread(() ->
+                            Toast.makeText(getActivity(), "Error de conexión: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                    );
                 }
             }
 
@@ -141,30 +143,39 @@ public class ClientsAdmin extends Fragment {
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(() ->
+                                    Toast.makeText(getActivity(), "Error al procesar los datos: " + e.getMessage(), Toast.LENGTH_SHORT).show()
+                            );
+                        }
                     }
                 } else {
                     if (getActivity() != null) {
                         getActivity().runOnUiThread(() ->
-                                Toast.makeText(getActivity(), "Error: " + response.message(), Toast.LENGTH_SHORT).show());
+                                Toast.makeText(getActivity(), "Error en la respuesta: " + response.message() + " (Código: " + response.code() + ")", Toast.LENGTH_SHORT).show()
+                        );
                     }
                 }
             }
         });
     }
 
+
     private void filtrarUsuarios(String texto) {
-        usuariosFiltrados.clear();
+        usuariosFiltrados.clear(); // Limpia la lista filtrada antes de empezar
+
         if (texto.isEmpty()) {
-            usuariosFiltrados.addAll(usuarios); // Si el texto está vacío, muestra todos los usuarios
+            usuariosFiltrados.addAll(usuarios); // Si no hay texto de búsqueda, copia todos los usuarios
         } else {
-            String textoLower = texto.toLowerCase();
+            String textoLower = texto.toLowerCase(); // Convierte el texto de búsqueda a minúsculas
             for (User usuario : usuarios) {
                 if (usuario.getDni().toLowerCase().contains(textoLower) ||
                         usuario.getNombres().toLowerCase().contains(textoLower)) {
-                    usuariosFiltrados.add(usuario);
+                    usuariosFiltrados.add(usuario); // Agrega a la lista filtrada si coincide con la búsqueda
                 }
             }
         }
-        adapter.notifyDataSetChanged(); // Notifica al adaptador que los datos han cambiado
+
+        adapter.notifyDataSetChanged(); // Notifica los cambios al adaptador
     }
 }

@@ -24,15 +24,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HappyPets"
         tools:targetApi="31">
-        <activity
-            android:name=".Login"
-            android:exported="false" />
+
         <activity
             android:name=".view_cliente.Ubication"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".view_cliente.AgregarMascotaDialogFragment"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".submenu_admin.AgregarProducto"
             android:exported="false"
@@ -59,28 +59,35 @@
             android:exported="false" />
         <activity
             android:name=".view_admin.ManageAdmin"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".view_cliente.PerfilCliente"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".view_cliente.CitasCliente"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".view_cliente.ProductoCliente"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".view_cliente.MenuCliente"
             android:exported="false" />
         <activity
             android:name=".view_admin.AppointmentsAdmin"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".view_admin.ClientsAdmin"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".view_admin.DashboardAdmin"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".view_admin.MenuAdmin"
             android:exported="false" />
@@ -88,7 +95,7 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".Inicio"
+            android:name=".Login"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -67,6 +67,17 @@
             android:textSize="14sp"
             android:layout_marginBottom="8dp"
             android:text="Descripción breve del producto que puede ocupar dos líneas." />
+        <TextView
+            android:id="@+id/coloresProducto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_marginTop="4dp"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp"
+            android:text="colores" />
 
         <!-- RelativeLayout para el precio y el botón -->
         <RelativeLayout

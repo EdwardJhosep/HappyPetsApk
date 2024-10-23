@@ -114,7 +114,7 @@ public class MenuCliente extends AppCompatActivity {
 
 
     private void getUserData() {
-        String url = "https://api-happypetshco-com.preview-domain.com/api/DatosUsuario";
+        String url = "https://api-happypetshco-com.preview-domain.com/api/Datos";
 
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
