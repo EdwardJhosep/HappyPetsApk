@@ -19,7 +19,6 @@ import com.example.happypets.R;
 import com.example.happypets.models.Producto;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
 
 public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.ProductoViewHolder> {
@@ -60,7 +59,6 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
                 agregarColorAlLayout(holder.layoutColoresSeleccionados, color.trim());
             }
         } else {
-            // Mostrar mensaje si no hay colores disponibles
             holder.coloresProducto.setText("Colores no disponibles");
         }
 
@@ -105,12 +103,12 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
         // Configurar el clic en el producto para mostrar el userId en un Toast
         holder.itemView.setOnClickListener(v -> {
             Context context = holder.itemView.getContext();
-            Toast.makeText(context, "UserID: " + userId, Toast.LENGTH_SHORT).show();
         });
 
         final String productPrice = (descuentoValor > 0) ? String.valueOf(precioConDescuento) : String.valueOf(precioOriginal);
         holder.imageButtonCarrito.setOnClickListener(v -> {
-            CarritoAdapter carritoDialog = CarritoAdapter.newInstance(userId, String.valueOf(producto.getId()), productPrice, token); // Añadir token aquí
+            // Pasar los colores al CarritoAdapter
+            CarritoAdapter carritoDialog = CarritoAdapter.newInstance(userId, String.valueOf(producto.getId()), productPrice, token, colores);
             carritoDialog.show(((AppCompatActivity) holder.itemView.getContext()).getSupportFragmentManager(), "CarritoDialog");
         });
     }

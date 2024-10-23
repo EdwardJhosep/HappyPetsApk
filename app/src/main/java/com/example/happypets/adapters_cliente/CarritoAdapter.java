@@ -1,6 +1,8 @@
 package com.example.happypets.adapters_cliente;
 
-import android.graphics.Color; // Asegúrate de importar esto
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,9 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast; // Importa Toast
+import android.widget.Toast;
 
 import com.example.happypets.R;
 
@@ -29,18 +30,20 @@ public class CarritoAdapter extends DialogFragment {
 
     private String userId;
     private String productId;
-    private String productPrice; // Variable para precio del producto
-    private String token; // Variable para el token
-    private TextView textViewImporte; // Añadir variable para el TextView del importe
-    private EditText editTextColor; // Añadir variable para el EditText del color
+    private String productPrice;
+    private String token;
+    private TextView textViewImporte;
+    private EditText editTextColor;
+    private String[] coloresArray;
 
-    public static CarritoAdapter newInstance(String userId, String productId, String productPrice, String token) {
+    public static CarritoAdapter newInstance(String userId, String productId, String productPrice, String token, String colores) {
         CarritoAdapter fragment = new CarritoAdapter();
         Bundle args = new Bundle();
         args.putString("USER_ID", userId);
         args.putString("PRODUCT_ID", productId);
-        args.putString("PRODUCT_PRICE", productPrice); // Agregar el precio del producto
-        args.putString("TOKEN", token); // Agregar el token
+        args.putString("PRODUCT_PRICE", productPrice);
+        args.putString("TOKEN", token);
+        args.putString("colores", colores);
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,21 +56,28 @@ public class CarritoAdapter extends DialogFragment {
         if (getArguments() != null) {
             userId = getArguments().getString("USER_ID");
             productId = getArguments().getString("PRODUCT_ID");
-            productPrice = getArguments().getString("PRODUCT_PRICE"); // Obtener el precio del producto
-            token = getArguments().getString("TOKEN"); // Leer el token
+            productPrice = getArguments().getString("PRODUCT_PRICE");
+            token = getArguments().getString("TOKEN");
+            String colores = getArguments().getString("colores");
 
-            // Vincular los TextViews y establecer el texto
-            TextView textViewProductPrice = view.findViewById(R.id.textViewProductPrice);
-            textViewImporte = view.findViewById(R.id.textViewImporte); // Inicializar el TextView del importe
-            editTextColor = view.findViewById(R.id.editTextColor); // Inicializar el EditText del color
+            // Separar los colores en un array
+            coloresArray = colores.split(",");
+
+            textViewImporte = view.findViewById(R.id.textViewImporte);
+            editTextColor = view.findViewById(R.id.editTextColor);
+
+
+            // Mostrar círculos de colores
+            showColorCircles(view);
 
             // Mostrar precio del producto
+            TextView textViewProductPrice = view.findViewById(R.id.textViewProductPrice);
             textViewProductPrice.setText("Precio: S/. " + productPrice);
         }
 
         // Configurar el botón de cerrar
         Button buttonClose = view.findViewById(R.id.buttonClose);
-        buttonClose.setOnClickListener(v -> dismiss()); // Cerrar el diálogo al hacer clic
+        buttonClose.setOnClickListener(v -> dismiss());
 
         // Configurar el EditText de cantidad
         EditText editTextCantidad = view.findViewById(R.id.editTextCantidad);
@@ -77,7 +87,6 @@ public class CarritoAdapter extends DialogFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                // Actualizar el importe cuando la cantidad cambie
                 updateImporte(editTextCantidad.getText().toString());
             }
 
@@ -85,44 +94,100 @@ public class CarritoAdapter extends DialogFragment {
             public void afterTextChanged(Editable s) {}
         });
 
-        // Configurar los botones de color
-        setupColorButtons(view);
-
-        // Configurar el botón de añadir al carrito
         Button buttonAddToCart = view.findViewById(R.id.buttonAddToCart);
         buttonAddToCart.setOnClickListener(v -> addToCart(editTextCantidad.getText().toString()));
 
         return view;
     }
 
-    private void setupColorButtons(View view) {
-        ImageButton buttonColorRed = view.findViewById(R.id.buttonColorRed);
-        ImageButton buttonColorGreen = view.findViewById(R.id.buttonColorGreen);
-        ImageButton buttonColorBlue = view.findViewById(R.id.buttonColorBlue);
-        ImageButton buttonColorOtro = view.findViewById(R.id.buttonColorOtro);
+    private void showColorCircles(View view) {
+        // Aquí se muestran los círculos para cada color en el array
+        for (String color : coloresArray) {
+            // Crear un círculo con borde
+            View colorCircle = new View(getContext());
+            int size = 100; // Cambia el tamaño según sea necesario
+            ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(size, size);
+            colorCircle.setLayoutParams(layoutParams);
 
-        buttonColorRed.setOnClickListener(v -> setColorToEditText(Color.RED, "Rojo"));
-        buttonColorGreen.setOnClickListener(v -> setColorToEditText(Color.GREEN, "Verde"));
-        buttonColorBlue.setOnClickListener(v -> setColorToEditText(Color.BLUE, "Azul"));
-        buttonColorOtro.setOnClickListener(v -> setColorToEditText(Color.BLACK, "Otro")); // Cambiar a negro
+            // Usar un Drawable para crear el círculo con borde
+            colorCircle.setBackground(createCircleDrawable(color.trim()));
+
+            // Configurar márgenes para separar los círculos
+            ViewGroup.MarginLayoutParams marginParams = new ViewGroup.MarginLayoutParams(layoutParams);
+            marginParams.setMargins(16, 16, 16, 16); // Ajusta los valores para el margen según sea necesario
+            colorCircle.setLayoutParams(marginParams);
+
+            // Agregar un OnClickListener al círculo de color
+            colorCircle.setOnClickListener(v -> {
+                // Cambiar el color en el EditText sin modificar el fondo
+                editTextColor.setText(color.trim());
+            });
+
+            // Agrega el círculo al layout donde deseas mostrarlo
+            ((ViewGroup) view.findViewById(R.id.colorCirclesContainer)).addView(colorCircle);
+        }
     }
 
-    private void setColorToEditText(int color, String colorName) {
-        editTextColor.setText(colorName);
-        editTextColor.setTextColor(color); // Cambiar el color del texto del EditText
+    private Drawable createCircleDrawable(String colorName) {
+        int color = getColorFromName(colorName);
+
+        // Crear un drawable de forma circular
+        GradientDrawable circleDrawable = new GradientDrawable();
+        circleDrawable.setShape(GradientDrawable.OVAL);
+        circleDrawable.setColor(color);
+
+        // Configurar el borde para el color blanco
+        if (color == Color.WHITE) {
+            circleDrawable.setStroke(5, Color.BLACK); // 5 es el grosor del borde
+        }
+
+        return circleDrawable;
+    }
+
+    private int getColorFromName(String colorName) {
+        int colorValue = Color.TRANSPARENT; // Valor por defecto
+
+        switch (colorName.toLowerCase()) {
+            case "blanco":
+                colorValue = Color.WHITE;
+                break;
+            case "rojo":
+                colorValue = Color.RED;
+                break;
+            case "azul":
+                colorValue = Color.BLUE;
+                break;
+            case "verde":
+                colorValue = Color.GREEN;
+                break;
+            case "morado":
+                colorValue = Color.parseColor("#800080"); // Código hexadecimal para morado
+                break;
+            case "amarillo":
+                colorValue = Color.YELLOW;
+                break;
+            case "negro":
+                colorValue = Color.BLACK;
+                break;
+            default:
+                colorValue = Color.TRANSPARENT; // En caso de que el color no coincida
+                break;
+        }
+
+        return colorValue; // Devolver el valor de color
     }
 
     private void updateImporte(String cantidadStr) {
         try {
             int cantidad = Integer.parseInt(cantidadStr);
             if (cantidad < 0) {
-                cantidad = 0; // Evitar cantidades negativas
+                cantidad = 0;
             }
             double price = Double.parseDouble(productPrice);
-            double importe = cantidad * price; // Calcular el importe
-            textViewImporte.setText("Importe: S/. " + String.format("%.2f", importe)); // Mostrar el importe
+            double importe = cantidad * price;
+            textViewImporte.setText("Importe: S/. " + String.format("%.2f", importe));
         } catch (NumberFormatException e) {
-            textViewImporte.setText("Importe: S/. 0.00"); // Mostrar 0 si la cantidad no es válida
+            textViewImporte.setText("Importe: S/. 0.00");
         }
     }
 
