@@ -1,12 +1,15 @@
 package com.example.happypets.adapters_cliente;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -47,8 +50,19 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
         holder.nombreProducto.setText(TextUtils.isEmpty(producto.getNombre()) ? "Nombre no disponible" : producto.getNombre());
         holder.descripcionProducto.setText(TextUtils.isEmpty(producto.getDescripcion()) ? "Descripción no disponible" : producto.getDescripcion());
 
-        // Asignar colores si están disponibles
-        holder.coloresProducto.setText(TextUtils.isEmpty(producto.getColores()) ? "Colores no disponibles" : producto.getColores());
+        // Obtener colores seleccionados
+        String colores = producto.getColores();
+        holder.layoutColoresSeleccionados.removeAllViews(); // Limpiar colores anteriores
+
+        if (!TextUtils.isEmpty(colores)) {
+            String[] coloresArray = colores.split(",");
+            for (String color : coloresArray) {
+                agregarColorAlLayout(holder.layoutColoresSeleccionados, color.trim());
+            }
+        } else {
+            // Mostrar mensaje si no hay colores disponibles
+            holder.coloresProducto.setText("Colores no disponibles");
+        }
 
         // Obtener el precio y el descuento
         String precio = producto.getPrecio();
@@ -101,7 +115,6 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
         });
     }
 
-
     @Override
     public int getItemCount() {
         return productos.size();
@@ -114,10 +127,61 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
         notifyDataSetChanged();
     }
 
+    // Método para agregar un círculo de color al layout
+    private void agregarColorAlLayout(LinearLayout layout, String color) {
+        int colorValue;
+        switch (color.toLowerCase()) {
+            case "blanco":
+                colorValue = Color.WHITE;
+                break;
+            case "rojo":
+                colorValue = Color.RED;
+                break;
+            case "azul":
+                colorValue = Color.BLUE;
+                break;
+            case "verde":
+                colorValue = Color.GREEN;
+                break;
+            case "morado":
+                colorValue = Color.parseColor("#800080"); // Código hexadecimal para morado
+                break;
+            case "amarillo":
+                colorValue = Color.YELLOW;
+                break;
+            case "negro":
+                colorValue = Color.BLACK;
+                break;
+            default:
+                return; // Si el color no es reconocido, no hacer nada
+        }
+
+        // Crear un View para el color
+        View colorView = new View(layout.getContext());
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(50, 50); // Tamaño del círculo
+        params.setMargins(5, 5, 5, 5); // Espaciado entre círculos
+        colorView.setLayoutParams(params);
+
+        // Configurar el fondo del View como un GradientDrawable
+        GradientDrawable drawable = new GradientDrawable();
+        drawable.setShape(GradientDrawable.OVAL); // Forma ovalada (círculo)
+
+        if (colorValue == Color.WHITE) {
+            // Si el color es blanco, agregar un borde
+            drawable.setStroke(2, Color.BLACK); // Borde de 2 píxeles de grosor y color negro
+        }
+
+        drawable.setColor(colorValue); // Color de fondo
+        colorView.setBackground(drawable); // Aplicar el drawable al View
+        layout.addView(colorView); // Añadir el View al layout
+    }
+
+
     public static class ProductoViewHolder extends RecyclerView.ViewHolder {
 
         TextView nombreProducto, descripcionProducto, precioProducto, coloresProducto, descuentoProducto;
         ImageView imagenProducto, imageButtonCarrito; // Añadir el botón del carrito
+        LinearLayout layoutColoresSeleccionados; // Añadir layout para colores seleccionados
 
         public ProductoViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -128,6 +192,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
             descuentoProducto = itemView.findViewById(R.id.descuentoProducto); // Añade el descuento
             imagenProducto = itemView.findViewById(R.id.imagenProducto);
             imageButtonCarrito = itemView.findViewById(R.id.imageButtonCarrito); // Asegúrate de que este ID es correcto
+            layoutColoresSeleccionados = itemView.findViewById(R.id.layoutColoresSeleccionados); // Cambia el ID según tu diseño
         }
     }
 }

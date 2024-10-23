@@ -94,44 +94,35 @@ public class ListarCarritoAdapter extends BaseAdapter {
 
         return convertView;
     }
-
     private void eliminarProducto(String id) {
-        String url = "https://api-happypetshco-com.preview-domain.com/api/EliminarCarrito=" + id; // Asegúrate de que la ruta sea correcta
-        OkHttpClient client = new OkHttpClient();
-
-        // Crear la solicitud
-        Request request = new Request.Builder()
-                .url(url)
-                .addHeader("Authorization", "Bearer " + token) // Añadir el token
-                .build();
-
-        // Ejecutar la solicitud en un hilo separado
         new Thread(() -> {
             try {
-                Response response = client.newCall(request).execute();
-                if (response.isSuccessful()) {
-                    // Eliminar el producto de la lista
-                    ((Activity) context).runOnUiThread(() -> {
-                        productos.removeIf(producto -> {
-                            try {
-                                return producto.getString("id").equals(id);
-                            } catch (Exception e) {
-                                return false;
-                            }
+                OkHttpClient client = new OkHttpClient();
+                String url = "https://api-happypetshco-com.preview-domain.com/api/EliminarCarrito=" + id;
+                Request request = new Request.Builder()
+                        .url(url)
+                        .delete()
+                        .addHeader("Authorization", "Bearer " + token) // Asegúrate de incluir el token
+                        .build();
+
+                try (Response response = client.newCall(request).execute()) {
+                    if (response.isSuccessful()) {
+                        // Si la eliminación fue exitosa, actualiza la lista
+                        ((Activity) context).runOnUiThread(() -> {
+                            productos.removeIf(producto -> producto.optString("id").equals(id));
+                            notifyDataSetChanged();
+                            mostrarToast("Producto eliminado del carrito.");
                         });
-                        notifyDataSetChanged();
-                        mostrarToast("Producto eliminado del carrito.");
-                    });
-                } else {
-                    mostrarToast("Error al eliminar el producto: " + response.message());
+                    } else {
+                        mostrarToast("Error al eliminar el producto: " + response.message());
+                    }
                 }
             } catch (Exception e) {
-                Log.e("ListarCarritoAdapter", "Error en la eliminación del producto: " + e.getMessage(), e);
-                mostrarToast("Error en la eliminación del producto: " + e.getMessage());
+                Log.e("ListarCarritoAdapter", "Error al eliminar producto: " + e.getMessage(), e);
+                mostrarToast("Error al eliminar el producto.");
             }
         }).start();
     }
-
 
     private void mostrarToast(final String mensaje) {
         new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show());

@@ -21,7 +21,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.happypets.R;
 import com.example.happypets.adapters_cliente.CarritoFragment;
-import com.example.happypets.adapters_cliente.ListarCarritoAdapter;
 import com.example.happypets.adapters_cliente.ProductoAdapter;
 import com.example.happypets.models.Producto;
 

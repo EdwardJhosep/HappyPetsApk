@@ -41,9 +41,10 @@ public class AgregarProducto extends Fragment {
 
     private static final int REQUEST_CODE_PERMISSIONS = 1001;
     private static final int REQUEST_CODE_PICK_IMAGE = 1;
+    private static final int REQUEST_CODE_PICK_IMAGE_FROM_GALLERY = 2;
 
     private EditText editTextNombre, editTextDescripcion, editTextCategoria, editTextPrecio, editTextStock;
-    private Button buttonAgregar, buttonSeleccionarImagen;
+    private Button buttonAgregar, buttonSeleccionarImagen, buttonSeleccionarDesdeGaleria;
     private ImageView imageViewProducto;
     private Uri uriImagen;
     private String token;
@@ -61,6 +62,7 @@ public class AgregarProducto extends Fragment {
         editTextStock = view.findViewById(R.id.editTextStock);
         buttonAgregar = view.findViewById(R.id.buttonAgregar);
         buttonSeleccionarImagen = view.findViewById(R.id.buttonSeleccionarImagen);
+        buttonSeleccionarDesdeGaleria = view.findViewById(R.id.buttonSeleccionarDesdeGaleria);
         imageViewProducto = view.findViewById(R.id.imageViewProducto);
 
         checkBlanco = view.findViewById(R.id.checkBlanco);
@@ -74,6 +76,14 @@ public class AgregarProducto extends Fragment {
         buttonSeleccionarImagen.setOnClickListener(v -> {
             if (hasCameraPermissions()) {
                 seleccionarImagen();
+            } else {
+                requestCameraPermissions();
+            }
+        });
+
+        buttonSeleccionarDesdeGaleria.setOnClickListener(v -> {
+            if (hasCameraPermissions()) {
+                seleccionarImagenDesdeGaleria();
             } else {
                 requestCameraPermissions();
             }
@@ -102,18 +112,37 @@ public class AgregarProducto extends Fragment {
         }
     }
 
+    private void seleccionarImagenDesdeGaleria() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE_FROM_GALLERY);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE_PICK_IMAGE && resultCode == getActivity().RESULT_OK && data != null) {
-            Bundle extras = data.getExtras();
-            if (extras != null) {
-                Bitmap imageBitmap = (Bitmap) extras.get("data");
-                imageViewProducto.setImageBitmap(imageBitmap);
-                uriImagen = saveImageToFile(imageBitmap);
+        if (resultCode == getActivity().RESULT_OK && data != null) {
+            if (requestCode == REQUEST_CODE_PICK_IMAGE) {
+                Bundle extras = data.getExtras();
+                if (extras != null) {
+                    Bitmap imageBitmap = (Bitmap) extras.get("data");
+                    imageViewProducto.setImageBitmap(imageBitmap);
+                    uriImagen = saveImageToFile(imageBitmap);
+                }
+            } else if (requestCode == REQUEST_CODE_PICK_IMAGE_FROM_GALLERY) {
+                Uri selectedImageUri = data.getData();
+                if (selectedImageUri != null) {
+                    try {
+                        Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImageUri);
+                        imageViewProducto.setImageBitmap(imageBitmap);
+                        uriImagen = saveImageToFile(imageBitmap); // Guarda la imagen como archivo
+                    } catch (IOException e) {
+                        Log.e("AgregarProducto", "Error al obtener la imagen de la galería", e);
+                    }
+                }
             }
         }
     }
+
 
     private Uri saveImageToFile(Bitmap bitmap) {
         try {
@@ -150,7 +179,7 @@ public class AgregarProducto extends Fragment {
         if (checkNegro.isChecked()) coloresSeleccionados.append("Negro,");
 
         if (coloresSeleccionados.length() > 0) {
-            coloresSeleccionados.setLength(coloresSeleccionados.length() - 2);
+            coloresSeleccionados.setLength(coloresSeleccionados.length() - 1); // Cambiar -2 a -1 para quitar la última coma
         }
 
         if (nmProducto.isEmpty() || descripcion.isEmpty() || categoria.isEmpty() ||
@@ -174,8 +203,12 @@ public class AgregarProducto extends Fragment {
                         .addFormDataPart("categoria", categoria)
                         .addFormDataPart("precio", precio)
                         .addFormDataPart("stock", stock)
-                        .addFormDataPart("colores", coloresSeleccionados.toString())
-                        .addFormDataPart("imagen", uriImagen.getLastPathSegment(), RequestBody.create(MediaType.parse("image/jpeg"), new File(uriImagen.getPath())));
+                        .addFormDataPart("colores", coloresSeleccionados.toString());
+
+                // Aquí se usa el URI directamente para el archivo de la imagen
+                if (uriImagen != null) {
+                    builder.addFormDataPart("imagen", getFileName(uriImagen), RequestBody.create(MediaType.parse("image/jpeg"), new File(uriImagen.getPath())));
+                }
 
                 RequestBody requestBody = builder.build();
                 String url = "https://api-happypetshco-com.preview-domain.com/api/NuevoProducto";
@@ -194,16 +227,12 @@ public class AgregarProducto extends Fragment {
                         });
                     } else {
                         String errorResponse = response.body() != null ? response.body().string() : "Sin respuesta del servidor";
-                        getActivity().runOnUiThread(() ->
-                                Toast.makeText(getContext(), "Error al agregar el producto: " + errorResponse, Toast.LENGTH_SHORT).show());
+                        getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Error al agregar producto: " + errorResponse, Toast.LENGTH_SHORT).show());
                     }
                 }
-            } catch (IOException e) {
-                getActivity().runOnUiThread(() ->
-                        Toast.makeText(getContext(), "Error en la conexión: " + e.getMessage(), Toast.LENGTH_SHORT).show());
             } catch (Exception e) {
-                getActivity().runOnUiThread(() ->
-                        Toast.makeText(getContext(), "Error inesperado: " + e.getMessage(), Toast.LENGTH_SHORT).show());
+                Log.e("AgregarProducto", "Error al agregar producto", e);
+                getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Error al agregar producto", Toast.LENGTH_SHORT).show());
             }
         }).start();
     }
@@ -214,6 +243,8 @@ public class AgregarProducto extends Fragment {
         editTextCategoria.setText("");
         editTextPrecio.setText("");
         editTextStock.setText("");
+        imageViewProducto.setImageResource(0); // Limpiar imagen
+        uriImagen = null; // Resetear URI
         checkBlanco.setChecked(false);
         checkRojo.setChecked(false);
         checkAzul.setChecked(false);
@@ -221,19 +252,27 @@ public class AgregarProducto extends Fragment {
         checkMorado.setChecked(false);
         checkAmarillo.setChecked(false);
         checkNegro.setChecked(false);
-        imageViewProducto.setImageDrawable(null);
-        uriImagen = null;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE_PERMISSIONS) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                seleccionarImagen();
-            } else {
-                Toast.makeText(getActivity(), "Permiso denegado. No se puede tomar una foto.", Toast.LENGTH_SHORT).show();
+    private String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
             }
         }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
     }
 }

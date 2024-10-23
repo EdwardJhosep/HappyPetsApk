@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
     app:cardElevation="4dp"
-    app:cardCornerRadius="8dp"
+    app:cardCornerRadius="12dp"
     app:cardBackgroundColor="@android:color/white">
 
     <ScrollView
@@ -22,32 +22,32 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Agregar Producto"
-                android:textSize="24sp"
+                android:textSize="22sp"
                 android:textStyle="bold"
                 android:layout_gravity="center"
-                android:paddingBottom="16dp" />
+                android:paddingBottom="12dp" />
 
             <EditText
                 android:id="@+id/editTextNombre"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nombre del producto"
+                android:hint="Nombre"
                 android:background="@drawable/container_background"
-                android:padding="12dp"
+                android:padding="10dp"
                 android:textColorHint="@android:color/darker_gray"
-                android:drawablePadding="10dp"/>
+                android:drawablePadding="8dp"/>
 
             <EditText
                 android:id="@+id/editTextDescripcion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Descripción del producto"
+                android:hint="Descripción"
                 android:background="@drawable/container_background"
-                android:padding="12dp"
+                android:padding="10dp"
                 android:textColorHint="@android:color/darker_gray"
                 android:inputType="textMultiLine"
-                android:maxLines="3"
-                android:drawablePadding="10dp" />
+                android:maxLines="2"
+                android:drawablePadding="8dp" />
 
             <EditText
                 android:id="@+id/editTextCategoria"
@@ -55,9 +55,9 @@
                 android:layout_height="wrap_content"
                 android:hint="Categoría"
                 android:background="@drawable/container_background"
-                android:padding="12dp"
+                android:padding="10dp"
                 android:textColorHint="@android:color/darker_gray"
-                android:drawablePadding="10dp"/>
+                android:drawablePadding="8dp"/>
 
             <EditText
                 android:id="@+id/editTextPrecio"
@@ -65,10 +65,10 @@
                 android:layout_height="wrap_content"
                 android:hint="Precio"
                 android:background="@drawable/container_background"
-                android:padding="12dp"
+                android:padding="10dp"
                 android:textColorHint="@android:color/darker_gray"
                 android:inputType="numberDecimal"
-                android:drawablePadding="10dp"/>
+                android:drawablePadding="8dp"/>
 
             <EditText
                 android:id="@+id/editTextStock"
@@ -76,18 +76,18 @@
                 android:layout_height="wrap_content"
                 android:hint="Stock"
                 android:background="@drawable/container_background"
-                android:padding="12dp"
+                android:padding="10dp"
                 android:textColorHint="@android:color/darker_gray"
                 android:inputType="number"
-                android:drawablePadding="10dp"/>
+                android:drawablePadding="8dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Selecciona los colores:"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:layout_marginTop="16dp"/>
+                android:layout_marginTop="12dp"/>
 
             <GridLayout
                 android:layout_width="match_parent"
@@ -143,18 +143,28 @@
                 android:id="@+id/buttonSeleccionarImagen"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Seleccionar Imagen"
+                android:text="Tomar Foto"
                 android:backgroundTint="@color/secondary_color"
                 android:textColor="@android:color/white"
-                android:layout_marginTop="16dp"
-                android:padding="12dp" />
+                android:layout_marginTop="12dp"
+                android:padding="10dp" />
+
+            <Button
+                android:id="@+id/buttonSeleccionarDesdeGaleria"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Seleccionar de Galería"
+                android:backgroundTint="@color/discount_color"
+                android:textColor="@android:color/white"
+                android:layout_marginTop="8dp"
+                android:padding="10dp" />
 
             <ImageView
                 android:id="@+id/imageViewProducto"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="180dp"
                 android:contentDescription="Imagen del producto"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="12dp"
                 android:scaleType="centerCrop"
                 android:background="@android:color/darker_gray" />
 
@@ -165,8 +175,8 @@
                 android:text="Agregar Producto"
                 android:backgroundTint="@color/primary_color"
                 android:textColor="@android:color/white"
-                android:layout_marginTop="16dp"
-                android:padding="12dp" />
+                android:layout_marginTop="12dp"
+                android:padding="10dp" />
 
         </LinearLayout>
     </ScrollView>

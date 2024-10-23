@@ -109,11 +109,11 @@ public class FormularioEditarAdapter {
             jsonObject.put("descuento", descuento);
             jsonObject.put("colores", producto.getColores());
             jsonObject.put("stock", stock);
+            jsonObject.put("id", producto.getId());
 
-            // Imprimir solo la categoría y el ID en un Toast
             String categoria = producto.getCategoria();
             int id = producto.getId();
-            showToast("Categoría: " + categoria + ", ID: " + id +"token"+token);
+            showToast("Categoría: " + categoria + ", ID: " + id + ", token: " + token);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -124,7 +124,7 @@ public class FormularioEditarAdapter {
         Log.d("FormularioEditarAdapter", "JSON Body: " + jsonObject.toString());
 
         Request request = new Request.Builder()
-                .url("https://api-happypetshco-com.preview-domain.com/api/ActualizarProducto=" + producto.getId())
+                .url("https://api-happypetshco-com.preview-domain.com/api/ActualizarProducto")
                 .put(RequestBody.create(mediaType, jsonObject.toString()))
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Authorization", "Bearer " + token)
@@ -150,6 +150,7 @@ public class FormularioEditarAdapter {
             }
         });
     }
+
 
 
     private String obtenerMensajeError(Response response) throws IOException {
