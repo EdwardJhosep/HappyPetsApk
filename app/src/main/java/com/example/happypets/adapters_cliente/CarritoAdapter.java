@@ -14,9 +14,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView; // Importar ImageView
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide; // Asegúrate de agregar Glide en tu build.gradle
 import com.example.happypets.R;
 
 import org.json.JSONException;
@@ -32,11 +34,12 @@ public class CarritoAdapter extends DialogFragment {
     private String productId;
     private String productPrice;
     private String token;
+    private String imagenUrl; // Variable para almacenar la URL de la imagen
     private TextView textViewImporte;
     private EditText editTextColor;
     private String[] coloresArray;
 
-    public static CarritoAdapter newInstance(String userId, String productId, String productPrice, String token, String colores) {
+    public static CarritoAdapter newInstance(String userId, String productId, String productPrice, String token, String colores, String imagenUrl) {
         CarritoAdapter fragment = new CarritoAdapter();
         Bundle args = new Bundle();
         args.putString("USER_ID", userId);
@@ -44,6 +47,7 @@ public class CarritoAdapter extends DialogFragment {
         args.putString("PRODUCT_PRICE", productPrice);
         args.putString("TOKEN", token);
         args.putString("colores", colores);
+        args.putString("IMAGEN_URL", imagenUrl); // Agregar URL de imagen
         fragment.setArguments(args);
         return fragment;
     }
@@ -59,6 +63,7 @@ public class CarritoAdapter extends DialogFragment {
             productPrice = getArguments().getString("PRODUCT_PRICE");
             token = getArguments().getString("TOKEN");
             String colores = getArguments().getString("colores");
+            imagenUrl = getArguments().getString("IMAGEN_URL"); // Obtener la URL de la imagen
 
             // Separar los colores en un array
             coloresArray = colores.split(",");
@@ -66,6 +71,11 @@ public class CarritoAdapter extends DialogFragment {
             textViewImporte = view.findViewById(R.id.textViewImporte);
             editTextColor = view.findViewById(R.id.editTextColor);
 
+            // Mostrar la imagen del producto
+            ImageView imageViewProduct = view.findViewById(R.id.imageViewProduct); // Asegúrate de tener este ImageView en tu layout
+            Glide.with(this)
+                    .load(imagenUrl)
+                    .into(imageViewProduct); // Cargar la imagen usando Glide
 
             // Mostrar círculos de colores
             showColorCircles(view);

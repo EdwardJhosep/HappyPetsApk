@@ -27,6 +27,7 @@
             android:textColor="@color/secondary_color"
             android:fontFamily="sans-serif-medium" />
     </androidx.cardview.widget.CardView>
+
     <ImageView
         android:id="@+id/imageViewProduct"
         android:layout_width="match_parent"
@@ -84,7 +85,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Selecione el color:"
+                android:text="Seleccione el color:"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/primary_text_color"
@@ -138,7 +139,7 @@
             android:padding="12dp"
             android:textColor="@android:color/white"
             app:cornerRadius="12dp"
-            android:fontFamily="sans-serif-medium" />
+            android:fontFamily="sans-serif-medium"/>
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonAddToCart"

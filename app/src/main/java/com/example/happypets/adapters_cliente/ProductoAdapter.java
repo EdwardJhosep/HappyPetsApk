@@ -84,8 +84,9 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
         }
 
         // Cargar la imagen con Picasso
+        String imagenUrl = "https://api-happypetshco-com.preview-domain.com/ServidorProductos/" + producto.getImagen(); // Definir la variable imagenUrl
         Picasso.get()
-                .load("https://api-happypetshco-com.preview-domain.com/ServidorProductos/" + producto.getImagen())
+                .load(imagenUrl)
                 .placeholder(R.drawable.logo) // Reemplaza con tu drawable de marcador de posición
                 .error(R.drawable.logo) // Reemplaza con tu drawable de error
                 .into(holder.imagenProducto, new Callback() {
@@ -107,8 +108,8 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
 
         final String productPrice = (descuentoValor > 0) ? String.valueOf(precioConDescuento) : String.valueOf(precioOriginal);
         holder.imageButtonCarrito.setOnClickListener(v -> {
-            // Pasar los colores al CarritoAdapter
-            CarritoAdapter carritoDialog = CarritoAdapter.newInstance(userId, String.valueOf(producto.getId()), productPrice, token, colores);
+            // Pasar los colores y la imagen al CarritoAdapter
+            CarritoAdapter carritoDialog = CarritoAdapter.newInstance(userId, String.valueOf(producto.getId()), productPrice, token, colores, imagenUrl); // Usar imagenUrl aquí
             carritoDialog.show(((AppCompatActivity) holder.itemView.getContext()).getSupportFragmentManager(), "CarritoDialog");
         });
     }

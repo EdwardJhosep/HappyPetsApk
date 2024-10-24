@@ -32,7 +32,7 @@
             android:layout_height="32dp"
             android:layout_marginStart="8dp"
             android:contentDescription="Ícono del carrito"
-            android:src="@drawable/ic_cart_full"
+            android:src="@drawable/ic_carrito"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/textViewTitle"
             app:layout_constraintTop_toTopOf="@id/textViewTitle" />
