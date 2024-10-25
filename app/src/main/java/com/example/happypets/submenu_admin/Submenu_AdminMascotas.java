@@ -52,6 +52,7 @@ public class Submenu_AdminMascotas extends AppCompatActivity {
                     } else if (item.getItemId() == R.id.Salir) {
                         // Cambiar a otra actividad en lugar de un fragmento
                         Intent intent = new Intent(Submenu_AdminMascotas.this, MenuAdmin.class);
+                        intent.putExtra("token", token); // Pasar el token al MenuAdmin
                         startActivity(intent);
                         finish(); // Finaliza la actividad actual
                         return false; // Regresa false para no continuar con el resto del código

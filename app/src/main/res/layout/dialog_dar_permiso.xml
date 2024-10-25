@@ -1,0 +1,48 @@
+<!-- dialog_dar_permiso.xml -->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/nombreTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nombre del Usuario"
+        android:textSize="18sp"
+        android:paddingBottom="8dp"/>
+
+    <!-- CheckBoxes para seleccionar permisos -->
+    <CheckBox
+        android:id="@+id/checkAdmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Administrador"/>
+
+    <CheckBox
+        android:id="@+id/checkUsuario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Usuario"/>
+
+    <CheckBox
+        android:id="@+id/checkCajero"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cajero"/>
+
+    <CheckBox
+        android:id="@+id/checkVeterinario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Veterinario"/>
+
+    <Button
+        android:id="@+id/darPermisoButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dar Permiso"
+        android:layout_marginTop="16dp"/>
+</LinearLayout>

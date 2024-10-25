@@ -3,13 +3,16 @@ package com.example.happypets.models;
 import java.util.List;
 
 public class User {
+    private String id; // Agregar el campo ID
     private String dni;
     private String nombres;
     private String telefono;
     private String ubicacion;
     private List<String> permisos; // Campo para los permisos
 
-    public User(String dni, String nombres, String telefono, String ubicacion, List<String> permisos) {
+    // Modificar el constructor para incluir el ID
+    public User(String id, String dni, String nombres, String telefono, String ubicacion, List<String> permisos) {
+        this.id = id; // Inicializa el ID
         this.dni = dni;
         this.nombres = nombres;
         this.telefono = telefono;
@@ -18,6 +21,10 @@ public class User {
     }
 
     // Getters
+    public String getId() {
+        return id; // Agregar el getter para ID
+    }
+
     public String getDni() {
         return dni;
     }
@@ -39,6 +46,10 @@ public class User {
     }
 
     // Setters (opcional)
+    public void setId(String id) {
+        this.id = id; // Agregar el setter para ID
+    }
+
     public void setDni(String dni) {
         this.dni = dni;
     }

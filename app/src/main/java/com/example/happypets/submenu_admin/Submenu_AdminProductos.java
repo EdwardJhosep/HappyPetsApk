@@ -31,10 +31,12 @@ public class Submenu_AdminProductos extends AppCompatActivity {
                     } else if (item.getItemId() == R.id.Agregar) {
                         selectedFragment = new AgregarProducto();
                         ((AgregarProducto) selectedFragment).setToken(token); // Enviar el token
-                    } else if (item.getItemId() == R.id.Salir) {
+                    } else  if (item.getItemId() == R.id.Salir) {
+                        // Cambiar a otra actividad en lugar de un fragmento
                         Intent intent = new Intent(Submenu_AdminProductos.this, MenuAdmin.class);
+                        intent.putExtra("token", token); // Pasar el token al MenuAdmin
                         startActivity(intent);
-                        finish();
+                        finish(); // Finaliza la actividad actual
                         return false; // Regresa false para no continuar con el resto del código
                     }
 

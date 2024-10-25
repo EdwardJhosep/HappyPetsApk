@@ -1,4 +1,4 @@
-package com.example.happypets.view_admin;
+package com.example.happypets.submenu_admin;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.happypets.R;
-import com.example.happypets.adapters_admin.UsuariosAdapter;
+import com.example.happypets.adapters_admin.UsuariosAdapter2;
 import com.example.happypets.models.User;
 import com.google.gson.Gson;
 
@@ -27,21 +27,26 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ClientsAdmin extends Fragment {
+public class EditarPersonal extends Fragment {
 
     private static final String ARG_TOKEN = "token";
     private String token;
     private RecyclerView recyclerViewUsuarios;
-    private UsuariosAdapter adapter;
+    private UsuariosAdapter2 adapter;
     private EditText buscarEditText;
     private List<User> listaUsuariosOriginal;
 
-    public static ClientsAdmin newInstance(String token) {
-        ClientsAdmin fragment = new ClientsAdmin();
+    public static EditarPersonal newInstance(String token) {
+        EditarPersonal fragment = new EditarPersonal();
         Bundle args = new Bundle();
         args.putString(ARG_TOKEN, token);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    // Método para establecer el token, si es necesario
+    public void setToken(String token) {
+        this.token = token;
     }
 
     @Override
@@ -54,13 +59,13 @@ public class ClientsAdmin extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_clients_admin, container, false);
+        View view = inflater.inflate(R.layout.activity_editar_personal, container, false);
         buscarEditText = view.findViewById(R.id.buscarEditText);
         recyclerViewUsuarios = view.findViewById(R.id.recyclerViewUsuarios);
         recyclerViewUsuarios.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Pasa el token al adaptador
-        adapter = new UsuariosAdapter(new ArrayList<>(), token);
+        adapter = new UsuariosAdapter2(new ArrayList<>(), token);
         recyclerViewUsuarios.setAdapter(adapter);
         obtenerUsuarios();
 
@@ -81,7 +86,6 @@ public class ClientsAdmin extends Fragment {
 
         return view;
     }
-
 
     private void obtenerUsuarios() {
         new AsyncTask<Void, Void, List<User>>() {

@@ -19,11 +19,11 @@ import com.example.happypets.models.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.UsuarioViewHolder> {
+public class UsuariosAdapter2 extends RecyclerView.Adapter<UsuariosAdapter2.UsuarioViewHolder> {
     private List<User> usuarios;
     private String token; // Campo para almacenar el token
 
-    public UsuariosAdapter(List<User> usuarios, String token) {
+    public UsuariosAdapter2(List<User> usuarios, String token) {
         this.usuarios = usuarios;
         this.token = token; // Inicializa el token
     }
@@ -67,29 +67,40 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
     public void updateUsuarios(List<User> nuevosUsuarios) {
         List<User> usuariosFiltrados = new ArrayList<>();
         for (User usuario : nuevosUsuarios) {
-            if (usuario.getPermisos() != null && usuario.getPermisos().size() == 1 && usuario.getPermisos().get(0).equals("Usuario")) {
+            // Verifica si el usuario tiene más de un permiso
+            if (usuario.getPermisos() != null && usuario.getPermisos().size() > 1) {
+                usuariosFiltrados.add(usuario);
+            } else if (usuario.getPermisos() != null && usuario.getPermisos().size() == 1 &&
+                    !usuario.getPermisos().get(0).equals("Usuario")) {
+                // Incluye usuarios que tienen un único permiso, siempre que no sea "Usuario"
                 usuariosFiltrados.add(usuario);
             }
         }
         this.usuarios = usuariosFiltrados;
         notifyDataSetChanged();
     }
+
+
 
     public void filtrarPorDNI(String dni, List<User> listaOriginal) {
         List<User> usuariosFiltrados = new ArrayList<>();
         for (User usuario : listaOriginal) {
-            if (usuario.getPermisos() != null &&
-                    usuario.getPermisos().size() == 1 &&
-                    usuario.getPermisos().get(0).equals("Usuario") &&
+            // Verifica si el usuario tiene más de un permiso
+            if (usuario.getPermisos() != null && usuario.getPermisos().size() > 1) {
+                // Añade el usuario si tiene más de un permiso
+                usuariosFiltrados.add(usuario);
+            } else if (usuario.getPermisos() != null && usuario.getPermisos().size() == 1 &&
+                    !usuario.getPermisos().get(0).equals("Usuario") &&
                     usuario.getDni() != null &&
                     usuario.getDni().toLowerCase().contains(dni.toLowerCase())) {
+                // Incluye usuarios que tienen un único permiso, siempre que no sea "Usuario"
                 usuariosFiltrados.add(usuario);
             }
         }
-
         this.usuarios = usuariosFiltrados;
         notifyDataSetChanged();
     }
+
 
     public static class UsuarioViewHolder extends RecyclerView.ViewHolder {
         TextView nombreTextView;
