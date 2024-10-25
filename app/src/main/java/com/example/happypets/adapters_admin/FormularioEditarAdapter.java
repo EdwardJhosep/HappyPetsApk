@@ -1,13 +1,11 @@
 package com.example.happypets.adapters_admin;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -22,7 +20,6 @@ import java.io.IOException;
 
 import okhttp3.Call;
 import okhttp3.Callback;
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -44,37 +41,90 @@ public class FormularioEditarAdapter {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(context);
         dialogBuilder.setView(dialogView);
 
-        EditText editarNombre = dialogView.findViewById(R.id.editarNombre);
-        EditText editarDescripcion = dialogView.findViewById(R.id.editarDescripcion);
-        EditText editarPrecio = dialogView.findViewById(R.id.editarPrecio);
-        EditText editarDescuento = dialogView.findViewById(R.id.editarDescuento);
-        EditText editarStock = dialogView.findViewById(R.id.editarStock);
-        Button botonGuardar = dialogView.findViewById(R.id.botonGuardar);
+        // Obtener referencias a los campos de edición
+        EditText editNombre = dialogView.findViewById(R.id.editarNombre);
+        EditText editDescripcion = dialogView.findViewById(R.id.editarDescripcion);
+        EditText editCategoria = dialogView.findViewById(R.id.editarCategoria);
+        EditText editPrecio = dialogView.findViewById(R.id.editarPrecio);
+        EditText editStock = dialogView.findViewById(R.id.editarStock);
+        EditText editDescuento = dialogView.findViewById(R.id.editarDescuento); // Nuevo campo para descuento
+        CheckBox checkBlanco = dialogView.findViewById(R.id.checkBlanco);
+        CheckBox checkRojo = dialogView.findViewById(R.id.checkRojo);
+        CheckBox checkAzul = dialogView.findViewById(R.id.checkAzul);
+        CheckBox checkVerde = dialogView.findViewById(R.id.checkVerde);
+        CheckBox checkMorado = dialogView.findViewById(R.id.checkMorado);
+        CheckBox checkAmarillo = dialogView.findViewById(R.id.checkAmarillo);
+        CheckBox checkNegro = dialogView.findViewById(R.id.checkNegro);
+        Button botonActualizar = dialogView.findViewById(R.id.botonActualizar);
         Button botonEliminar = dialogView.findViewById(R.id.botonEliminar);
 
-        // Rellenar campos con los datos actuales del producto
-        editarNombre.setText(producto.getNombre());
-        editarDescripcion.setText(producto.getDescripcion());
-        editarPrecio.setText(producto.getPrecio());
-        editarDescuento.setText(producto.getDescuento());
-        editarStock.setText(producto.getStock());
+        // Prellenar los campos con los datos del producto actual
+        editNombre.setText(producto.getNombre());
+        editDescripcion.setText(producto.getDescripcion());
+        editCategoria.setText(producto.getCategoria());
+        editPrecio.setText(String.valueOf(producto.getPrecio()));
+        editStock.setText(String.valueOf(producto.getStock()));
+        editDescuento.setText(String.valueOf(producto.getDescuento())); // Prellenar con el descuento actual
+
+        // Prellenar los CheckBoxes según los colores actuales
+        String[] coloresActuales = producto.getColores().split(",");
+        for (String color : coloresActuales) {
+            switch (color.trim()) {
+                case "Blanco":
+                    checkBlanco.setChecked(true);
+                    break;
+                case "Rojo":
+                    checkRojo.setChecked(true);
+                    break;
+                case "Azul":
+                    checkAzul.setChecked(true);
+                    break;
+                case "Verde":
+                    checkVerde.setChecked(true);
+                    break;
+                case "Morado":
+                    checkMorado.setChecked(true);
+                    break;
+                case "Amarillo":
+                    checkAmarillo.setChecked(true);
+                    break;
+                case "Negro":
+                    checkNegro.setChecked(true);
+                    break;
+            }
+        }
 
         AlertDialog dialog = dialogBuilder.create();
         dialog.show();
 
-        // Listener para guardar cambios
-        botonGuardar.setOnClickListener(v -> {
-            String nuevoNombre = editarNombre.getText().toString();
-            String nuevaDescripcion = editarDescripcion.getText().toString();
-            String nuevoPrecio = editarPrecio.getText().toString();
-            String nuevoDescuento = editarDescuento.getText().toString();
-            String nuevoStock = editarStock.getText().toString();
+        // Listener para actualizar producto
+        botonActualizar.setOnClickListener(v -> {
+            // Obtener datos de los campos de edición
+            String nombre = editNombre.getText().toString();
+            String descripcion = editDescripcion.getText().toString();
+            String categoria = editCategoria.getText().toString();
+            String precio = editPrecio.getText().toString();
+            String stock = editStock.getText().toString();
+            String descuento = editDescuento.getText().toString(); // Obtener descuento
 
-            if (areFieldsValid(nuevoNombre, nuevaDescripcion, nuevoPrecio, nuevoStock)) {
-                editarProductoEnAPI(nuevoNombre, nuevaDescripcion, nuevoPrecio, nuevoDescuento, nuevoStock);
-            } else {
-                Toast.makeText(context, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
+            // Obtener colores seleccionados
+            StringBuilder coloresSeleccionados = new StringBuilder();
+            if (checkBlanco.isChecked()) coloresSeleccionados.append("Blanco,");
+            if (checkRojo.isChecked()) coloresSeleccionados.append("Rojo,");
+            if (checkAzul.isChecked()) coloresSeleccionados.append("Azul,");
+            if (checkVerde.isChecked()) coloresSeleccionados.append("Verde,");
+            if (checkMorado.isChecked()) coloresSeleccionados.append("Morado,");
+            if (checkAmarillo.isChecked()) coloresSeleccionados.append("Amarillo,");
+            if (checkNegro.isChecked()) coloresSeleccionados.append("Negro,");
+
+            // Eliminar la última coma si existe
+            if (coloresSeleccionados.length() > 0) {
+                coloresSeleccionados.setLength(coloresSeleccionados.length() - 1);
             }
+
+            // Llamar a la función para actualizar el producto
+            actualizarProductoEnAPI(producto.getId(), nombre, descripcion, categoria, precio, stock, descuento, coloresSeleccionados.toString());
+            dialog.dismiss();
         });
 
         // Listener para eliminar producto
@@ -91,41 +141,30 @@ public class FormularioEditarAdapter {
         });
     }
 
-    private boolean areFieldsValid(String nombre, String descripcion, String precio, String stock) {
-        return !TextUtils.isEmpty(nombre) && !TextUtils.isEmpty(descripcion) &&
-                !TextUtils.isEmpty(precio) && !TextUtils.isEmpty(stock);
-    }
-
-    private void editarProductoEnAPI(String nombre, String descripcion, String precio, String descuento, String stock) {
+    private void actualizarProductoEnAPI(int id, String nombre, String descripcion, String categoria, String precio, String stock, String descuento, String colores) {
         OkHttpClient client = new OkHttpClient();
-        MediaType mediaType = MediaType.parse("application/json");
-        JSONObject jsonObject = new JSONObject();
+        String url = "https://api-happypetshco-com.preview-domain.com/api/ActualizarProducto";
 
+        // Crear el cuerpo de la solicitud
+        JSONObject body = new JSONObject();
         try {
-            jsonObject.put("nm_producto", nombre);
-            jsonObject.put("descripcion", descripcion);
-            jsonObject.put("categoria", producto.getCategoria());
-            jsonObject.put("precio", precio);
-            jsonObject.put("descuento", descuento);
-            jsonObject.put("colores", producto.getColores());
-            jsonObject.put("stock", stock);
-            jsonObject.put("id", producto.getId());
-
-            String categoria = producto.getCategoria();
-            int id = producto.getId();
-            showToast("Categoría: " + categoria + ", ID: " + id + ", token: " + token);
-
+            body.put("id", id);
+            body.put("nm_producto", nombre);
+            body.put("descripcion", descripcion);
+            body.put("categoria", categoria);
+            body.put("precio", precio);
+            body.put("stock", stock);
+            body.put("descuento", descuento); // Añadir descuento al cuerpo de la solicitud
+            body.put("colores", colores); // Añadir colores al cuerpo de la solicitud
         } catch (JSONException e) {
             e.printStackTrace();
-            Toast.makeText(context, "Error al crear JSON: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-            return;
         }
 
-        Log.d("FormularioEditarAdapter", "JSON Body: " + jsonObject.toString());
+        RequestBody requestBody = RequestBody.create(body.toString(), okhttp3.MediaType.parse("application/json; charset=utf-8"));
 
         Request request = new Request.Builder()
-                .url("https://api-happypetshco-com.preview-domain.com/api/ActualizarProducto")
-                .put(RequestBody.create(mediaType, jsonObject.toString()))
+                .url(url)
+                .put(requestBody)
                 .addHeader("Content-Type", "application/json")
                 .addHeader("Authorization", "Bearer " + token)
                 .build();
@@ -134,42 +173,19 @@ public class FormularioEditarAdapter {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                showToast("Error al editar producto");
+                showToast("Error al actualizar producto");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    showToast("Producto editado correctamente");
+                    showToast("Producto actualizado correctamente");
                 } else {
-                    String errorMessage = obtenerMensajeError(response);
-                    Log.d("FormularioEditarAdapter", "Error Response: " + errorMessage);
-                    showToast(errorMessage);
+                    String errorMessage = response.body().string();
+                    showToast("Error: " + errorMessage);
                 }
-                response.close(); // Cerrar el Response para liberar recursos
             }
         });
-    }
-
-
-
-    private String obtenerMensajeError(Response response) throws IOException {
-        String errorMessage;
-        switch (response.code()) {
-            case 400:
-                errorMessage = "Error en la solicitud: " + response.body().string();
-                break;
-            case 404:
-                errorMessage = "Producto no encontrado.";
-                break;
-            case 500:
-                errorMessage = "Error interno del servidor.";
-                break;
-            default:
-                errorMessage = "Error desconocido: " + response.body().string();
-                break;
-        }
-        return errorMessage;
     }
 
     private void eliminarProductoEnAPI(int id) {
@@ -187,7 +203,7 @@ public class FormularioEditarAdapter {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                showToast("Error al eliminar producto");
+                showToast("Error de red al eliminar producto: " + e.getMessage());
             }
 
             @Override
@@ -195,8 +211,8 @@ public class FormularioEditarAdapter {
                 if (response.isSuccessful()) {
                     showToast("Producto eliminado correctamente");
                 } else {
-                    String errorMessage = response.body().string();
-                    showToast("Error: " + errorMessage);
+                    String errorMessage = response.body() != null ? response.body().string() : "Error desconocido";
+                    showToast("Error al eliminar producto: " + response.code() + " - " + errorMessage);
                 }
             }
         });

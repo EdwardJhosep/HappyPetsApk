@@ -44,17 +44,13 @@ public class Producto {
         return descripcion;
     }
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
+
 
     public String getCategoria() {
         return categoria;
     }
 
-    public void setCategoria(String categoria) {
-        this.categoria = categoria;
-    }
+
 
     public String getPrecio() {
         return precio;
@@ -68,17 +64,13 @@ public class Producto {
         return descuento;
     }
 
-    public void setDescuento(String descuento) {
-        this.descuento = descuento;
-    }
+
 
     public String getStock() {
         return stock;
     }
 
-    public void setStock(String stock) {
-        this.stock = stock;
-    }
+
 
     public String getImagen() {
         return imagen;
@@ -92,7 +84,5 @@ public class Producto {
         return colores;
     }
 
-    public void setColores(String colores) { // Método setter para colores
-        this.colores = colores;
-    }
+
 }

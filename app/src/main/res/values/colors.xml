@@ -23,5 +23,6 @@
     <color name="border_color">#CCCCCC</color>
     <color name="edittext_border_color">#DDDDDD</color>
     <color name="verde">#0AAF11</color>
+    <color name="text_color">#212121</color> <!-- Negro oscuro -->
 
 </resources>

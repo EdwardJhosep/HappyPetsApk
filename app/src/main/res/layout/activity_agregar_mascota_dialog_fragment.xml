@@ -1,99 +1,137 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@android:color/white">
+    android:layout_height="match_parent">
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="gone"
-        android:layout_marginBottom="16dp" /> <!-- Margen inferior para espacio -->
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Agregar Nueva Mascota"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_gravity="center"
-        android:paddingBottom="16dp"
-        android:textColor="@color/primary_color" />
-
-    <com.google.android.material.textfield.TextInputLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Nombre">
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@android:color/white">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/nombreEditText"
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Agregar Nueva Mascota"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_gravity="center"
+            android:paddingBottom="16dp"
+            android:textColor="@color/primary_color" />
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Nombre"
+            app:hintEnabled="true">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Edad">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etNombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:padding="12dp"
+                android:backgroundTint="@color/secondary_color"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/edadEditText"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Edad"
+            app:hintEnabled="true">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Especie">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEdad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number"
+                android:padding="12dp"
+                android:backgroundTint="@color/secondary_color"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/especieEditText"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Especie"
+            app:hintEnabled="true">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Raza">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etEspecie"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:padding="12dp"
+                android:backgroundTint="@color/secondary_color"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/razaEditText"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Raza"
+            app:hintEnabled="true">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Sexo">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etRaza"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:padding="12dp"
+                android:backgroundTint="@color/secondary_color"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/sexoEditText"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:hint="Sexo"
+            app:hintEnabled="true">
 
-    <Button
-        android:id="@+id/agregarButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Agregar Mascota"
-        android:layout_marginTop="16dp"
-        android:backgroundTint="@color/primary_color"
-        android:textColor="@android:color/white"
-        android:padding="12dp"
-        android:layout_gravity="center" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etSexo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text"
+                android:padding="12dp"
+                android:backgroundTint="@color/secondary_color"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-</LinearLayout>
+        <ImageView
+            android:id="@+id/ivImagen"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp"
+            android:scaleType="centerCrop"
+            android:background="@android:color/darker_gray" /> <!-- Placeholder para imagen -->
+
+        <Button
+            android:id="@+id/tomarfot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Tomar foto"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/secondary_color"
+            android:textColor="@android:color/white"
+            android:padding="12dp"
+            android:layout_gravity="center" />
+
+        <Button
+            android:id="@+id/btnAgregarMascota"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Agregar Mascota"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@color/primary_color"
+            android:textColor="@android:color/white"
+            android:padding="12dp"
+            android:layout_gravity="center" />
+    </LinearLayout>
+</ScrollView>

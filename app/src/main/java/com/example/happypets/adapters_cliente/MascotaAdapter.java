@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide; // Importar Glide
 import com.example.happypets.models.Mascota;
 import com.example.happypets.R;
 
@@ -86,15 +87,13 @@ public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.MascotaV
             // Cambiar el color de fondo de estadoView según el estado
             estadoView.setBackgroundResource(estadoColorMap.getOrDefault(mascota.getEstado().toLowerCase(), R.drawable.circle_background));
 
-            // Establecer la imagen según la especie
-            String especie = mascota.getEspecie().toLowerCase();
-            if (especie.equals("perro")) {
-                mascotaImageView.setImageResource(R.drawable.perro);
-            } else if (especie.equals("gato")) {
-                mascotaImageView.setImageResource(R.drawable.gato);
-            } else {
-                mascotaImageView.setImageResource(R.drawable.default_mascota);
-            }
+            // Cargar la imagen usando Glide
+            String imagenUrl = "https://api-happypetshco-com.preview-domain.com/ServidorMascotas/" + mascota.getImagen();
+            Glide.with(mascotaImageView.getContext())
+                    .load(imagenUrl)
+                    .placeholder(R.drawable.placeholder_image) // Imagen de carga
+                    .error(R.drawable.logo_eliminar) // Imagen de error
+                    .into(mascotaImageView);
         }
     }
 }

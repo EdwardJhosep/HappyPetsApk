@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/background_color"
-        tools:context=".view_cliente.ProductoCliente">
+        tools:context=".view_cliente.ProductoCliente">|
 
         <TextView
             android:id="@+id/textViewTitle"

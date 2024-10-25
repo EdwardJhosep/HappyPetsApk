@@ -18,14 +18,14 @@
 
     <ImageView
         android:id="@+id/mascotaImageView"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="95dp"
+        android:layout_height="83dp"
         android:layout_centerHorizontal="true"
-        android:contentDescription="Imagen de la mascota"
-        android:scaleType="centerCrop"
+        android:background="@drawable/card_background"
         android:clipToOutline="true"
-        android:background="@drawable/circle_background"
-        android:padding="4dp"/>
+        android:contentDescription="Imagen de la mascota"
+        android:padding="4dp"
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/nombreTextView"

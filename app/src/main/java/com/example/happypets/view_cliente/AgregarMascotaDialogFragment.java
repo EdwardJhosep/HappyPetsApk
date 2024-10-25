@@ -1,14 +1,18 @@
 package com.example.happypets.view_cliente;
 
-import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,130 +21,179 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.happypets.R;
 
-import org.json.JSONObject;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class AgregarMascotaDialogFragment extends DialogFragment {
 
+    private static final int REQUEST_IMAGE_CAPTURE = 1; // Código de solicitud para tomar una foto
+
     private String userId;
-    private String token; // Agrega esta línea para almacenar el token
-    private ProgressBar progressBar;
-    private EditText nombreEditText;
-    private EditText edadEditText;
-    private EditText especieEditText;
-    private EditText razaEditText;
-    private EditText sexoEditText;
-    private Button agregarButton;
+    private String token;
+
+    private EditText etNombre, etEdad, etEspecie, etRaza, etSexo;
+    private ImageView ivImagen;
+    private Button btnAgregarMascota, btnSeleccionarImagen;
+    private Uri imagenUri;
 
     public static AgregarMascotaDialogFragment newInstance(String userId, String token) {
         AgregarMascotaDialogFragment fragment = new AgregarMascotaDialogFragment();
         Bundle args = new Bundle();
         args.putString("userId", userId);
-        args.putString("token", token); // Pasa el token como argumento
+        args.putString("token", token);
         fragment.setArguments(args);
         return fragment;
     }
 
-    @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_agregar_mascota_dialog_fragment, container, false);
 
+        // Inicializar vistas
+        etNombre = view.findViewById(R.id.etNombre);
+        etEdad = view.findViewById(R.id.etEdad);
+        etEspecie = view.findViewById(R.id.etEspecie);
+        etRaza = view.findViewById(R.id.etRaza);
+        etSexo = view.findViewById(R.id.etSexo);
+        ivImagen = view.findViewById(R.id.ivImagen);
+        btnAgregarMascota = view.findViewById(R.id.btnAgregarMascota);
+        btnSeleccionarImagen = view.findViewById(R.id.tomarfot);
+
         // Obtener los argumentos
         if (getArguments() != null) {
             userId = getArguments().getString("userId");
-            token = getArguments().getString("token"); // Obtén el token de los argumentos
+            token = getArguments().getString("token");
         }
 
-        // Inicializar los elementos del formulario
-        nombreEditText = view.findViewById(R.id.nombreEditText);
-        edadEditText = view.findViewById(R.id.edadEditText);
-        especieEditText = view.findViewById(R.id.especieEditText);
-        razaEditText = view.findViewById(R.id.razaEditText);
-        sexoEditText = view.findViewById(R.id.sexoEditText);
-        agregarButton = view.findViewById(R.id.agregarButton);
-        progressBar = view.findViewById(R.id.progressBar); // Inicializa el ProgressBar
+        // Configurar el botón para agregar mascota
+        btnAgregarMascota.setOnClickListener(v -> agregarMascota());
 
-        agregarButton.setOnClickListener(v -> {
-            String nombre = nombreEditText.getText().toString().trim();
-            String edad = edadEditText.getText().toString().trim();
-            String especie = especieEditText.getText().toString().trim();
-            String raza = razaEditText.getText().toString().trim();
-            String sexo = sexoEditText.getText().toString().trim();
-
-            // Validar que todos los campos estén completos
-            if (nombre.isEmpty() || edad.isEmpty() || especie.isEmpty() || raza.isEmpty() || sexo.isEmpty()) {
-                Toast.makeText(getActivity(), "Por favor, completa todos los campos.", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            agregarMascota(nombre, edad, especie, raza, sexo, userId, token); // Pasa el token a la función
-        });
+        // Configurar el botón para seleccionar imagen
+        btnSeleccionarImagen.setOnClickListener(v -> tomarFoto());
 
         return view;
     }
 
-    private void agregarMascota(String nombre, String edad, String especie, String raza, String sexo, String idUsuario, String token) {
-        agregarButton.setEnabled(false); // Deshabilitar el botón
-        progressBar.setVisibility(View.VISIBLE); // Mostrar el ProgressBar
+    private void agregarMascota() {
+        String nombre = etNombre.getText().toString().trim();
+        String edad = etEdad.getText().toString().trim();
+        String especie = etEspecie.getText().toString().trim();
+        String raza = etRaza.getText().toString().trim();
+        String sexo = etSexo.getText().toString().trim();
 
+        if (nombre.isEmpty() || edad.isEmpty() || especie.isEmpty() || raza.isEmpty() || sexo.isEmpty() || imagenUri == null) {
+            Toast.makeText(getContext(), "Por favor completa todos los campos, incluyendo la imagen", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Mostrar un diálogo de progreso
+        ProgressDialog progressDialog = new ProgressDialog(getContext());
+        progressDialog.setMessage("Agregando mascota...");
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+
+        // Crear el cliente HTTP
+        OkHttpClient client = new OkHttpClient();
+
+        // Crear el cuerpo de la solicitud
+        File file = new File(imagenUri.getPath());
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("nombre", nombre)
+                .addFormDataPart("edad", edad)
+                .addFormDataPart("especie", especie)
+                .addFormDataPart("raza", raza)
+                .addFormDataPart("sexo", sexo)
+                .addFormDataPart("id_usuario", userId)
+                .addFormDataPart("imagen", file.getName(), RequestBody.create(MediaType.parse("image/*"), file))
+                .build();
+
+        // Crear la solicitud
+        Request request = new Request.Builder()
+                .url("https://api-happypetshco-com.preview-domain.com/api/NuevaMascota")
+
+                .post(requestBody)
+                .addHeader("Authorization", "Bearer " + token) // Agregar token de autorización
+                .build();
+
+        // Realizar la llamada asíncrona
         new Thread(() -> {
             try {
-                URL url = new URL("https://api-happypetshco-com.preview-domain.com/api/NuevaMascota");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("Authorization", "Bearer " + token); // Agrega el token en el encabezado
-                conn.setDoOutput(true);
-
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("nombre", nombre);
-                jsonObject.put("edad", edad);
-                jsonObject.put("especie", especie);
-                jsonObject.put("raza", raza);
-                jsonObject.put("sexo", sexo);
-                jsonObject.put("id_usuario", idUsuario); // Pasar el ID del usuario
-
-                OutputStream os = conn.getOutputStream();
-                os.write(jsonObject.toString().getBytes());
-                os.flush();
-                os.close();
-
-                int responseCode = conn.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_CREATED) {
-                    // Mascota agregada exitosamente
-                    requireActivity().runOnUiThread(() -> {
-                        Toast.makeText(getActivity(), "Mascota registrada exitosamente", Toast.LENGTH_SHORT).show();
-                        limpiarFormulario(); // Limpiar campos
+                Response response = client.newCall(request).execute();
+                if (response.isSuccessful()) {
+                    // Mostrar mensaje de éxito
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getContext(), "Mascota agregada exitosamente", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
                         dismiss(); // Cerrar el diálogo
                     });
                 } else {
-                    // Manejar errores
-                    requireActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "Error al registrar la mascota", Toast.LENGTH_SHORT).show());
+                    // Mostrar mensaje de error con detalles
+                    String errorResponse = response.body().string(); // Captura la respuesta del error
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getContext(), "Error al agregar la mascota: " + errorResponse, Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    });
                 }
-                conn.disconnect();
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
-                requireActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show());
-            } finally {
-                // Restablecer la UI
-                requireActivity().runOnUiThread(() -> {
-                    agregarButton.setEnabled(true); // Habilitar el botón
-                    progressBar.setVisibility(View.GONE); // Ocultar el ProgressBar
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), "Error de conexión: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    progressDialog.dismiss();
                 });
             }
         }).start();
     }
 
-    private void limpiarFormulario() {
-        nombreEditText.setText("");
-        edadEditText.setText("");
-        especieEditText.setText("");
-        razaEditText.setText("");
-        sexoEditText.setText("");
+    private void tomarFoto() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getContext().getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == getActivity().RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            ivImagen.setImageBitmap(imageBitmap);
+
+            // Guardar la imagen en un archivo y obtener la URI correspondiente
+            try {
+                // Crea un archivo temporal para almacenar la imagen
+                File file = new File(getContext().getExternalFilesDir(null), "temp_image.jpg");
+                FileOutputStream fos = new FileOutputStream(file);
+                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                fos.flush();
+                fos.close();
+                imagenUri = Uri.fromFile(file); // Guarda la URI de la imagen en el archivo
+            } catch (IOException e) {
+                e.printStackTrace();
+                Toast.makeText(getContext(), "Error al guardar la imagen: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            // Ajustar el tamaño del diálogo
+            getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            // O puedes establecer un tamaño específico
+            // getDialog().getWindow().setLayout(600, ViewGroup.LayoutParams.WRAP_CONTENT); // 600 píxeles de ancho
+        }
     }
 }
+

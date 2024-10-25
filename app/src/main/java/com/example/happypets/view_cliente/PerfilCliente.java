@@ -112,10 +112,10 @@ public class PerfilCliente extends Fragment {
             return;
         }
 
-        String url = "https://api-happypetshco-com.preview-domain.com/api/HistorialMascota=" + userId;
+        String url = "https://api-happypetshco-com.preview-domain.com/api/MascotasUsuario=" + userId;
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.POST,
+                Request.Method.GET, // Cambiar a método GET
                 url,
                 null,
                 new Response.Listener<JSONObject>() {
@@ -130,12 +130,14 @@ public class PerfilCliente extends Fragment {
                                 for (int i = 0; i < mascotasArray.length(); i++) {
                                     JSONObject mascota = mascotasArray.getJSONObject(i);
                                     petsList.add(new Mascota(
+                                            mascota.getString("id"), // Asegúrate de obtener el ID de la respuesta
                                             mascota.getString("nombre"),
                                             mascota.getString("edad"),
                                             mascota.getString("especie"),
                                             mascota.getString("raza"),
                                             mascota.getString("sexo"),
-                                            mascota.getString("estado")
+                                            mascota.getString("estado"),
+                                            mascota.getString("imagen")
                                     ));
                                 }
                                 petsAdapter.notifyDataSetChanged();

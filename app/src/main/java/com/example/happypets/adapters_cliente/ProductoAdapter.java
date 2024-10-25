@@ -64,19 +64,20 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
 
         // Obtener el precio y el descuento
         String precio = producto.getPrecio();
-        String descuento = producto.getDescuento();
+        String descuento = producto.getDescuento(); // Asumiendo que es un porcentaje en formato de cadena
 
         double precioOriginal = TextUtils.isEmpty(precio) ? 0 : Double.parseDouble(precio);
-        double descuentoValor = TextUtils.isEmpty(descuento) || descuento.equals("0") || "null".equals(descuento)
+        double descuentoPorcentaje = TextUtils.isEmpty(descuento) || descuento.equals("0") || "null".equals(descuento)
                 ? 0
                 : Double.parseDouble(descuento);
 
         double precioConDescuento; // Declarar la variable sin inicializar
-        if (descuentoValor > 0 && descuentoValor <= precioOriginal) {
-            precioConDescuento = precioOriginal - descuentoValor; // Calcular el precio con descuento
+        if (descuentoPorcentaje > 0 && descuentoPorcentaje <= 100) {
+            // Calcular el precio con descuento
+            precioConDescuento = precioOriginal - (precioOriginal * (descuentoPorcentaje / 100));
             holder.precioProducto.setText(" ̶A̶n̶t̶:̶S̶/̶:̶" + precioOriginal + "\nS/. " + precioConDescuento);
             holder.descuentoProducto.setVisibility(View.VISIBLE);
-            holder.descuentoProducto.setText("Descuento: S/. " + descuentoValor);
+            holder.descuentoProducto.setText("Descuento: " + descuentoPorcentaje + "%");
         } else {
             precioConDescuento = precioOriginal; // Asignar precioOriginal si no hay descuento
             holder.precioProducto.setText("S/. " + precioOriginal);
@@ -106,13 +107,14 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
             Context context = holder.itemView.getContext();
         });
 
-        final String productPrice = (descuentoValor > 0) ? String.valueOf(precioConDescuento) : String.valueOf(precioOriginal);
+        final String productPrice = (descuentoPorcentaje > 0) ? String.valueOf(precioConDescuento) : String.valueOf(precioOriginal);
         holder.imageButtonCarrito.setOnClickListener(v -> {
             // Pasar los colores y la imagen al CarritoAdapter
             CarritoAdapter carritoDialog = CarritoAdapter.newInstance(userId, String.valueOf(producto.getId()), productPrice, token, colores, imagenUrl); // Usar imagenUrl aquí
             carritoDialog.show(((AppCompatActivity) holder.itemView.getContext()).getSupportFragmentManager(), "CarritoDialog");
         });
     }
+
 
     @Override
     public int getItemCount() {
