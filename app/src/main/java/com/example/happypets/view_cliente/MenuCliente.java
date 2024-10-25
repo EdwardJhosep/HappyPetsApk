@@ -83,11 +83,6 @@ public class MenuCliente extends AppCompatActivity {
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(getResources().getColor(R.color.red_color)); // Color rojo
 
-        // Cambia el texto del Snackbar
-        TextView textView = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
-        textView.setTextColor(getResources().getColor(R.color.white)); // Color del texto
-        textView.setTextSize(16); // Tamaño del texto
-        textView.setTypeface(textView.getTypeface(), Typeface.BOLD); // Texto en negrita
 
         // Agrega un botón de acción
         snackbar.setAction("Cerrar sesión", view -> {

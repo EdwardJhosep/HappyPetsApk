@@ -1,34 +1,31 @@
 package com.example.happypets.view_admin;
 
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.happypets.R;
 import com.example.happypets.adapters_admin.UsuariosAdapter;
 import com.example.happypets.models.User;
+import com.google.gson.Gson;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class ClientsAdmin extends Fragment {
 
@@ -36,9 +33,8 @@ public class ClientsAdmin extends Fragment {
     private String token;
     private RecyclerView recyclerViewUsuarios;
     private UsuariosAdapter adapter;
-    private List<User> usuarios;
-    private List<User> usuariosFiltrados; // Lista para almacenar los usuarios filtrados
     private EditText buscarEditText;
+    private List<User> listaUsuariosOriginal;
 
     public static ClientsAdmin newInstance(String token) {
         ClientsAdmin fragment = new ClientsAdmin();
@@ -54,128 +50,83 @@ public class ClientsAdmin extends Fragment {
         if (getArguments() != null) {
             token = getArguments().getString(ARG_TOKEN);
         }
-        usuarios = new ArrayList<>();
-        usuariosFiltrados = new ArrayList<>(); // Inicializa la lista filtrada
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_clients_admin, container, false);
-
-        buscarEditText = view.findViewById(R.id.buscarEditText); // Asegúrate de que este ID sea correcto
+        buscarEditText = view.findViewById(R.id.buscarEditText);
         recyclerViewUsuarios = view.findViewById(R.id.recyclerViewUsuarios);
         recyclerViewUsuarios.setLayoutManager(new LinearLayoutManager(getContext()));
-
+        adapter = new UsuariosAdapter(new ArrayList<>());
+        recyclerViewUsuarios.setAdapter(adapter);
         obtenerUsuarios();
 
-        // Agrega el TextWatcher al EditText
         buscarEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // No se necesita implementación aquí
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                filtrarUsuarios(s.toString());
+                if (listaUsuariosOriginal != null) {
+                    adapter.filtrarPorDNI(s.toString(), listaUsuariosOriginal);
+                }
             }
 
             @Override
-            public void afterTextChanged(Editable s) {
-                // No se necesita implementación aquí
-            }
+            public void afterTextChanged(Editable s) {}
         });
 
         return view;
     }
 
     private void obtenerUsuarios() {
-        OkHttpClient client = new OkHttpClient();
-        String url = "https://api-happypetshco-com.preview-domain.com/api/Usuarios";
-
-        Request request = new Request.Builder()
-                .url(url)
-                .get()
-                .addHeader("Authorization", "Bearer " + token)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
+        new AsyncTask<Void, Void, List<User>>() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-                if (getActivity() != null) {
-                    getActivity().runOnUiThread(() ->
-                            Toast.makeText(getActivity(), "Error de conexión: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                    );
+            protected List<User> doInBackground(Void... voids) {
+                try {
+                    URL url = new URL("https://api-happypetshco-com.preview-domain.com/api/Usuarios");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("GET");
+                    conn.setRequestProperty("Authorization", "Bearer " + token);
+                    conn.connect();
+
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+
+                    String jsonResponse = response.toString();
+                    Gson gson = new Gson();
+                    UsuarioResponse usuarioResponse = gson.fromJson(jsonResponse, UsuarioResponse.class);
+                    return usuarioResponse.getUsuarios();
+
+                } catch (Exception e) {
+                    Log.e("Error", "Error al obtener usuarios: " + e.getMessage());
+                    return null;
                 }
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String responseBody = response.body().string();
-                    try {
-                        JSONObject jsonResponse = new JSONObject(responseBody);
-                        JSONArray jsonUsuarios = jsonResponse.getJSONArray("usuarios");
-
-                        for (int i = 0; i < jsonUsuarios.length(); i++) {
-                            JSONObject jsonUsuario = jsonUsuarios.getJSONObject(i);
-                            // Verificar si el usuario tiene permisos de CLIENTE
-                            if (jsonUsuario.optString("permisos").equals("Usuario")) {
-                                User usuario = new User(
-                                        jsonUsuario.getString("dni"),
-                                        jsonUsuario.getString("nombres"),
-                                        jsonUsuario.getString("telefono"),
-                                        jsonUsuario.has("ubicacion") && !jsonUsuario.isNull("ubicacion") ? jsonUsuario.getString("ubicacion") : "sin dirección"
-                                );
-                                usuarios.add(usuario);
-                            }
-                        }
-
-                        // Copia la lista de usuarios a la lista filtrada
-                        usuariosFiltrados.addAll(usuarios);
-
-                        if (getActivity() != null) {
-                            getActivity().runOnUiThread(() -> {
-                                adapter = new UsuariosAdapter(usuariosFiltrados); // Usa la lista filtrada
-                                recyclerViewUsuarios.setAdapter(adapter);
-                            });
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        if (getActivity() != null) {
-                            getActivity().runOnUiThread(() ->
-                                    Toast.makeText(getActivity(), "Error al procesar los datos: " + e.getMessage(), Toast.LENGTH_SHORT).show()
-                            );
-                        }
-                    }
+            protected void onPostExecute(List<User> usuarios) {
+                if (usuarios != null) {
+                    listaUsuariosOriginal = new ArrayList<>(usuarios);
+                    adapter.updateUsuarios(usuarios);
                 } else {
-                    if (getActivity() != null) {
-                        getActivity().runOnUiThread(() ->
-                                Toast.makeText(getActivity(), "Error en la respuesta: " + response.message() + " (Código: " + response.code() + ")", Toast.LENGTH_SHORT).show()
-                        );
-                    }
+                    Toast.makeText(getContext(), "Error al obtener usuarios", Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        }.execute();
     }
 
+    private class UsuarioResponse {
+        private List<User> usuarios;
 
-    private void filtrarUsuarios(String texto) {
-        usuariosFiltrados.clear(); // Limpia la lista filtrada antes de empezar
-
-        if (texto.isEmpty()) {
-            usuariosFiltrados.addAll(usuarios); // Si no hay texto de búsqueda, copia todos los usuarios
-        } else {
-            String textoLower = texto.toLowerCase(); // Convierte el texto de búsqueda a minúsculas
-            for (User usuario : usuarios) {
-                if (usuario.getDni().toLowerCase().contains(textoLower) ||
-                        usuario.getNombres().toLowerCase().contains(textoLower)) {
-                    usuariosFiltrados.add(usuario); // Agrega a la lista filtrada si coincide con la búsqueda
-                }
-            }
+        public List<User> getUsuarios() {
+            return usuarios;
         }
-
-        adapter.notifyDataSetChanged(); // Notifica los cambios al adaptador
     }
 }

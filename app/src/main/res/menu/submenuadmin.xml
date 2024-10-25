@@ -7,7 +7,7 @@
     <item
         android:id="@+id/Agregar"
         android:icon="@drawable/ic_product"
-        android:title="Agregar"/>.
+        android:title="Agregar"/>
     <item
         android:id="@+id/Salir"
         android:icon="@drawable/salir"

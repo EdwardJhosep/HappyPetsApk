@@ -1,16 +1,20 @@
 package com.example.happypets.models;
 
+import java.util.List;
+
 public class User {
     private String dni;
     private String nombres;
     private String telefono;
     private String ubicacion;
+    private List<String> permisos; // Campo para los permisos
 
-    public User(String dni, String nombres, String telefono, String ubicacion) {
+    public User(String dni, String nombres, String telefono, String ubicacion, List<String> permisos) {
         this.dni = dni;
         this.nombres = nombres;
         this.telefono = telefono;
         this.ubicacion = ubicacion;
+        this.permisos = permisos; // Inicializa la lista de permisos
     }
 
     // Getters
@@ -30,7 +34,11 @@ public class User {
         return ubicacion;
     }
 
-    // Setters (opcional, según sea necesario)
+    public List<String> getPermisos() {
+        return permisos; // Agregado para obtener permisos
+    }
+
+    // Setters (opcional)
     public void setDni(String dni) {
         this.dni = dni;
     }
@@ -45,5 +53,9 @@ public class User {
 
     public void setUbicacion(String ubicacion) {
         this.ubicacion = ubicacion;
+    }
+
+    public void setPermisos(List<String> permisos) {
+        this.permisos = permisos; // Agregado para establecer permisos
     }
 }
