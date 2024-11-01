@@ -119,7 +119,7 @@ public class AgregarMascotaDialogFragment extends DialogFragment {
 
         // Crear la solicitud
         Request request = new Request.Builder()
-                .url("https://api-happypetshco-com.preview-domain.com/api/NuevaMascota")
+                .url("https://api.happypetshco.com/api/NuevaMascota")
 
                 .post(requestBody)
                 .addHeader("Authorization", "Bearer " + token) // Agregar token de autorización

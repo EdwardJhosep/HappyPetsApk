@@ -76,7 +76,7 @@ public class ListarCarritoAdapter extends BaseAdapter {
                     tvCantidad.setText("Cantidad: " + producto.optString("cantidad", "0"));
                     tvColor.setText("Color: " + producto.optString("color", "Sin color"));
                     tvImporte.setText("Importe: S/ " + producto.optString("importe", "0.00"));
-                    String imagenUrl = "https://api-happypetshco-com.preview-domain.com/ServidorProductos/" + detalleProducto.optString("imagen", "default_image.png");
+                    String imagenUrl = "https://api.happypetshco.com/ServidorProductos/" + detalleProducto.optString("imagen", "default_image.png");
                     Glide.with(context)
                             .load(imagenUrl)
                             .placeholder(R.drawable.logo)
@@ -98,7 +98,7 @@ public class ListarCarritoAdapter extends BaseAdapter {
         new Thread(() -> {
             try {
                 OkHttpClient client = new OkHttpClient();
-                String url = "https://api-happypetshco-com.preview-domain.com/api/EliminarCarrito=" + id;
+                String url = "https://api.happypetshco.com/api/EliminarCarrito=" + id;
                 Request request = new Request.Builder()
                         .url(url)
                         .delete()

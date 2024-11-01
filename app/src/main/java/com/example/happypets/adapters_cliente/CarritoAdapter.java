@@ -14,22 +14,18 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView; // Importar ImageView
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide; // Asegúrate de agregar Glide en tu build.gradle
+import com.bumptech.glide.Glide;
 import com.example.happypets.R;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class CarritoAdapter extends DialogFragment {
-
     private String userId;
     private String productId;
     private String productPrice;
@@ -234,7 +230,7 @@ public class CarritoAdapter extends DialogFragment {
         // Enviar la solicitud POST a la API
         new Thread(() -> {
             try {
-                URL url = new URL("https://api-happypetshco-com.preview-domain.com/api/AgregarCarrito");
+                URL url = new URL("https://api.happypetshco.com/api/AgregarCarrito");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json; utf-8");

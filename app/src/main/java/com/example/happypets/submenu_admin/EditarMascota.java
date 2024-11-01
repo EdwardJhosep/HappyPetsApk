@@ -74,7 +74,7 @@ public class EditarMascota extends Fragment {
 
     private void listarMascotas() {
         OkHttpClient client = new OkHttpClient();
-        String url = "https://api-happypetshco-com.preview-domain.com/api/TodasMascotas";
+        String url = "https://api.happypetshco.com/api/TodasMascotas";
 
         Request request = new Request.Builder()
                 .url(url)

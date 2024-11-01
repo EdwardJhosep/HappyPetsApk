@@ -89,7 +89,7 @@ public class DarPermisoDialogFragment extends DialogFragment {
         OkHttpClient client = new OkHttpClient();
 
         // Construir la URL para actualizar el usuario
-        String url = "https://api-happypetshco-com.preview-domain.com/api/ActualizarUsuario=" + userId;
+        String url = "https://api.happypetshco.com/api/ActualizarUsuario=" + userId;
 
         // Obtener los permisos seleccionados
         StringBuilder permisosSeleccionados = new StringBuilder();

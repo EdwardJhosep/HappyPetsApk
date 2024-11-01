@@ -51,7 +51,7 @@ public class EditarProducto extends Fragment {
         productoAdapterEditar = new ProductoAdapterEditar(productoList, token);
         recyclerView.setAdapter(productoAdapterEditar);
 
-        new GetProductosTask().execute("https://api-happypetshco-com.preview-domain.com/api/ListarProductos");
+        new GetProductosTask().execute("https://api.happypetshco.com/api/ListarProductos");
 
         editTextSearch.addTextChangedListener(new TextWatcher() {
             @Override

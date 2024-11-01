@@ -85,7 +85,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
         }
 
         // Cargar la imagen con Picasso
-        String imagenUrl = "https://api-happypetshco-com.preview-domain.com/ServidorProductos/" + producto.getImagen(); // Definir la variable imagenUrl
+        String imagenUrl = "https://api.happypetshco.com/ServidorProductos/" + producto.getImagen(); // Definir la variable imagenUrl
         Picasso.get()
                 .load(imagenUrl)
                 .placeholder(R.drawable.logo) // Reemplaza con tu drawable de marcador de posición

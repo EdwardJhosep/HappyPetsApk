@@ -66,7 +66,7 @@ public class DashboardAdmin extends Fragment {
     }
 
     private void fetchProductCount() {
-        String url = "https://api-happypetshco-com.preview-domain.com/api/ListarProductos";
+        String url = "https://api.happypetshco.com/api/ListarProductos";
         Request request = new Request.Builder()
                 .url(url)
                 .build();
@@ -95,7 +95,7 @@ public class DashboardAdmin extends Fragment {
     }
 
     private void fetchPetCount() {
-        String url = "https://api-happypetshco-com.preview-domain.com/api/ListarMascotas";
+        String url = "https://api.happypetshco.com/api/ListarMascotas";
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Authorization", "Bearer " + token)
@@ -125,7 +125,7 @@ public class DashboardAdmin extends Fragment {
     }
 
     private void fetchUserCount() {
-        String url = "https://api-happypetshco-com.preview-domain.com/api/Usuarios";
+        String url = "https://api.happypetshco.com/api/Usuarios";
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Authorization", "Bearer " + token)

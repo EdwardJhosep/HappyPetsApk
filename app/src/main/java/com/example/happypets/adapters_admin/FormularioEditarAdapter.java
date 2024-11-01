@@ -143,7 +143,7 @@ public class FormularioEditarAdapter {
 
     private void actualizarProductoEnAPI(int id, String nombre, String descripcion, String categoria, String precio, String stock, String descuento, String colores) {
         OkHttpClient client = new OkHttpClient();
-        String url = "https://api-happypetshco-com.preview-domain.com/api/ActualizarProducto";
+        String url = "https://api.happypetshco.com/api/ActualizarProducto";
 
         // Crear el cuerpo de la solicitud
         JSONObject body = new JSONObject();
@@ -190,7 +190,7 @@ public class FormularioEditarAdapter {
 
     private void eliminarProductoEnAPI(int id) {
         OkHttpClient client = new OkHttpClient();
-        String url = "https://api-happypetshco-com.preview-domain.com/api/EliminarProducto=" + id;
+        String url = "https://api.happypetshco.com/api/EliminarProducto=" + id;
 
         Request request = new Request.Builder()
                 .url(url)

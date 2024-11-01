@@ -211,7 +211,7 @@ public class AgregarProducto extends Fragment {
                 }
 
                 RequestBody requestBody = builder.build();
-                String url = "https://api-happypetshco-com.preview-domain.com/api/NuevoProducto";
+                String url = "https://api.happypetshco.com/api/NuevoProducto";
 
                 Request request = new Request.Builder()
                         .url(url)

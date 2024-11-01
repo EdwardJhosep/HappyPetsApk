@@ -88,7 +88,7 @@ public class MascotaAdapter extends RecyclerView.Adapter<MascotaAdapter.MascotaV
             estadoView.setBackgroundResource(estadoColorMap.getOrDefault(mascota.getEstado().toLowerCase(), R.drawable.circle_background));
 
             // Cargar la imagen usando Glide
-            String imagenUrl = "https://api-happypetshco-com.preview-domain.com/ServidorMascotas/" + mascota.getImagen();
+            String imagenUrl = "https://api.happypetshco.com/ServidorMascotas/" + mascota.getImagen();
             Glide.with(mascotaImageView.getContext())
                     .load(imagenUrl)
                     .placeholder(R.drawable.placeholder_image) // Imagen de carga

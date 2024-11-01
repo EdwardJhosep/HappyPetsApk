@@ -90,7 +90,7 @@ public class MainActivity extends DialogFragment {
     }
 
     private void registerUser(String dni, String telefono, String password) {
-        String url = "https://api-happypetshco-com.preview-domain.com/api/Registro";
+        String url = "https://api.happypetshco.com/api/Registro";
 
         JSONObject jsonObject = new JSONObject();
         try {

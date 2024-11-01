@@ -92,7 +92,7 @@ public class EditarPersonal extends Fragment {
             @Override
             protected List<User> doInBackground(Void... voids) {
                 try {
-                    URL url = new URL("https://api-happypetshco-com.preview-domain.com/api/Usuarios");
+                    URL url = new URL("https://api.happypetshco.com/api/Usuarios");
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setRequestMethod("GET");
                     conn.setRequestProperty("Authorization", "Bearer " + token);

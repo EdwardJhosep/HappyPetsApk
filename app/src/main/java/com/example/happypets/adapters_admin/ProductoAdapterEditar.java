@@ -72,7 +72,7 @@ public class ProductoAdapterEditar extends RecyclerView.Adapter<ProductoAdapterE
         }
 
         Picasso.get()
-                .load("https://api-happypetshco-com.preview-domain.com/ServidorProductos/" + producto.getImagen())
+                .load("https://api.happypetshco.com/ServidorProductos/" + producto.getImagen())
                 .placeholder(R.drawable.logo)
                 .error(R.drawable.logo)
                 .into(holder.imagenProducto, new Callback() {

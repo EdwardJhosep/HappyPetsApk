@@ -86,7 +86,7 @@ public class ProductoCliente extends Fragment {
         productoAdapter = new ProductoAdapter(productoList, userId, token);
         recyclerView.setAdapter(productoAdapter);
 
-        new GetProductosTask().execute("https://api-happypetshco-com.preview-domain.com/api/ListarProductos");
+        new GetProductosTask().execute("https://api.happypetshco.com/api/ListarProductos");
 
         recyclerView.setVisibility(View.GONE);
         cardView1.setVisibility(View.VISIBLE);
@@ -221,7 +221,7 @@ public class ProductoCliente extends Fragment {
 
     private class ListarCarritoTask extends AsyncTask<String, Void, String> {
 
-        private static final String API_URL = "https://api-happypetshco-com.preview-domain.com/api/MostrarCarrito=";
+        private static final String API_URL = "https://api.happypetshco.com/api/MostrarCarrito=";
 
         // Declare carritoArray as an ArrayList to hold the cart items
         private ArrayList<JSONObject> carritoArray;

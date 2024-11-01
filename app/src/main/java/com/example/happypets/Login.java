@@ -91,7 +91,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void authenticateUser(String dni, String password) {
-        String url = "https://api-happypetshco-com.preview-domain.com/api/Autenticar";
+        String url = "https://api.happypetshco.com/api/Autenticar";
 
         JSONObject jsonObject = new JSONObject();
         try {
@@ -161,7 +161,7 @@ public class Login extends AppCompatActivity {
     }
 
     private void getUserData(String token) {
-        String url = "https://api-happypetshco-com.preview-domain.com/api/Datos";
+        String url = "https://api.happypetshco.com/api/Datos";
 
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
