@@ -21,7 +21,7 @@ public class AppointmentsAdmin extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
+//jfdf
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
