@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.happypets.R;
 import com.example.happypets.models.ChatMessage;
 
@@ -35,36 +36,30 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         ChatMessage message = messages.get(position);
         holder.textViewMessage.setText(message.getText());
 
-        // Establecer los íconos y estilos según el tipo de mensaje
+        // Establecer el ícono y la alineación
         if (message.isUserMessage()) {
-            // Mostrar ícono del usuario y ocultar ícono del bot
             holder.iconUser.setVisibility(View.VISIBLE);
             holder.iconBot.setVisibility(View.GONE);
-
-            // Alineación a la derecha para mensajes del usuario
-            ViewGroup.LayoutParams params = holder.textViewMessage.getLayoutParams();
-            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_PARENT_END);
-            holder.textViewMessage.setLayoutParams(params);
-            holder.textViewMessage.setBackgroundResource(R.drawable.container_background_rounded);  // Cambia al fondo correspondiente para el usuario
-
-            // Establecer ícono del usuario
-            holder.iconUser.setImageResource(R.drawable.ic_user);  // Cambia esto al nombre de tu ícono
+            holder.alignUserMessage();
+            holder.textViewMessage.setBackgroundResource(R.drawable.user_message_background); // Un drawable diferente para el mensaje del usuario
         } else {
-            // Mostrar ícono del bot y ocultar ícono del usuario
             holder.iconUser.setVisibility(View.GONE);
             holder.iconBot.setVisibility(View.VISIBLE);
+            holder.alignBotMessage();
+            holder.textViewMessage.setBackgroundResource(R.drawable.bot_message_background); // Un drawable diferente para el mensaje del bot
+        }
 
-            // Alineación a la izquierda para mensajes de la API
-            ViewGroup.LayoutParams params = holder.textViewMessage.getLayoutParams();
-            ((RelativeLayout.LayoutParams) params).removeRule(RelativeLayout.ALIGN_PARENT_END);
-            ((RelativeLayout.LayoutParams) params).addRule(RelativeLayout.ALIGN_PARENT_START);
-            holder.textViewMessage.setLayoutParams(params);
-            holder.textViewMessage.setBackgroundResource(R.drawable.container_background_rounded);  // Cambia al fondo correspondiente para el bot
-
-            // Establecer ícono del bot
-            holder.iconBot.setImageResource(R.drawable.ic_chatbot);  // Cambia esto al nombre de tu ícono
+        // Cargar la imagen si existe
+        if (message.hasImage()) {
+            holder.imageViewProduct.setVisibility(View.VISIBLE);
+            Glide.with(holder.itemView.getContext())
+                    .load(message.getImageUrl())
+                    .into(holder.imageViewProduct);
+        } else {
+            holder.imageViewProduct.setVisibility(View.GONE);
         }
     }
+
 
     @Override
     public int getItemCount() {
@@ -80,12 +75,28 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
         TextView textViewMessage;
         ImageView iconUser;  // Ícono del usuario
         ImageView iconBot;   // Ícono del bot
+        ImageView imageViewProduct; // Imagen del producto
 
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewMessage = itemView.findViewById(R.id.text_view_message);
             iconUser = itemView.findViewById(R.id.icon_user);
             iconBot = itemView.findViewById(R.id.icon_bot);
+            imageViewProduct = itemView.findViewById(R.id.image_view_product);
+        }
+
+        void alignUserMessage() {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) textViewMessage.getLayoutParams();
+            params.addRule(RelativeLayout.ALIGN_PARENT_END);
+            textViewMessage.setLayoutParams(params);
+            textViewMessage.setBackgroundResource(R.drawable.container_background_rounded);
+        }
+
+        void alignBotMessage() {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) textViewMessage.getLayoutParams();
+            params.addRule(RelativeLayout.ALIGN_PARENT_START);
+            textViewMessage.setLayoutParams(params);
+            textViewMessage.setBackgroundResource(R.drawable.container_background_rounded);
         }
     }
 }

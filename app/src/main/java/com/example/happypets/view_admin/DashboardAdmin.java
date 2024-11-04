@@ -95,7 +95,8 @@ public class DashboardAdmin extends Fragment {
     }
 
     private void fetchPetCount() {
-        String url = "https://api.happypetshco.com/api/ListarMascotas";
+        String url = "https://api.happypetshco.com/api/TodasMascotas";
+
         Request request = new Request.Builder()
                 .url(url)
                 .addHeader("Authorization", "Bearer " + token)
