@@ -1,5 +1,6 @@
 package com.example.happypets.adapters_cliente;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +21,7 @@ import java.util.List;
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
     private List<ChatMessage> messages;
 
-    public ChatAdapter() {
+    public ChatAdapter(Context context) {
         this.messages = new ArrayList<>();
     }
 

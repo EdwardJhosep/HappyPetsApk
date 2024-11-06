@@ -51,8 +51,10 @@ public class EditarProducto extends Fragment {
         productoAdapterEditar = new ProductoAdapterEditar(productoList, token);
         recyclerView.setAdapter(productoAdapterEditar);
 
+        // Obtener los productos cuando se cargue el fragmento
         new GetProductosTask().execute("https://api.happypetshco.com/api/ListarProductos");
 
+        // Filtrar productos mientras se escribe
         editTextSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -130,5 +132,22 @@ public class EditarProducto extends Fragment {
             }
         }
         productoAdapterEditar.updateList(filteredList);
+    }
+
+    // Método público para recargar los productos
+    public void recargarProductos() {
+        // Limpiar la lista actual
+        productoList.clear();
+
+        // Hacer la solicitud a la API para obtener los productos de nuevo
+        new GetProductosTask().execute("https://api.happypetshco.com/api/ListarProductos");
+    }
+
+    // Este método se llamará cuando se detecte un cambio en el campo de búsqueda para recargar los productos
+    private void updateProductsOnSearchChange(String searchQuery) {
+        if (searchQuery.isEmpty()) {
+            // Si no hay texto en el campo de búsqueda, recargar los productos completos
+            recargarProductos();
+        }
     }
 }

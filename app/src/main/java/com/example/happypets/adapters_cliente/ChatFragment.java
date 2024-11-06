@@ -1,6 +1,9 @@
 package com.example.happypets.adapters_cliente;
 
+import android.content.DialogInterface;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,21 +12,23 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.happypets.R;
 import com.example.happypets.models.ChatMessage;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -37,6 +42,10 @@ public class ChatFragment extends DialogFragment {
     private EditText editTextMessage;
     private Map<String, ChatMessage> faqMap;
     private OkHttpClient client;
+    private MediaPlayer medioSound; // Audio de respuesta
+    private MediaPlayer despedidaSound; // Audio de despedida
+    private MediaPlayer bienvenidaSound; // Audio de bienvenida
+    private boolean isAudioPlaying = false; // Controla si un audio está en reproducción
 
     @Nullable
     @Override
@@ -46,8 +55,9 @@ public class ChatFragment extends DialogFragment {
         recyclerViewChat = view.findViewById(R.id.recycler_view_chat);
         editTextMessage = view.findViewById(R.id.editTextMessage);
         Button buttonSend = view.findViewById(R.id.buttonSend);
+        Button buttonClose = view.findViewById(R.id.buttonClose);
 
-        chatAdapter = new ChatAdapter();
+        chatAdapter = new ChatAdapter(getContext());
         recyclerViewChat.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerViewChat.setAdapter(chatAdapter);
 
@@ -55,14 +65,43 @@ public class ChatFragment extends DialogFragment {
         faqMap = new HashMap<>();
         loadProductData();
 
-        buttonSend.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendMessage();
-            }
+        buttonSend.setOnClickListener(v -> sendMessage());
+
+        buttonClose.setOnClickListener(v -> {
+            playFarewellSound(); // Reproducir el sonido de despedida
         });
 
+        // Reproducir sonido de bienvenida cuando se abre el chat
+        playWelcomeSound();
+
         return view;
+    }
+
+    private void playWelcomeSound() {
+        if (!isAudioPlaying) {
+            isAudioPlaying = true;
+            bienvenidaSound = MediaPlayer.create(getContext(), R.raw.bienvenida);
+            bienvenidaSound.start();
+
+            bienvenidaSound.setOnCompletionListener(mediaPlayer -> {
+                isAudioPlaying = false;
+                mediaPlayer.release();
+            });
+        }
+    }
+
+    private void playFarewellSound() {
+        if (!isAudioPlaying) {
+            isAudioPlaying = true;
+            despedidaSound = MediaPlayer.create(getContext(), R.raw.despedida);
+            despedidaSound.start();
+
+            despedidaSound.setOnCompletionListener(mediaPlayer -> {
+                isAudioPlaying = false;
+                mediaPlayer.release();
+                dismiss(); // Cerrar el chat después de que el audio termine
+            });
+        }
     }
 
     private void loadProductData() {
@@ -73,8 +112,9 @@ public class ChatFragment extends DialogFragment {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                getActivity().runOnUiThread(() ->
-                        Toast.makeText(getContext(), "Error al cargar datos de productos", Toast.LENGTH_SHORT).show());
+                getActivity().runOnUiThread(() -> {
+                    Toast.makeText(getContext(), "Error al cargar datos de productos: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
             }
 
             @Override
@@ -82,6 +122,10 @@ public class ChatFragment extends DialogFragment {
                 if (response.isSuccessful()) {
                     String responseBody = response.body().string();
                     getActivity().runOnUiThread(() -> parseProductData(responseBody));
+                } else {
+                    getActivity().runOnUiThread(() -> {
+                        Toast.makeText(getContext(), "Error en la respuesta del servidor", Toast.LENGTH_SHORT).show();
+                    });
                 }
             }
         });
@@ -106,11 +150,13 @@ public class ChatFragment extends DialogFragment {
     private void sendMessage() {
         String userMessage = editTextMessage.getText().toString().trim();
 
-        if (!userMessage.isEmpty()) {
-            chatAdapter.addMessage(new ChatMessage(userMessage, true, null)); // Mensaje del usuario
+        if (!TextUtils.isEmpty(userMessage)) {
+            chatAdapter.addMessage(new ChatMessage(userMessage, true, null));
 
             ChatMessage response = getResponse(userMessage);
-            chatAdapter.addMessage(response); // Mensaje de respuesta con posible imagen
+            chatAdapter.addMessage(response);
+
+            playResponseSound();
 
             editTextMessage.setText("");
             recyclerViewChat.scrollToPosition(chatAdapter.getItemCount() - 1);
@@ -119,7 +165,43 @@ public class ChatFragment extends DialogFragment {
 
     private ChatMessage getResponse(String userMessage) {
         ChatMessage bestMatch = faqMap.get(userMessage.toLowerCase());
-        return bestMatch != null ? bestMatch : new ChatMessage("Lo siento, no entiendo tu pregunta. ¿Podrías reformularla?", false, null);
+        ChatMessage response;
+
+        if (bestMatch != null) {
+            response = bestMatch;
+        } else {
+            response = new ChatMessage("Lo siento, no entiendo tu pregunta. ¿Podrías reformularla?", false, null);
+            playErrorSound();  // Reproducir sonido de error cuando no se encuentra una respuesta
+        }
+
+        return response;
+    }
+
+    private void playErrorSound() {
+        if (!isAudioPlaying) {
+            isAudioPlaying = true;
+            MediaPlayer errorSound = MediaPlayer.create(getContext(), R.raw.error);  // Cargar el archivo error.mp3
+            errorSound.start();
+
+            errorSound.setOnCompletionListener(mediaPlayer -> {
+                isAudioPlaying = false;
+                mediaPlayer.release();
+            });
+        }
+    }
+
+
+    private void playResponseSound() {
+        if (!isAudioPlaying) {
+            isAudioPlaying = true;
+            medioSound = MediaPlayer.create(getContext(), R.raw.medio);
+            medioSound.start();
+
+            medioSound.setOnCompletionListener(mediaPlayer -> {
+                isAudioPlaying = false;
+                mediaPlayer.release();
+            });
+        }
     }
 
     @Override
@@ -132,6 +214,41 @@ public class ChatFragment extends DialogFragment {
             params.y = 300;
             params.height = (int) (getResources().getDisplayMetrics().heightPixels * 0.7);
             getDialog().getWindow().setAttributes(params);
+            setCancelable(false); // Deshabilitar el cierre al hacer clic fuera
+        }
+    }
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (medioSound != null) {
+            medioSound.release();
+            medioSound = null;
+        }
+        if (despedidaSound != null) {
+            despedidaSound.release();
+            despedidaSound = null;
+        }
+        if (bienvenidaSound != null) {
+            bienvenidaSound.release();
+            bienvenidaSound = null;
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (medioSound != null) {
+            medioSound.release();
+            medioSound = null;
+        }
+        if (despedidaSound != null) {
+            despedidaSound.release();
+            despedidaSound = null;
+        }
+        if (bienvenidaSound != null) {
+            bienvenidaSound.release();
+            bienvenidaSound = null;
         }
     }
 }

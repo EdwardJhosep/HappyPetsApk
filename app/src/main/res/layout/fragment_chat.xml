@@ -51,4 +51,15 @@
         android:paddingVertical="8dp"
         android:background="@drawable/card_background" />
 
+    <Button
+        android:id="@+id/buttonClose"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cerrar"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="@color/red_color"
+    android:textColor="@android:color/white"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="8dp"/>
 </LinearLayout>

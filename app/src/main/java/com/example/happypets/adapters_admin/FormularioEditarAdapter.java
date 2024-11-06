@@ -47,7 +47,7 @@ public class FormularioEditarAdapter {
         EditText editCategoria = dialogView.findViewById(R.id.editarCategoria);
         EditText editPrecio = dialogView.findViewById(R.id.editarPrecio);
         EditText editStock = dialogView.findViewById(R.id.editarStock);
-        EditText editDescuento = dialogView.findViewById(R.id.editarDescuento); // Nuevo campo para descuento
+        EditText editDescuento = dialogView.findViewById(R.id.editarDescuento); // Campo de descuento
         CheckBox checkBlanco = dialogView.findViewById(R.id.checkBlanco);
         CheckBox checkRojo = dialogView.findViewById(R.id.checkRojo);
         CheckBox checkAzul = dialogView.findViewById(R.id.checkAzul);
@@ -64,7 +64,13 @@ public class FormularioEditarAdapter {
         editCategoria.setText(producto.getCategoria());
         editPrecio.setText(String.valueOf(producto.getPrecio()));
         editStock.setText(String.valueOf(producto.getStock()));
-        editDescuento.setText(String.valueOf(producto.getDescuento())); // Prellenar con el descuento actual
+
+        // Verificar si el descuento es null o vacío, y asignar '0' si es necesario
+        String descuento = producto.getDescuento();
+        if (descuento == null || descuento.isEmpty()) {
+            descuento = "0";  // Asignamos '0' si es null o vacío
+        }
+        editDescuento.setText(descuento); // Seteamos el descuento en el campo
 
         // Prellenar los CheckBoxes según los colores actuales
         String[] coloresActuales = producto.getColores().split(",");
@@ -105,7 +111,12 @@ public class FormularioEditarAdapter {
             String categoria = editCategoria.getText().toString();
             String precio = editPrecio.getText().toString();
             String stock = editStock.getText().toString();
-            String descuento = editDescuento.getText().toString(); // Obtener descuento
+            String descuentoInput = editDescuento.getText().toString(); // Aquí hemos renombrado la variable
+
+            // Validación: Si el campo de descuento está vacío o no es un número válido, asignar 0
+            if (descuentoInput.isEmpty() || !isNumeric(descuentoInput)) {
+                descuentoInput = "0"; // Asignar 0 si no es válido
+            }
 
             // Obtener colores seleccionados
             StringBuilder coloresSeleccionados = new StringBuilder();
@@ -123,7 +134,7 @@ public class FormularioEditarAdapter {
             }
 
             // Llamar a la función para actualizar el producto
-            actualizarProductoEnAPI(producto.getId(), nombre, descripcion, categoria, precio, stock, descuento, coloresSeleccionados.toString());
+            actualizarProductoEnAPI(producto.getId(), nombre, descripcion, categoria, precio, stock, descuentoInput, coloresSeleccionados.toString());
             dialog.dismiss();
         });
 
@@ -139,6 +150,16 @@ public class FormularioEditarAdapter {
                     .setNegativeButton("Cancelar", (dialog12, which) -> dialog12.cancel())
                     .show();
         });
+    }
+
+    // Función para verificar si una cadena es un número válido
+    private boolean isNumeric(String str) {
+        try {
+            Double.parseDouble(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 
     private void actualizarProductoEnAPI(int id, String nombre, String descripcion, String categoria, String precio, String stock, String descuento, String colores) {
@@ -180,6 +201,8 @@ public class FormularioEditarAdapter {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     showToast("Producto actualizado correctamente");
+                    // Redirigir al Submenu_AdminProductos después de actualizar con éxito
+                    redirectToSubmenuAdminProductos();
                 } else {
                     String errorMessage = response.body().string();
                     showToast("Error: " + errorMessage);
@@ -203,25 +226,30 @@ public class FormularioEditarAdapter {
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
-                showToast("Error de red al eliminar producto: " + e.getMessage());
+                showToast("Error de conexión");
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     showToast("Producto eliminado correctamente");
+                    redirectToSubmenuAdminProductos();
                 } else {
-                    String errorMessage = response.body() != null ? response.body().string() : "Error desconocido";
-                    showToast("Error al eliminar producto: " + response.code() + " - " + errorMessage);
+                    String errorMessage = response.body().string();
+                    showToast("Error al eliminar el producto: " + errorMessage);
                 }
             }
         });
     }
 
-    private void showToast(String message) {
+    // Función para redirigir a Submenu_AdminProductos
+    private void redirectToSubmenuAdminProductos() {
         if (context instanceof Submenu_AdminProductos) {
-            ((Submenu_AdminProductos) context).runOnUiThread(() ->
-                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show());
+            ((Submenu_AdminProductos) context).refreshProductos();
         }
+    }
+
+    private void showToast(final String message) {
+        ((android.app.Activity) context).runOnUiThread(() -> Toast.makeText(context, message, Toast.LENGTH_SHORT).show());
     }
 }

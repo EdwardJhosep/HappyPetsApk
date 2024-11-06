@@ -48,7 +48,8 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.8.6")
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
-
+    implementation ("com.airbnb.android:lottie:5.0.0")
+    implementation ("androidx.constraintlayout:constraintlayout:2.1.4")
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.firebase.firestore)

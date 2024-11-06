@@ -118,6 +118,8 @@
                         android:text=">"
                         android:textColor="@android:color/black" />
                 </LinearLayout>
+
+                <!-- Administrar Mascotas -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -135,6 +137,31 @@
 
                     <Button
                         android:id="@+id/button_admin_mascotas"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:text=">"
+                        android:textColor="@android:color/black" />
+                </LinearLayout>
+
+                <!-- Administrar Servicios -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Administrar Servicios"
+                        android:textColor="@android:color/black"
+                        android:layout_weight="1"
+                        android:paddingEnd="8dp" />
+
+                    <Button
+                        android:id="@+id/button_admin_servicios"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@android:color/transparent"

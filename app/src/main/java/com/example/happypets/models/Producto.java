@@ -64,8 +64,6 @@ public class Producto {
         return descuento;
     }
 
-
-
     public String getStock() {
         return stock;
     }

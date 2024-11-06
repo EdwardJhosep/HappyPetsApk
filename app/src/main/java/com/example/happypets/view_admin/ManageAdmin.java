@@ -14,6 +14,7 @@ import com.example.happypets.R;
 import com.example.happypets.submenu_admin.Submenu_AdminMascotas;
 import com.example.happypets.submenu_admin.Submenu_AdminPersonal;
 import com.example.happypets.submenu_admin.Submenu_AdminProductos;
+import com.example.happypets.submenu_admin.Submenu_AdminServicios; // Importar la clase del submenú de servicios
 
 public class ManageAdmin extends Fragment {
 
@@ -47,6 +48,7 @@ public class ManageAdmin extends Fragment {
         Button buttonAdminPersonal = view.findViewById(R.id.button_admin_personal);
         Button buttonAdminProductos = view.findViewById(R.id.button_admin_productos);
         Button buttonAdminMascotas = view.findViewById(R.id.button_admin_mascotas);
+        Button buttonAdminServicios = view.findViewById(R.id.button_admin_servicios); // Nuevo botón
 
         // Configurar los listeners para los botones
         buttonAdminPersonal.setOnClickListener(v -> {
@@ -60,8 +62,16 @@ public class ManageAdmin extends Fragment {
             intent.putExtra(ARG_TOKEN, token); // Pasar el token al submenú
             startActivity(intent);
         });
+
         buttonAdminMascotas.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), Submenu_AdminMascotas.class);
+            intent.putExtra(ARG_TOKEN, token); // Pasar el token al submenú
+            startActivity(intent);
+        });
+
+        // Configurar el listener para el botón de servicios
+        buttonAdminServicios.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), Submenu_AdminServicios.class); // Llamar al submenú de servicios
             intent.putExtra(ARG_TOKEN, token); // Pasar el token al submenú
             startActivity(intent);
         });

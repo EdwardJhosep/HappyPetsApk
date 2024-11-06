@@ -49,10 +49,14 @@ public class ProductoAdapterEditar extends RecyclerView.Adapter<ProductoAdapterE
             holder.precioProducto.setText("Precio no disponible");
         } else {
             double precioOriginal = Double.parseDouble(precio);
-            double descuentoValor = TextUtils.isEmpty(descuento) || descuento.equals("0") || "null".equals(descuento)
-                    ? 0
-                    : Double.parseDouble(descuento);
+            double descuentoValor = 0;  // Asignamos 0 como valor por defecto
 
+            // Si el descuento no está vacío ni es "0" ni "null", lo utilizamos
+            if (!TextUtils.isEmpty(descuento) && !descuento.equals("0") && !"null".equals(descuento)) {
+                descuentoValor = Double.parseDouble(descuento);
+            }
+
+            // Aplicamos el descuento si es mayor que 0
             if (descuentoValor > 0) {
                 double precioConDescuento = precioOriginal - descuentoValor;
                 holder.precioProducto.setText("Antes: S/. " + precioOriginal + "\nAhora: S/. " + precioConDescuento);
@@ -89,6 +93,7 @@ public class ProductoAdapterEditar extends RecyclerView.Adapter<ProductoAdapterE
         });
     }
 
+
     @Override
     public int getItemCount() {
         return productos.size();
@@ -111,7 +116,7 @@ public class ProductoAdapterEditar extends RecyclerView.Adapter<ProductoAdapterE
             descripcionProducto = itemView.findViewById(R.id.descripcionProducto);
             precioProducto = itemView.findViewById(R.id.precioProducto);
             descuentoProducto = itemView.findViewById(R.id.descuentoProducto);
-            coloresProducto = itemView.findViewById(R.id.coloresProducto);  // Enlaza el TextView para colores
+            coloresProducto = itemView.findViewById(R.id.coloresProducto);
             imagenProducto = itemView.findViewById(R.id.imagenProducto);
             imageButtonEditar = itemView.findViewById(R.id.imageButtonEditar);
         }

@@ -3,7 +3,6 @@ package com.example.happypets.submenu_admin;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,7 +30,7 @@ public class Submenu_AdminProductos extends AppCompatActivity {
                     } else if (item.getItemId() == R.id.Agregar) {
                         selectedFragment = new AgregarProducto();
                         ((AgregarProducto) selectedFragment).setToken(token); // Enviar el token
-                    } else  if (item.getItemId() == R.id.Salir) {
+                    } else if (item.getItemId() == R.id.Salir) {
                         // Cambiar a otra actividad en lugar de un fragmento
                         Intent intent = new Intent(Submenu_AdminProductos.this, MenuAdmin.class);
                         intent.putExtra("token", token); // Pasar el token al MenuAdmin
@@ -70,4 +69,14 @@ public class Submenu_AdminProductos extends AppCompatActivity {
         }
     }
 
+    // Método para refrescar la lista de productos después de una actualización o eliminación
+    public void refreshProductos() {
+        // Aquí puedes recargar los productos, por ejemplo, desde la base de datos o API
+        // Si tienes un fragmento de productos, puedes simplemente recargarlo
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (currentFragment instanceof EditarProducto) {
+            // Si estás en el fragmento EditarProducto, recarga la lista de productos
+            ((EditarProducto) currentFragment).recargarProductos();
+        }
+    }
 }

@@ -47,8 +47,6 @@ public class Submenu_AdminMascotas extends AppCompatActivity {
 
                     if (item.getItemId() == R.id.Editar) {
                         selectedFragment = EditarMascota.newInstance(token); // Pasar el token
-                    } else if (item.getItemId() == R.id.Agregar) {
-                        selectedFragment = AgregarMascota.newInstance(token); // Pasar el token
                     } else if (item.getItemId() == R.id.Salir) {
                         Intent intent = new Intent(Submenu_AdminMascotas.this, MenuAdmin.class);
                         intent.putExtra("token", token); // Pasar el token al MenuAdmin
