@@ -5,77 +5,50 @@
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Campo para el tipo del servicio -->
-    <TextView
-        android:id="@+id/tipoLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tipo de Servicio"
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp" />
-
+    <!-- Campo para ingresar el tipo de servicio -->
     <EditText
-        android:id="@+id/tipoEditText"
+        android:id="@+id/editTextTipo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Ingrese el tipo de servicio"
-        android:inputType="text"
-        android:layout_marginBottom="16dp" />
+        android:hint="Tipo de Servicio"
+        android:inputType="text" />
 
-    <!-- Campo para la descripción del servicio -->
-    <TextView
-        android:id="@+id/descripciónLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Descripción del Servicio"
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp" />
-
+    <!-- Campo para ingresar la descripción del servicio -->
     <EditText
-        android:id="@+id/descripcionEditText"
+        android:id="@+id/editTextDescripcion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Ingrese la descripción"
-        android:inputType="text"
-        android:layout_marginBottom="16dp" />
+        android:hint="Descripción del Servicio"
+        android:inputType="textMultiLine" />
 
-    <!-- Imagen del servicio -->
-    <TextView
-        android:id="@+id/imagenLabel"
-        android:layout_width="wrap_content"
+    <!-- Botón para seleccionar la imagen desde la cámara -->
+    <Button
+        android:id="@+id/buttonSeleccionarImagen"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Selecciona una imagen"
-        android:textSize="16sp"
-        android:layout_marginBottom="8dp" />
+        android:text="Tomar Foto del Servicio" />
 
+    <!-- Botón para seleccionar la imagen desde la galería -->
+    <Button
+        android:id="@+id/buttonSeleccionarDesdeGaleria"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Seleccionar Imagen desde Galería" />
+
+    <!-- Vista previa de la imagen seleccionada -->
     <ImageView
-        android:id="@+id/imagenImageView"
+        android:id="@+id/imageViewServicio"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_marginBottom="16dp"
-        android:scaleType="centerCrop"
-        android:src="@android:drawable/ic_menu_camera" />
-
-    <!-- Botones para tomar foto y elegir imagen -->
-    <Button
-        android:id="@+id/takePhotoButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tomar Foto"
-        android:layout_marginBottom="8dp" />
-
-    <Button
-        android:id="@+id/chooseImageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Elegir Imagen"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginTop="16dp"
+        android:src="@drawable/logo" />
 
     <!-- Botón para agregar el servicio -->
     <Button
-        android:id="@+id/agregarServicioButton"
+        android:id="@+id/buttonAgregar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Agregar Servicio"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="24dp" />
+
 </LinearLayout>

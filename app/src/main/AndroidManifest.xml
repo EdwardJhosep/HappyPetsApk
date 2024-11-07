@@ -30,10 +30,13 @@
         tools:targetApi="31">
         <activity
             android:name=".submenu_admin.AgregarServicio"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
+
         <activity
             android:name=".submenu_admin.EditarServicio"
-            android:exported="false" />
+            android:exported="false"
+            tools:ignore="Instantiatable" />
         <activity
             android:name=".submenu_admin.EditarPersonal"
             android:exported="false"

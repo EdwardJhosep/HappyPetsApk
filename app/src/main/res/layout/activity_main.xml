@@ -3,25 +3,28 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/white">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:background="@color/white">
+        android:layout_height="wrap_content">
 
+        <!-- Título de Registro -->
         <TextView
             android:id="@+id/tvRegisterTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Registro"
-            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textAppearance="?attr/textAppearanceHeadline5"
+            android:textColor="@color/primary_color"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginBottom="16dp"/>
 
+        <!-- Campo de DNI -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilDni"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -39,10 +42,11 @@
                 android:layout_height="wrap_content"
                 android:inputType="number"
                 android:padding="12dp"
-                android:textColorHint="@color/hint_text_color" />
-
+                android:textColorHint="@color/hint_text_color"
+                android:textColor="@color/text_color"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Campo de Teléfono -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilTelefono"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -60,10 +64,11 @@
                 android:layout_height="wrap_content"
                 android:inputType="phone"
                 android:padding="12dp"
-                android:textColorHint="@color/hint_text_color" />
-
+                android:textColorHint="@color/hint_text_color"
+                android:textColor="@color/text_color"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Campo de Contraseña -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPassword"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -81,10 +86,11 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:padding="12dp"
-                android:textColorHint="@color/hint_text_color" />
-
+                android:textColorHint="@color/hint_text_color"
+                android:textColor="@color/text_color"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Campo Confirmar Contraseña -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilConfirmPassword"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -102,10 +108,11 @@
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:padding="12dp"
-                android:textColorHint="@color/hint_text_color" />
-
+                android:textColorHint="@color/hint_text_color"
+                android:textColor="@color/text_color"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <!-- Botón de Registro -->
         <Button
             android:id="@+id/btnRegister"
             android:layout_width="0dp"
@@ -120,6 +127,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tilConfirmPassword" />
 
+        <!-- Mensaje de Error -->
         <TextView
             android:id="@+id/tvErrorMessage"
             android:layout_width="0dp"
@@ -133,6 +141,7 @@
             app:layout_constraintTop_toBottomOf="@id/tilConfirmPassword"
             android:textAlignment="center"/>
 
+        <!-- Botón de Cerrar -->
         <Button
             android:id="@+id/btnClose"
             android:layout_width="0dp"
@@ -147,6 +156,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnRegister" />
 
+        <!-- Barra de Progreso -->
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
@@ -156,8 +166,7 @@
             app:layout_constraintTop_toBottomOf="@+id/btnClose"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:layout_editor_absoluteX="16dp" /> <!-- Oculto por defecto -->
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

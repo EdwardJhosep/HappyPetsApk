@@ -30,7 +30,7 @@
             android:id="@+id/profileImageView"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/navigation_profile"
+            android:src="@drawable/usuario"
             android:layout_marginBottom="16dp"
             android:layout_gravity="center"
             android:background="@drawable/container_background"

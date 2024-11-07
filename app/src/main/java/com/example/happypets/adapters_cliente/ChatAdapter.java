@@ -42,15 +42,14 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
             holder.iconUser.setVisibility(View.VISIBLE);
             holder.iconBot.setVisibility(View.GONE);
             holder.alignUserMessage();
-            holder.textViewMessage.setBackgroundResource(R.drawable.user_message_background); // Un drawable diferente para el mensaje del usuario
+            holder.textViewMessage.setBackgroundResource(R.drawable.user_message_background);
         } else {
             holder.iconUser.setVisibility(View.GONE);
             holder.iconBot.setVisibility(View.VISIBLE);
             holder.alignBotMessage();
-            holder.textViewMessage.setBackgroundResource(R.drawable.bot_message_background); // Un drawable diferente para el mensaje del bot
+            holder.textViewMessage.setBackgroundResource(R.drawable.bot_message_background);
         }
 
-        // Cargar la imagen si existe
         if (message.hasImage()) {
             holder.imageViewProduct.setVisibility(View.VISIBLE);
             Glide.with(holder.itemView.getContext())
@@ -74,10 +73,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder
 
     static class ChatViewHolder extends RecyclerView.ViewHolder {
         TextView textViewMessage;
-        ImageView iconUser;  // Ícono del usuario
-        ImageView iconBot;   // Ícono del bot
-        ImageView imageViewProduct; // Imagen del producto
-
+        ImageView iconUser;
+        ImageView iconBot;
+        ImageView imageViewProduct;
         public ChatViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewMessage = itemView.findViewById(R.id.text_view_message);
