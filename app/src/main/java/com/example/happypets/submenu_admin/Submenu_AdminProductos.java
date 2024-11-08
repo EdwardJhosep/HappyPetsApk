@@ -30,7 +30,12 @@ public class Submenu_AdminProductos extends AppCompatActivity {
                     } else if (item.getItemId() == R.id.Agregar) {
                         selectedFragment = new AgregarProducto();
                         ((AgregarProducto) selectedFragment).setToken(token); // Enviar el token
-                    } else if (item.getItemId() == R.id.Salir) {
+                    }else if (item.getItemId() == R.id.GestionarCategorias) {
+                        GestionarCategoria gestionarCategoriaFragment = new GestionarCategoria();
+                        gestionarCategoriaFragment.setToken(token); // Pasar el token al fragmento
+                        selectedFragment = gestionarCategoriaFragment;
+                    }
+                    else if (item.getItemId() == R.id.Salir) {
                         // Cambiar a otra actividad en lugar de un fragmento
                         Intent intent = new Intent(Submenu_AdminProductos.this, MenuAdmin.class);
                         intent.putExtra("token", token); // Pasar el token al MenuAdmin

@@ -78,6 +78,13 @@ public class Login extends AppCompatActivity {
 
     public void onRegisterButtonClick(View view) {
         MainActivity registerDialogFragment = new MainActivity();
+        registerDialogFragment.setOnRegisterCompleteListener(new MainActivity.OnRegisterCompleteListener() {
+            @Override
+            public void onRegisterComplete(String dni, String password) {
+                // Hacer login automáticamente con los datos del registro
+                authenticateUser(dni, password);
+            }
+        });
         registerDialogFragment.show(getSupportFragmentManager(), "registerDialog");
     }
 
@@ -228,6 +235,7 @@ public class Login extends AppCompatActivity {
             Toast.makeText(this, "Error al procesar los datos del usuario: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
     private void saveLoginState(boolean isLoggedIn, String token) {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

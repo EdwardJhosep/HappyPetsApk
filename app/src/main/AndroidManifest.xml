@@ -29,10 +29,13 @@
         android:theme="@style/Theme.HappyPets"
         tools:targetApi="31">
         <activity
+            android:name=".submenu_admin.GestionarCategoria"
+            android:exported="false"
+            tools:ignore="Instantiatable" />
+        <activity
             android:name=".submenu_admin.AgregarServicio"
             android:exported="false"
             tools:ignore="Instantiatable" />
-
         <activity
             android:name=".submenu_admin.EditarServicio"
             android:exported="false"

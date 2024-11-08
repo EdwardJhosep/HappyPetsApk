@@ -129,7 +129,6 @@ public class EditarServicio extends Fragment {
         });
     }
 
-    // Método para filtrar la lista de servicios
     private void filterServicios(String query) {
         filteredServicioList.clear();
 

@@ -62,8 +62,6 @@ public class Submenu_AdminServicios extends AppCompatActivity {
                     else if (item.getItemId() == R.id.Agregar) {
                         selectedFragment = AgregarServicio.newInstance(token); // Cargar el fragmento para agregar servicio
                     }
-
-                    // Reemplazar el fragmento actual con el seleccionado
                     if (selectedFragment != null) {
                         FragmentManager fragmentManager = getSupportFragmentManager();
                         FragmentTransaction transaction = fragmentManager.beginTransaction();

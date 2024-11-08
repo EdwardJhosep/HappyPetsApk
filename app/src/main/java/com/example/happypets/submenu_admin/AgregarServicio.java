@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -43,7 +44,8 @@ public class AgregarServicio extends Fragment {
     private static final int REQUEST_CODE_PICK_IMAGE_FROM_GALLERY = 2;
 
     private EditText editTextTipo, editTextDescripcion;
-    private Button buttonAgregar, buttonSeleccionarImagen, buttonSeleccionarDesdeGaleria;
+    private Button buttonAgregar;
+    private ImageButton buttonSeleccionarImagen, buttonSeleccionarDesdeGaleria;
     private ImageView imageViewServicio;
     private Uri uriImagen;
     private String token;

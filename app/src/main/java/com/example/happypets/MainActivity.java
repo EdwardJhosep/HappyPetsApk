@@ -24,7 +24,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.happypets.view_cliente.MenuCliente;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +32,12 @@ import java.util.Iterator;
 
 public class MainActivity extends DialogFragment {
 
+    // Define the listener interface
+    public interface OnRegisterCompleteListener {
+        void onRegisterComplete(String dni, String password);
+    }
+
+    private OnRegisterCompleteListener onRegisterCompleteListener;
     private TextView tvErrorMessage;
     private ProgressBar progressBar;
 
@@ -74,7 +79,7 @@ public class MainActivity extends DialogFragment {
             } else if (telefono.length() != 9) {
                 showError(tvErrorMessage, "El número de teléfono debe tener 9 dígitos");
             } else if (!telefono.startsWith("9")) {
-                    showError(tvErrorMessage, "El número de teléfono nu es valido");
+                showError(tvErrorMessage, "El número de teléfono no es válido");
             } else if (!isPasswordSecure(password)) {
                 showError(tvErrorMessage, "La contraseña debe contener solo letras y números");
             } else if (!password.equals(confirmPassword)) {
@@ -109,7 +114,7 @@ public class MainActivity extends DialogFragment {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject,
                 response -> {
                     progressBar.setVisibility(View.GONE); // Ocultar ProgressBar
-                    handleResponse(response, dni, telefono);
+                    handleResponse(response, dni, telefono, password);
                 },
                 error -> {
                     progressBar.setVisibility(View.GONE); // Ocultar ProgressBar
@@ -120,7 +125,7 @@ public class MainActivity extends DialogFragment {
         queue.add(jsonObjectRequest);
     }
 
-    private void handleResponse(JSONObject response, String dni, String telefono) {
+    private void handleResponse(JSONObject response, String dni, String telefono, String password) {
         try {
             if (response.has("error")) {
                 // Manejo de errores de validación
@@ -139,18 +144,18 @@ public class MainActivity extends DialogFragment {
                     return; // Salir si se encuentra el error de DNI
                 }
 
-                String token = response.getString("token"); // Asegúrate de obtener el token de la respuesta
+                // Si el registro es exitoso, pasamos al login
+                String token = response.getString("token"); // Obtener el token de la respuesta
+
+                // Mostrar mensaje de éxito
                 Toast.makeText(getContext(), "Registro exitoso: " + mensaje, Toast.LENGTH_SHORT).show();
 
-                // Redirigir a MenuCliente después del registro exitoso
-                Intent intent = new Intent(getActivity(), MenuCliente.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("token", token); // Pasar el token al MenuCliente
-                intent.putExtra("dni", dni); // Pasar el dni
-                intent.putExtra("phoneNumber", telefono); // Pasar el número de teléfono
-                startActivity(intent);
+                // Si el listener está configurado, notificar el éxito
+                if (onRegisterCompleteListener != null) {
+                    onRegisterCompleteListener.onRegisterComplete(dni, password);
+                }
 
-                // Cerrar el diálogo
+                // Cerrar el diálogo después de redirigir
                 dismiss();
             }
         } catch (JSONException e) {
@@ -158,7 +163,6 @@ public class MainActivity extends DialogFragment {
             showError(tvErrorMessage, "Error en la respuesta del servidor");
         }
     }
-
 
     private void handleError(VolleyError error) {
         String errorMessage = "Error en el registro: " + error.getMessage();
@@ -178,6 +182,11 @@ public class MainActivity extends DialogFragment {
     // Método para verificar la seguridad de la contraseña
     private boolean isPasswordSecure(String password) {
         return password.matches("^[a-zA-Z0-9]+$"); // Solo permite letras y números
+    }
+
+    // Método para configurar el listener
+    public void setOnRegisterCompleteListener(OnRegisterCompleteListener listener) {
+        this.onRegisterCompleteListener = listener;
     }
 
     @Override
