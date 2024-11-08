@@ -6,8 +6,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,21 +18,27 @@ import androidx.fragment.app.Fragment;
 
 import com.example.happypets.R;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.BufferedReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GestionarCategoria extends Fragment {
 
     private String token;
-    private EditText etCategoriaNombre;
-    private Button btnAgregarCategoria;
+    private EditText etCategoriaNombre, etSubcategoriaNombre;
+    private Button btnAgregarCategoria, btnAgregarSubcategoria;
+    private Spinner spCategoria;
 
-    // Método para recibir el token desde la actividad
+    private Map<String, String> categoriasMap = new HashMap<>(); // Mapa de categorías con id y nombre
+
     public void setToken(String token) {
         this.token = token;
     }
@@ -41,24 +49,43 @@ public class GestionarCategoria extends Fragment {
 
         etCategoriaNombre = view.findViewById(R.id.categoria_edit_text);
         btnAgregarCategoria = view.findViewById(R.id.agregar_categoria_button);
+        etSubcategoriaNombre = view.findViewById(R.id.subcategoria_edit_text);
+        btnAgregarSubcategoria = view.findViewById(R.id.agregar_subcategoria_button);
+        spCategoria = view.findViewById(R.id.categoria_spinner);
 
         if (token == null) {
             Toast.makeText(getContext(), "Token no recibido", Toast.LENGTH_SHORT).show();
             Log.e("GestionarCategoria", "Token no recibido");
+        } else {
+            obtenerCategorias(); // Cargar categorías al iniciar
         }
 
         btnAgregarCategoria.setOnClickListener(v -> {
             String nombreCategoria = etCategoriaNombre.getText().toString().trim();
             if (!nombreCategoria.isEmpty()) {
-                // Asegura que solo la primera letra esté en mayúscula
                 nombreCategoria = capitalizeFirstLetter(nombreCategoria);
-                verificarCategoriaExistente(nombreCategoria);
+                agregarCategoria(nombreCategoria);
             } else {
                 Toast.makeText(getContext(), "Por favor, ingrese un nombre para la categoría", Toast.LENGTH_SHORT).show();
             }
         });
 
+        btnAgregarSubcategoria.setOnClickListener(v -> {
+            String nombreSubcategoria = etSubcategoriaNombre.getText().toString().trim();
+            String categoriaId = categoriasMap.get(spCategoria.getSelectedItem().toString());
+            if (!nombreSubcategoria.isEmpty() && categoriaId != null) {
+                nombreSubcategoria = capitalizeFirstLetter(nombreSubcategoria);
+                agregarSubcategoria(nombreSubcategoria, categoriaId);
+            } else {
+                Toast.makeText(getContext(), "Seleccione una categoría y agregue un nombre para la subcategoría", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         return view;
+    }
+
+    private void obtenerCategorias() {
+        new ObtenerCategoriasTask().execute();
     }
 
     private String capitalizeFirstLetter(String input) {
@@ -68,60 +95,76 @@ public class GestionarCategoria extends Fragment {
         return input.substring(0, 1).toUpperCase() + input.substring(1).toLowerCase();
     }
 
-    private void verificarCategoriaExistente(String nombreCategoria) {
-        new VerificarCategoriaTask().execute(nombreCategoria);
-    }
-
     private void agregarCategoria(String nombreCategoria) {
         new AgregarCategoriaTask().execute(nombreCategoria);
     }
 
-    // Clase AsyncTask para verificar si la categoría ya existe
-    private class VerificarCategoriaTask extends AsyncTask<String, Void, Boolean> {
+    private void agregarSubcategoria(String nombreSubcategoria, String categoriaId) {
+        new AgregarSubcategoriaTask().execute(nombreSubcategoria, categoriaId);
+    }
+
+    private class ObtenerCategoriasTask extends AsyncTask<Void, Void, ArrayList<String>> {
 
         @Override
-        protected Boolean doInBackground(String... params) {
-            String nombreCategoria = params[0];
+        protected ArrayList<String> doInBackground(Void... voids) {
+            ArrayList<String> categoriasList = new ArrayList<>();
             try {
-                URL url = new URL("https://api.happypetshco.com/api/Categorias/exists?nombre=" + nombreCategoria);
+                URL url = new URL("https://api.happypetshco.com/api/ListarCategorias");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 connection.setRequestProperty("Authorization", "Bearer " + token);
 
+                // Verificar el código de respuesta
                 int responseCode = connection.getResponseCode();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    // Si la categoría existe, devolver true
-                    BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-                    String inputLine;
-                    StringBuilder content = new StringBuilder();
-                    while ((inputLine = in.readLine()) != null) {
-                        content.append(inputLine);
-                    }
-                    in.close();
+                Log.d("GestionarCategoria", "Response Code: " + responseCode);
 
-                    JSONObject jsonResponse = new JSONObject(content.toString());
-                    return jsonResponse.getBoolean("exists");
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Leer la respuesta de la API
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+
+                    // Mostrar el contenido de la respuesta para depuración
+                    Log.d("GestionarCategoria", "API Response: " + response.toString());
+
+                    // Convertir el String en un objeto JSON y acceder al arreglo "categorias"
+                    JSONObject jsonResponse = new JSONObject(response.toString());
+                    JSONArray categoriasArray = jsonResponse.getJSONArray("categorias");
+
+                    // Iterar sobre el arreglo y extraer los datos de cada categoría
+                    for (int i = 0; i < categoriasArray.length(); i++) {
+                        JSONObject categoria = categoriasArray.getJSONObject(i);
+                        String id = categoria.getString("id");
+                        String nombre = categoria.getString("nombre");
+                        categoriasList.add(nombre);
+                        categoriasMap.put(nombre, id); // Guardar id y nombre en el mapa
+                    }
                 } else {
-                    return false;
+                    Log.e("GestionarCategoria", "Error en la respuesta de la API: Código " + responseCode);
                 }
             } catch (Exception e) {
-                Log.e("GestionarCategoria", "Error al verificar la categoría", e);
-                return false;
+                Log.e("GestionarCategoria", "Error al obtener categorías", e);
             }
+            return categoriasList;
         }
 
         @Override
-        protected void onPostExecute(Boolean categoriaExistente) {
-            if (categoriaExistente) {
-                Toast.makeText(getContext(), "La categoría ya existe", Toast.LENGTH_SHORT).show();
+        protected void onPostExecute(ArrayList<String> categorias) {
+            if (categorias.isEmpty()) {
+                Toast.makeText(getContext(), "No se encontraron categorías", Toast.LENGTH_SHORT).show();
             } else {
-                String nombreCategoria = etCategoriaNombre.getText().toString().trim();
-                agregarCategoria(nombreCategoria);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, categorias);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spCategoria.setAdapter(adapter);
             }
         }
     }
 
-    // Clase AsyncTask para agregar la categoría
+
     private class AgregarCategoriaTask extends AsyncTask<String, Void, String> {
 
         @Override
@@ -139,15 +182,26 @@ public class GestionarCategoria extends Fragment {
                 JSONObject jsonBody = new JSONObject();
                 jsonBody.put("nombre", nombreCategoria);
 
-                OutputStream os = connection.getOutputStream();
-                os.write(jsonBody.toString().getBytes("UTF-8"));
-                os.close();
+                try (OutputStream os = connection.getOutputStream()) {
+                    os.write(jsonBody.toString().getBytes("UTF-8"));
+                }
 
                 int responseCode = connection.getResponseCode();
                 if (responseCode == HttpURLConnection.HTTP_CREATED) {
                     return "Categoría agregada exitosamente";
+                } else if (responseCode == HttpURLConnection.HTTP_CONFLICT) {
+                    return "La categoría ya existe";
                 } else {
-                    return "Categoria" + responseCode;
+                    try (BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(connection.getInputStream()))) {
+                        StringBuilder response = new StringBuilder();
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            response.append(line);
+                        }
+                        Log.e("GestionarCategoria", "Error: " + response.toString());
+                    }
+                    return "Error al agregar la categoría";
                 }
 
             } catch (Exception e) {
@@ -159,11 +213,59 @@ public class GestionarCategoria extends Fragment {
         @Override
         protected void onPostExecute(String result) {
             Toast.makeText(getContext(), result, Toast.LENGTH_SHORT).show();
-
-            if (result.equals("Categoría agregada exitosamente")) {
-                // Limpiar el formulario después de agregar la categoría
+            if ("Categoría agregada exitosamente".equals(result)) {
                 etCategoriaNombre.setText("");
             }
         }
     }
+
+    private class AgregarSubcategoriaTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            String nombreSubcategoria = params[0];
+            String categoriaId = params[1];
+            try {
+                URL url = new URL("https://api.happypetshco.com/api/SubCategorias");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Authorization", "Bearer " + token);
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setDoOutput(true);
+
+                // Crear el JSON con los nombres de parámetros que el backend espera
+                JSONObject jsonBody = new JSONObject();
+                jsonBody.put("nombre", nombreSubcategoria);
+                jsonBody.put("categorias_id", categoriaId); // Cambiado a "categorias_id"
+
+                try (OutputStream os = connection.getOutputStream()) {
+                    os.write(jsonBody.toString().getBytes("UTF-8"));
+                }
+
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_CREATED) {
+                    return "Subcategoría agregada exitosamente";
+                } else if (responseCode == HttpURLConnection.HTTP_CONFLICT) {
+                    return "La subcategoría ya existe";
+                } else {
+                    return "Error al agregar la subcategoría";
+                }
+
+            } catch (Exception e) {
+                Log.e("GestionarCategoria", "Error en la solicitud", e);
+                return "Error en la conexión";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getContext(), result, Toast.LENGTH_SHORT).show();
+            if ("Subcategoría agregada exitosamente".equals(result)) {
+                etSubcategoriaNombre.setText("");
+            }
+        }
+    }
+
+
 }
