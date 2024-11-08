@@ -4,29 +4,29 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginBottom="8dp"
-    android:padding="8dp">
+    android:layout_margin="10dp"
+    android:backgroundTint="#FFFFFF">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="8dp"
-        app:cardElevation="8dp"
-        android:padding="12dp">
+        app:cardCornerRadius="12dp"
+        app:cardElevation="6dp"
+        android:layout_margin="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@drawable/bordeusuario"
-            android:padding="16dp">
+            android:padding="16dp"
+            android:gravity="center_vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="start"
-                android:layout_marginBottom="8dp">
+                android:padding="16dp"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/nombreTextView"
@@ -40,8 +40,8 @@
 
                 <ImageButton
                     android:id="@+id/verMascotaButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@drawable/vermascota"
                     android:background="?attr/selectableItemBackground"
                     android:contentDescription="Ver Mascota"
@@ -66,8 +66,8 @@
 
                 <ImageButton
                     android:id="@+id/darPermisoButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
                     android:src="@drawable/darprivilegios"
                     android:background="?attr/selectableItemBackground"
                     android:contentDescription="Dar Permiso"

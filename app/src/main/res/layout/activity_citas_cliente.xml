@@ -1,10 +1,40 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view_cliente.CitasCliente">
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="#f7f7f7"> <!-- Fondo suave para la pantalla -->
 
+    <!-- Título de la sección -->
+    <TextView
+        android:id="@+id/tituloServicios"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Servicios Disponibles"
+        android:textSize="22sp"
+        android:textColor="#333333"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"/>
 
-</ScrollView>
+    <!-- Barra de búsqueda -->
+    <EditText
+        android:id="@+id/searchEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Buscar servicio..."
+        android:padding="10dp"
+        android:background="@drawable/card_background"
+        android:textColor="#333333"
+        android:inputType="text"
+        android:layout_marginBottom="16dp" />
+
+    <!-- RecyclerView para listar los servicios -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewServicios"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+</LinearLayout>

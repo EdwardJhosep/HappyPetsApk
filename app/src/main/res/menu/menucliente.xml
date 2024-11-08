@@ -5,13 +5,13 @@
         android:icon="@drawable/ic_product"
         android:title="Productos"/>
     <item
-        android:id="@+id/navigation_ubication"
-        android:icon="@drawable/ubicacion"
-        android:title="Ubicanos"/>
-    <item
         android:id="@+id/navigation_appointments"
         android:icon="@drawable/ic_appointments"
         android:title="Citas"/>
+    <item
+        android:id="@+id/navigation_ubication"
+        android:icon="@drawable/ubicacion"
+        android:title="Ubicanos"/>
     <item
         android:id="@+id/navigation_profile"
         android:icon="@drawable/navigation_profile"

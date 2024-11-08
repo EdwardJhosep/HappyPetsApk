@@ -77,6 +77,13 @@
                     android:gravity="center_vertical"
                     android:layout_marginBottom="8dp">
 
+                    <!-- Icono de Administrar Personal -->
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_personal"
+                        android:layout_marginEnd="8dp" />
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -101,6 +108,13 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:layout_marginBottom="8dp">
+
+                    <!-- Icono de Administrar Productos -->
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_productos"
+                        android:layout_marginEnd="8dp" />
 
                     <TextView
                         android:layout_width="0dp"
@@ -127,6 +141,13 @@
                     android:gravity="center_vertical"
                     android:layout_marginBottom="8dp">
 
+                    <!-- Icono de Administrar Mascotas -->
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/default_mascota"
+                        android:layout_marginEnd="8dp" />
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -151,6 +172,13 @@
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:layout_marginBottom="8dp">
+
+                    <!-- Icono de Administrar Servicios -->
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_save"
+                        android:layout_marginEnd="8dp" />
 
                     <TextView
                         android:layout_width="0dp"

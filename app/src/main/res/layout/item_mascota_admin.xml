@@ -83,4 +83,19 @@
         android:background="@drawable/circle_background_estado"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <!-- Agregar el botón de eliminar -->
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Eliminar"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="@color/red_color"
+        app:layout_constraintTop_toBottomOf="@id/sexoTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="12dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

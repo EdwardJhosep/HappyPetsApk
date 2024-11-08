@@ -33,11 +33,12 @@ import java.util.Map;
 public class GestionarCategoria extends Fragment {
 
     private String token;
-    private EditText etCategoriaNombre, etSubcategoriaNombre;
-    private Button btnAgregarCategoria, btnAgregarSubcategoria;
-    private Spinner spCategoria;
+    private EditText etCategoriaNombre, etSubcategoriaNombre, etSubSubcategoriaNombre;
+    private Button btnAgregarCategoria, btnAgregarSubcategoria, btnAgregarSubSubcategoria;
+    private Spinner spCategoria, spSubcategoria;
 
     private Map<String, String> categoriasMap = new HashMap<>(); // Mapa de categorías con id y nombre
+    private Map<String, String> subcategoriasMap = new HashMap<>(); // Mapa de subcategorías con id y nombre
 
     public void setToken(String token) {
         this.token = token;
@@ -51,13 +52,17 @@ public class GestionarCategoria extends Fragment {
         btnAgregarCategoria = view.findViewById(R.id.agregar_categoria_button);
         etSubcategoriaNombre = view.findViewById(R.id.subcategoria_edit_text);
         btnAgregarSubcategoria = view.findViewById(R.id.agregar_subcategoria_button);
+        etSubSubcategoriaNombre = view.findViewById(R.id.subsubcategoria_edit_text);
+        btnAgregarSubSubcategoria = view.findViewById(R.id.agregar_subsubcategoria_button);
         spCategoria = view.findViewById(R.id.categoria_spinner);
+        spSubcategoria = view.findViewById(R.id.subcategoria_spinner);
 
         if (token == null) {
             Toast.makeText(getContext(), "Token no recibido", Toast.LENGTH_SHORT).show();
             Log.e("GestionarCategoria", "Token no recibido");
         } else {
-            obtenerCategorias(); // Cargar categorías al iniciar
+            obtenerCategorias();
+            ObtenerSubcategoriasTask();// Cargar categorías al iniciar
         }
 
         btnAgregarCategoria.setOnClickListener(v -> {
@@ -80,12 +85,25 @@ public class GestionarCategoria extends Fragment {
                 Toast.makeText(getContext(), "Seleccione una categoría y agregue un nombre para la subcategoría", Toast.LENGTH_SHORT).show();
             }
         });
+        btnAgregarSubSubcategoria.setOnClickListener(v -> {
+            String nombreSubSubcategoria = etSubSubcategoriaNombre.getText().toString().trim();
+            String subcategoriaId = subcategoriasMap.get(spSubcategoria.getSelectedItem().toString());
+            if (!nombreSubSubcategoria.isEmpty() && subcategoriaId != null) {
+                nombreSubSubcategoria = capitalizeFirstLetter(nombreSubSubcategoria);
+                agregarSubSubcategoria(nombreSubSubcategoria, subcategoriaId);
+            } else {
+                Toast.makeText(getContext(), "Seleccione una subcategoría y agregue un nombre para la sub-subcategoría", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return view;
     }
 
     private void obtenerCategorias() {
         new ObtenerCategoriasTask().execute();
+    }
+    private void ObtenerSubcategoriasTask() {
+        new ObtenerSubcategoriasTask().execute();
     }
 
     private String capitalizeFirstLetter(String input) {
@@ -102,7 +120,9 @@ public class GestionarCategoria extends Fragment {
     private void agregarSubcategoria(String nombreSubcategoria, String categoriaId) {
         new AgregarSubcategoriaTask().execute(nombreSubcategoria, categoriaId);
     }
-
+    private void agregarSubSubcategoria(String nombreSubSubcategoria, String subcategoriaId) {
+        new AgregarSubSubcategoriaTask().execute(nombreSubSubcategoria, subcategoriaId);
+    }
     private class ObtenerCategoriasTask extends AsyncTask<Void, Void, ArrayList<String>> {
 
         @Override
@@ -163,6 +183,68 @@ public class GestionarCategoria extends Fragment {
             }
         }
     }
+    private class ObtenerSubcategoriasTask extends AsyncTask<Void, Void, ArrayList<String>> {
+
+        @Override
+        protected ArrayList<String> doInBackground(Void... voids) {
+            ArrayList<String> subcategoriasList = new ArrayList<>();
+            try {
+                // URL para obtener las subcategorías
+                URL url = new URL("https://api.happypetshco.com/api/ListarSubCategorias");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setRequestProperty("Authorization", "Bearer " + token);
+
+                // Verificar el código de respuesta
+                int responseCode = connection.getResponseCode();
+                Log.d("GestionarSubcategoria", "Response Code: " + responseCode);
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Leer la respuesta de la API
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+
+                    // Mostrar el contenido de la respuesta para depuración
+                    Log.d("GestionarSubcategoria", "API Response: " + response.toString());
+
+                    // Convertir el String en un objeto JSON y acceder al arreglo "subcategorias"
+                    JSONObject jsonResponse = new JSONObject(response.toString());
+                    JSONArray subcategoriasArray = jsonResponse.getJSONArray("subcategorias");
+
+                    // Iterar sobre el arreglo y extraer los datos de cada subcategoría
+                    for (int i = 0; i < subcategoriasArray.length(); i++) {
+                        JSONObject subcategoria = subcategoriasArray.getJSONObject(i);
+                        String id = subcategoria.getString("id");
+                        String nombre = subcategoria.getString("nombre");
+                        subcategoriasList.add(nombre);
+                        subcategoriasMap.put(nombre, id);
+                    }
+                } else {
+                    Log.e("GestionarSubcategoria", "Error en la respuesta de la API: Código " + responseCode);
+                }
+            } catch (Exception e) {
+                Log.e("GestionarSubcategoria", "Error al obtener subcategorías", e);
+            }
+            return subcategoriasList;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<String> subcategorias) {
+            if (subcategorias.isEmpty()) {
+                Toast.makeText(getContext(), "No se encontraron subcategorías", Toast.LENGTH_SHORT).show();
+            } else {
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, subcategorias);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spSubcategoria.setAdapter(adapter);
+            }
+        }
+    }
+
 
 
     private class AgregarCategoriaTask extends AsyncTask<String, Void, String> {
@@ -266,5 +348,49 @@ public class GestionarCategoria extends Fragment {
             }
         }
     }
+    private class AgregarSubSubcategoriaTask extends AsyncTask<String, Void, String> {
 
+        @Override
+        protected String doInBackground(String... params) {
+            String nombreSubSubcategoria = params[0];
+            String subcategoriaId = params[1];
+
+            try {
+                URL url = new URL("https://api.happypetshco.com/api/SubSubCategorias");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Authorization", "Bearer " + token);
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setDoOutput(true);
+
+                JSONObject jsonBody = new JSONObject();
+                jsonBody.put("nombre", nombreSubSubcategoria);
+                jsonBody.put("sub_categorias_id", subcategoriaId);
+
+                try (OutputStream os = connection.getOutputStream()) {
+                    os.write(jsonBody.toString().getBytes("UTF-8"));
+                }
+
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_CREATED) {
+                    return "Sub-subcategoría agregada exitosamente";
+                } else {
+                    return "Error al agregar la sub-subcategoría";
+                }
+
+            } catch (Exception e) {
+                Log.e("GestionarCategoria", "Error en la solicitud", e);
+                return "Error en la conexión";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getContext(), result, Toast.LENGTH_SHORT).show();
+            if ("Sub-subcategoría agregada exitosamente".equals(result)) {
+                etSubSubcategoriaNombre.setText("");
+            }
+        }
+    }
 }
