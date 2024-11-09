@@ -43,21 +43,17 @@ public class CrearCitaDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // Inflar el layout del fragmento
         View view = inflater.inflate(R.layout.dialog_crear_cita_cliente, container, false);
 
-        // Obtener el token y userId pasados como argumento
         if (getArguments() != null) {
             token = getArguments().getString("token");
             userId = getArguments().getString("userId"); // Obtener el userId
         }
 
-        // Inicializar los campos del formulario
         fechaEditText = view.findViewById(R.id.fechaEditText);
         horaEditText = view.findViewById(R.id.horaEditText);
         userIdTextView = view.findViewById(R.id.userIdTextView); // Inicializar el TextView
 
-        // Mostrar el userId en el TextView
 
         // Botón para reservar la cita
         Button reservarButton = view.findViewById(R.id.reservarButton);
@@ -71,11 +67,6 @@ public class CrearCitaDialogFragment extends DialogFragment {
                 Toast.makeText(getContext(), "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
                 return;
             }
-
-            // Aquí puedes hacer la lógica para enviar los datos de la cita al servidor
-            // Usar el token para la autenticación si es necesario
-
-            // Mostrar un mensaje de éxito o realizar la acción de creación de cita
             Toast.makeText(getContext(), "Cita reservada con éxito", Toast.LENGTH_SHORT).show();
             dismiss(); // Cerrar el diálogo después de la acción
         });

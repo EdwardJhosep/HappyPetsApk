@@ -109,7 +109,7 @@ public class PerfilCliente extends Fragment {
             if (getContext() != null) {
                 Toast.makeText(getContext(), "El ID de usuario es inválido.", Toast.LENGTH_SHORT).show();
             }
-            return;
+            return;i
         }
 
         String url = "https://api.happypetshco.com/api/MascotasUsuario=" + userId;
