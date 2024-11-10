@@ -55,10 +55,12 @@ public class ServicioAdapterCliente extends RecyclerView.Adapter<ServicioAdapter
             args.putString("token", token);
             args.putString("userId", userId);
             args.putString("servicioId", String.valueOf(servicio.getId())); // Pasa el id_servicio aquí
+            args.putString("tipoServicio", servicio.getTipo()); // Pasa el tipo de servicio aquí
             crearCitaDialogFragment.setArguments(args);
             crearCitaDialogFragment.show(((AppCompatActivity) holder.itemView.getContext()).getSupportFragmentManager(), "CrearCitaDialogFragment");
         });
     }
+
 
 
 

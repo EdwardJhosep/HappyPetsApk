@@ -67,12 +67,43 @@
             android:textSize="14sp"
             android:layout_marginBottom="8dp"
             android:text="Descripción breve del producto que puede ocupar dos líneas." />
+
+        <!-- Agregar los TextView para las categorías -->
+        <TextView
+            android:id="@+id/categoriaProducto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp"
+            android:text="Categoría:"/>
+
+        <TextView
+            android:id="@+id/subcategoriaProducto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:layout_marginTop="2dp"
+            android:text="Subcategoría:"/>
+
+        <TextView
+            android:id="@+id/subsubcategoriaProducto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
+            android:layout_marginTop="2dp"
+            android:text="Subsubcategoría:"/>
+
         <LinearLayout
             android:id="@+id/layoutColoresSeleccionados"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="8dp"/>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
