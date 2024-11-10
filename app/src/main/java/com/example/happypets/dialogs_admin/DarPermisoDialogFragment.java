@@ -50,6 +50,7 @@ public class DarPermisoDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_dar_permiso, container, false); // Infla el XML
+        getDialog().getWindow().setBackgroundDrawableResource(R.drawable.card_background);
 
         // Inicializa las vistas del diálogo
         @SuppressLint({"MissingInflatedId", "LocalSuppress"}) TextView nombreTextView = view.findViewById(R.id.nombreTextView);

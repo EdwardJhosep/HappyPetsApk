@@ -55,15 +55,9 @@ public class Mascota {
         return imagen;
     }
 
+    // Sobrescribir el método toString para que devuelva solo el nombre
     @Override
     public String toString() {
-        return "ID: " + id + "\n" + // Incluir el ID en la representación en cadena
-                "Nombre: " + nombre + "\n" +
-                "Edad: " + edad + "\n" +
-                "Especie: " + especie + "\n" +
-                "Raza: " + raza + "\n" +
-                "Sexo: " + sexo + "\n" +
-                "Estado: " + estado + "\n" +
-                "Imagen: " + imagen; // Incluir la imagen en la representación en cadena
+        return nombre;  // Solo mostrar el nombre de la mascota en el Spinner
     }
 }

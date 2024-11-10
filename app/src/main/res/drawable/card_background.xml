@@ -1,7 +1,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Sombra -->
-    <item>
+    <item android:top="4dp" android:left="4dp" android:right="4dp" android:bottom="4dp">
         <shape android:shape="rectangle">
             <solid android:color="#80000000"/> <!-- Color de sombra (negro semitransparente) -->
             <corners android:radius="12dp"/> <!-- Bordes redondeados -->
@@ -9,24 +9,24 @@
     </item>
 
     <!-- Fondo con degradado -->
-    <item android:top="4dp" android:left="4dp" android:right="4dp" android:bottom="4dp">
+    <item>
         <shape android:shape="rectangle">
             <gradient
                 android:startColor="#FFFFFF"
-            android:endColor="#E0E0E0"
-            android:angle="270"/>
-            <corners android:radius="12dp"/>
+                android:endColor="#E0E0E0"
+                android:angle="270"/>
+            <corners android:radius="12dp"/> <!-- Bordes redondeados -->
         </shape>
     </item>
 
     <!-- Borde -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#FFFFFF"/>
-            <corners android:radius="12dp"/>
+            <solid android:color="@android:color/transparent"/> <!-- Fondo transparente para solo mostrar el borde -->
+            <corners android:radius="12dp"/> <!-- Bordes redondeados -->
             <stroke
                 android:width="2dp"
-            android:color="#B0BEC5"/>
+                android:color="#B0BEC5"/> <!-- Color del borde -->
         </shape>
     </item>
 

@@ -53,11 +53,15 @@ public class ServicioAdapterCliente extends RecyclerView.Adapter<ServicioAdapter
             CrearCitaDialogFragment crearCitaDialogFragment = new CrearCitaDialogFragment();
             Bundle args = new Bundle();
             args.putString("token", token);
-            args.putString("userId", userId);  // Pasar userId a los argumentos
+            args.putString("userId", userId);
+            args.putString("servicioId", String.valueOf(servicio.getId())); // Pasa el id_servicio aquí
             crearCitaDialogFragment.setArguments(args);
             crearCitaDialogFragment.show(((AppCompatActivity) holder.itemView.getContext()).getSupportFragmentManager(), "CrearCitaDialogFragment");
         });
     }
+
+
+
 
     @Override
     public int getItemCount() {

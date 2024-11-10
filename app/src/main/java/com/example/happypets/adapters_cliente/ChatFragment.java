@@ -51,6 +51,7 @@ public class ChatFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
+        getDialog().getWindow().setBackgroundDrawableResource(R.drawable.card_background);
 
         recyclerViewChat = view.findViewById(R.id.recycler_view_chat);
         editTextMessage = view.findViewById(R.id.editTextMessage);
