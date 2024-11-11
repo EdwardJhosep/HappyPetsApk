@@ -52,6 +52,7 @@ public class CarritoAdapter extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_carrito, container, false);
+        getDialog().getWindow().setBackgroundDrawableResource(R.drawable.card_background);
 
         if (getArguments() != null) {
             userId = getArguments().getString("USER_ID");

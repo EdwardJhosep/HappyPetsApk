@@ -94,25 +94,43 @@ public class EditarProducto extends Fragment {
             return result.toString();
         }
 
+
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
             Log.d("API Response", result);
             try {
+                // Parsear el JSON de la respuesta
                 JSONObject jsonObject = new JSONObject(result);
                 JSONArray jsonArray = jsonObject.getJSONArray("productos");
+
+                // Iterar sobre los productos
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject productoJson = jsonArray.getJSONObject(i);
+
+                    // Extraer la categoría del producto (el campo 'categorias')
+                    JSONObject categoriaJson = productoJson.getJSONObject("categorias");
+                    String categoria = categoriaJson.getString("nombre");
+
+                    // Extraer la subcategoría si existe
+                    String subCategoria = productoJson.optString("sub_categorias_id", "");  // Usar optString para evitar null si no existe
+
+                    // Extraer la sub-subcategoría si existe
+                    String subSubCategoria = productoJson.optString("sub_sub_categorias_id", "");  // Usar optString para evitar null si no existe
+
+                    // Crear un objeto Producto con la información
                     Producto producto = new Producto(
                             productoJson.getInt("id"),
                             productoJson.getString("nm_producto"),
                             productoJson.getString("descripcion"),
-                            productoJson.getString("categoria"),
+                            categoria,  // Categoría
+                            subCategoria,  // Subcategoría
+                            subSubCategoria,  // Sub-subcategoría
                             productoJson.getString("precio"),
                             productoJson.getString("descuento"),
                             productoJson.getString("stock"),
                             productoJson.getString("imagen"),
-                            productoJson.getString("colores") // Recuperar colores del JSON
+                            productoJson.getString("colores")  // Colores
                     );
                     productoList.add(producto);
                 }

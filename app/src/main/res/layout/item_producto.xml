@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
-    android:padding="0dp"
+    android:layout_margin="1dp"
+    android:padding="1dp"
     app:cardElevation="6dp"
     app:cardCornerRadius="6dp"
     android:background="@android:color/white"
@@ -51,10 +51,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:gravity="center"
             android:textColor="@android:color/black"
             android:textStyle="bold"
-            android:textSize="20sp"
-            android:text="Nombre del Producto"/>
+            android:textSize="18sp"
+        android:text="Nombre del Producto"/>
 
         <TextView
             android:id="@+id/descripcionProducto"
@@ -63,39 +64,22 @@
             android:maxLines="2"
             android:ellipsize="end"
             android:layout_marginTop="4dp"
+            android:gravity="center"
             android:textColor="@android:color/darker_gray"
-            android:textSize="14sp"
-            android:layout_marginBottom="8dp"
-            android:text="Descripción breve del producto que puede ocupar dos líneas." />
+            android:textSize="12sp"
+        android:layout_marginBottom="8dp"
+        android:text="Descripción breve del producto que puede ocupar dos líneas." />
 
-        <!-- Agregar los TextView para las categorías -->
         <TextView
             android:id="@+id/categoriaProducto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:textColor="@color/price_color"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginTop="4dp"
             android:text="Categoría:"/>
-
-        <TextView
-            android:id="@+id/subcategoriaProducto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"
-            android:layout_marginTop="2dp"
-            android:text="Subcategoría:"/>
-
-        <TextView
-            android:id="@+id/subsubcategoriaProducto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"
-            android:layout_marginTop="2dp"
-            android:text="Subsubcategoría:"/>
 
         <LinearLayout
             android:id="@+id/layoutColoresSeleccionados"
@@ -113,23 +97,25 @@
                 android:id="@+id/precioProducto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:textColor="#19B400"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:text="S/. 199.00"
-                android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"/>
+                android:textSize="16sp"
+            android:textStyle="bold"
+            android:text="S/. 199.00"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"/>
 
             <TextView
                 android:id="@+id/precioConDescuento"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:textColor="@android:color/holo_red_light"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_toStartOf="@id/imageButtonCarrito"
-                android:layout_marginEnd="8dp"
-                android:layout_centerVertical="true" />
+                android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_toStartOf="@id/imageButtonCarrito"
+            android:layout_marginEnd="8dp"
+            android:layout_centerVertical="true" />
 
             <ImageButton
                 android:id="@+id/imageButtonCarrito"

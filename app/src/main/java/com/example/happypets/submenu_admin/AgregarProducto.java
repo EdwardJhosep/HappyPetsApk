@@ -1,21 +1,25 @@
 package com.example.happypets.submenu_admin;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,9 +29,20 @@ import androidx.fragment.app.Fragment;
 
 import com.example.happypets.R;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -48,16 +63,20 @@ public class AgregarProducto extends Fragment {
     private ImageView imageViewProducto;
     private Uri uriImagen;
     private String token;
-
+    private Spinner spinnerCategoria;
+    private Map<String, String> categoriasMap = new HashMap<>();
+    private List<String> categoriasList = new ArrayList<>();
+    private ArrayAdapter<String> categoriaAdapter;
     private CheckBox checkBlanco, checkRojo, checkAzul, checkVerde, checkMorado, checkAmarillo, checkNegro;
 
+    @SuppressLint("MissingInflatedId")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_agregar_producto, container, false);
 
         editTextNombre = view.findViewById(R.id.editTextNombre);
         editTextDescripcion = view.findViewById(R.id.editTextDescripcion);
-        editTextCategoria = view.findViewById(R.id.editTextCategoria);
+        spinnerCategoria = view.findViewById(R.id.categoria_spinner);
         editTextPrecio = view.findViewById(R.id.editTextPrecio);
         editTextStock = view.findViewById(R.id.editTextStock);
         buttonAgregar = view.findViewById(R.id.buttonAgregar);
@@ -72,6 +91,9 @@ public class AgregarProducto extends Fragment {
         checkMorado = view.findViewById(R.id.checkMorado);
         checkAmarillo = view.findViewById(R.id.checkAmarillo);
         checkNegro = view.findViewById(R.id.checkNegro);
+
+        // Llamar a la tarea para obtener categorías
+        new ObtenerCategoriasTask().execute();
 
         buttonSeleccionarImagen.setOnClickListener(v -> {
             if (hasCameraPermissions()) {
@@ -93,7 +115,9 @@ public class AgregarProducto extends Fragment {
 
         return view;
     }
-
+    public void setToken(String token) {
+        this.token = token;
+    }
     private boolean hasCameraPermissions() {
         return ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
     }
@@ -117,6 +141,66 @@ public class AgregarProducto extends Fragment {
         startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE_FROM_GALLERY);
     }
 
+    private class ObtenerCategoriasTask extends AsyncTask<Void, Void, ArrayList<String>> {
+        @Override
+        protected ArrayList<String> doInBackground(Void... voids) {
+            ArrayList<String> categoriasList = new ArrayList<>();
+            try {
+                URL url = new URL("https://api.happypetshco.com/api/ListarCategorias");
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setRequestProperty("Authorization", "Bearer " + token);
+
+                // Verificar el código de respuesta
+                int responseCode = connection.getResponseCode();
+                Log.d("GestionarCategoria", "Response Code: " + responseCode);
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Leer la respuesta de la API
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    reader.close();
+
+                    // Mostrar el contenido de la respuesta para depuración
+                    Log.d("GestionarCategoria", "API Response: " + response.toString());
+
+                    // Convertir el String en un objeto JSON y acceder al arreglo "categorias"
+                    JSONObject jsonResponse = new JSONObject(response.toString());
+                    JSONArray categoriasArray = jsonResponse.getJSONArray("categorias");
+
+                    // Iterar sobre el arreglo y extraer los datos de cada categoría
+                    for (int i = 0; i < categoriasArray.length(); i++) {
+                        JSONObject categoria = categoriasArray.getJSONObject(i);
+                        String id = categoria.getString("id");
+                        String nombre = categoria.getString("nombre");
+                        categoriasList.add(nombre);
+                        categoriasMap.put(nombre, id); // Guardar id y nombre en el mapa
+                    }
+                } else {
+                    Log.e("GestionarCategoria", "Error en la respuesta de la API: Código " + responseCode);
+                }
+            } catch (Exception e) {
+                Log.e("GestionarCategoria", "Error al obtener categorías", e);
+            }
+            return categoriasList;
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<String> result) {
+            super.onPostExecute(result);
+            // Actualizar el spinner con las categorías obtenidas
+            categoriasList.add(0, "Selecciona una categoría"); // Agregar opción predeterminada
+            categoriaAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, result);
+            categoriaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerCategoria.setAdapter(categoriaAdapter);
+        }
+    }
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -134,7 +218,7 @@ public class AgregarProducto extends Fragment {
                     try {
                         Bitmap imageBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImageUri);
                         imageViewProducto.setImageBitmap(imageBitmap);
-                        uriImagen = saveImageToFile(imageBitmap); // Guarda la imagen como archivo
+                        uriImagen = saveImageToFile(imageBitmap);
                     } catch (IOException e) {
                         Log.e("AgregarProducto", "Error al obtener la imagen de la galería", e);
                     }
@@ -142,7 +226,6 @@ public class AgregarProducto extends Fragment {
             }
         }
     }
-
 
     private Uri saveImageToFile(Bitmap bitmap) {
         try {
@@ -158,93 +241,98 @@ public class AgregarProducto extends Fragment {
         }
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     private void agregarProducto() {
-        final String nmProducto = editTextNombre.getText().toString().trim();
-        final String descripcion = editTextDescripcion.getText().toString().trim();
-        final String categoria = editTextCategoria.getText().toString().trim();
-        final String precio = editTextPrecio.getText().toString().trim();
-        final String stock = editTextStock.getText().toString().trim();
+        String nombre = editTextNombre.getText().toString().trim();
+        String descripcion = editTextDescripcion.getText().toString().trim();
+        String categoria = (String) spinnerCategoria.getSelectedItem();  // Obtener el nombre de la categoría
+        String precio = editTextPrecio.getText().toString().trim();
+        String stock = editTextStock.getText().toString().trim();
 
-        StringBuilder coloresSeleccionados = new StringBuilder();
-        if (checkBlanco.isChecked()) coloresSeleccionados.append("Blanco,");
-        if (checkRojo.isChecked()) coloresSeleccionados.append("Rojo,");
-        if (checkAzul.isChecked()) coloresSeleccionados.append("Azul,");
-        if (checkVerde.isChecked()) coloresSeleccionados.append("Verde,");
-        if (checkMorado.isChecked()) coloresSeleccionados.append("Morado,");
-        if (checkAmarillo.isChecked()) coloresSeleccionados.append("Amarillo,");
-        if (checkNegro.isChecked()) coloresSeleccionados.append("Negro,");
-
-        if (coloresSeleccionados.length() > 0) {
-            coloresSeleccionados.setLength(coloresSeleccionados.length() - 1); // Cambiar -2 a -1 para quitar la última coma
-        }
-
-        if (nmProducto.isEmpty() || descripcion.isEmpty() || categoria.isEmpty() ||
-                precio.isEmpty() || stock.isEmpty() || coloresSeleccionados.length() == 0 || uriImagen == null) {
-            Toast.makeText(getContext(), "Por favor completa todos los campos y selecciona una imagen", Toast.LENGTH_SHORT).show();
+        // Verificar que los campos no estén vacíos
+        if (nombre.isEmpty() || descripcion.isEmpty() || categoria.equals("Selecciona una categoría") || precio.isEmpty() || stock.isEmpty()) {
+            Toast.makeText(getActivity(), "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        new Thread(() -> {
-            try {
-                HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-                loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-                OkHttpClient client = new OkHttpClient.Builder()
-                        .addInterceptor(loggingInterceptor)
-                        .build();
+        // Obtener el ID de la categoría seleccionada utilizando el mapa categoriasMap
+        String categoriaId = categoriasMap.get(categoria);
 
-                MultipartBody.Builder builder = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("nm_producto", nmProducto)
-                        .addFormDataPart("descripcion", descripcion)
-                        .addFormDataPart("categoria", categoria)
-                        .addFormDataPart("precio", precio)
-                        .addFormDataPart("stock", stock)
-                        .addFormDataPart("colores", coloresSeleccionados.toString());
+        if (categoriaId == null) {
+            Toast.makeText(getActivity(), "Categoría no válida", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-                // Aquí se usa el URI directamente para el archivo de la imagen
-                if (uriImagen != null) {
-                    builder.addFormDataPart("imagen", getFileName(uriImagen), RequestBody.create(MediaType.parse("image/jpeg"), new File(uriImagen.getPath())));
-                }
-
-                RequestBody requestBody = builder.build();
-                String url = "https://api.happypetshco.com/api/NuevoProducto";
-
-                Request request = new Request.Builder()
-                        .url(url)
-                        .addHeader("Authorization", "Bearer " + token)
-                        .post(requestBody)
-                        .build();
-
-                try (Response response = client.newCall(request).execute()) {
-                    if (response.isSuccessful()) {
-                        getActivity().runOnUiThread(() -> {
-                            limpiarCampos();
-                            Toast.makeText(getContext(), "Producto agregado correctamente", Toast.LENGTH_SHORT).show();
-                        });
-                    } else {
-                        String errorResponse = response.body() != null ? response.body().string() : "Sin respuesta del servidor";
-                        getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Error al agregar producto: " + errorResponse, Toast.LENGTH_SHORT).show());
-                    }
-                }
-            } catch (Exception e) {
-                Log.e("AgregarProducto", "Error al agregar producto", e);
-                getActivity().runOnUiThread(() -> Toast.makeText(getContext(), "Error al agregar producto", Toast.LENGTH_SHORT).show());
-            }
-        }).start();
+        // Llamar a la tarea para agregar el producto
+        new AgregarProductoTask(nombre, descripcion, categoriaId, precio, stock).execute();
     }
 
-    private void limpiarCampos() {
+    private class AgregarProductoTask extends AsyncTask<Void, Void, String> {
+        private final String nombre, descripcion, categoriaId, precio, stock;
+
+        public AgregarProductoTask(String nombre, String descripcion, String categoriaId, String precio, String stock) {
+            this.nombre = nombre;
+            this.descripcion = descripcion;
+            this.categoriaId = categoriaId;
+            this.precio = precio;
+            this.stock = stock;
+        }
+
+        @Override
+        protected String doInBackground(Void... voids) {
+            try {
+                // Preparar el cuerpo de la solicitud con los parámetros
+                RequestBody requestBody = new MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart("nombre", nombre)
+                        .addFormDataPart("descripcion", descripcion)
+                        .addFormDataPart("categoria", categoriaId)  // Usar el ID de la categoría
+                        .addFormDataPart("precio", precio)
+                        .addFormDataPart("stock", stock)
+                        .addFormDataPart("imagen", "imagen.jpg", RequestBody.create(MediaType.parse("image/jpeg"), new File(uriImagen.getPath())))
+                        .build();
+
+                // Crear la solicitud HTTP
+                HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+                loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+                OkHttpClient client = new OkHttpClient.Builder().addInterceptor(loggingInterceptor).build();
+
+                Request request = new Request.Builder()
+                        .url("https://api.happypetshco.com/api/AgregarProducto")
+                        .post(requestBody)
+                        .addHeader("Authorization", "Bearer " + token)
+                        .build();
+
+                // Realizar la solicitud y obtener la respuesta
+                Response response = client.newCall(request).execute();
+
+                if (response.isSuccessful()) {
+                    clearFields();
+                    return "Producto agregado con éxito";
+                } else {
+                    return "Error al agregar producto: " + response.message();
+                }
+
+            } catch (Exception e) {
+                Log.e("AgregarProducto", "Error al agregar producto", e);
+                return "Error al agregar producto";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+
+    private void clearFields() {
         editTextNombre.setText("");
         editTextDescripcion.setText("");
-        editTextCategoria.setText("");
         editTextPrecio.setText("");
         editTextStock.setText("");
-        imageViewProducto.setImageResource(0); // Limpiar imagen
-        uriImagen = null; // Resetear URI
+        spinnerCategoria.setSelection(0);
         checkBlanco.setChecked(false);
         checkRojo.setChecked(false);
         checkAzul.setChecked(false);
@@ -252,27 +340,6 @@ public class AgregarProducto extends Fragment {
         checkMorado.setChecked(false);
         checkAmarillo.setChecked(false);
         checkNegro.setChecked(false);
-    }
-
-    private String getFileName(Uri uri) {
-        String result = null;
-        if (uri.getScheme().equals("content")) {
-            Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME));
-                }
-            } finally {
-                cursor.close();
-            }
-        }
-        if (result == null) {
-            result = uri.getPath();
-            int cut = result.lastIndexOf('/');
-            if (cut != -1) {
-                result = result.substring(cut + 1);
-            }
-        }
-        return result;
+        imageViewProducto.setImageResource(0);
     }
 }

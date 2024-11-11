@@ -49,6 +49,9 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
         holder.nombreProducto.setText(TextUtils.isEmpty(producto.getNombre()) ? "Nombre no disponible" : producto.getNombre());
         holder.descripcionProducto.setText(TextUtils.isEmpty(producto.getDescripcion()) ? "Descripción no disponible" : producto.getDescripcion());
 
+        // Mostrar categoría, subcategoría y sub-subcategoría
+        holder.categoriaProducto.setText(TextUtils.isEmpty(producto.getCategoria()) ? "Categoría no disponible" : producto.getCategoria());
+
         // Obtener colores seleccionados
         String colores = producto.getColores();
         holder.layoutColoresSeleccionados.removeAllViews(); // Limpiar colores anteriores
@@ -181,6 +184,7 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
     public static class ProductoViewHolder extends RecyclerView.ViewHolder {
 
         TextView nombreProducto, descripcionProducto, precioProducto, coloresProducto, descuentoProducto;
+        TextView categoriaProducto;
         ImageView imagenProducto, imageButtonCarrito; // Añadir el botón del carrito
         LinearLayout layoutColoresSeleccionados; // Añadir layout para colores seleccionados
 
@@ -194,6 +198,10 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
             imagenProducto = itemView.findViewById(R.id.imagenProducto);
             imageButtonCarrito = itemView.findViewById(R.id.imageButtonCarrito); // Asegúrate de que este ID es correcto
             layoutColoresSeleccionados = itemView.findViewById(R.id.layoutColoresSeleccionados); // Cambia el ID según tu diseño
+
+            // Inicializar las vistas para las nuevas categorías
+            categoriaProducto = itemView.findViewById(R.id.categoriaProducto);
         }
     }
+
 }

@@ -1,18 +1,18 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true"
+    android:background="@color/background_color">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/background_color"
-        tools:context=".view_cliente.ProductoCliente">
+        android:padding="16dp">
 
+        <!-- Title TextView -->
         <TextView
             android:id="@+id/textViewTitle"
             android:layout_width="wrap_content"
@@ -20,12 +20,14 @@
             android:text="Productos Disponibles"
             android:textSize="26sp"
             android:textColor="@color/primary_color"
+            android:fontFamily="sans-serif-medium"
             android:layout_marginTop="24dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:gravity="center" />
 
+        <!-- Cart Icon ImageView -->
         <ImageView
             android:id="@+id/iconCarrito"
             android:layout_width="32dp"
@@ -37,7 +39,7 @@
             app:layout_constraintStart_toEndOf="@id/textViewTitle"
             app:layout_constraintTop_toTopOf="@id/textViewTitle" />
 
-        <!-- Nuevo TextView para el mensaje de búsqueda -->
+        <!-- Search Prompt TextView -->
         <TextView
             android:id="@+id/textViewSearchPrompt"
             android:layout_width="wrap_content"
@@ -45,19 +47,20 @@
             android:text="Ingrese el nombre del producto que desea buscar"
             android:textSize="16sp"
             android:textColor="@color/primary_text_color"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             app:layout_constraintTop_toBottomOf="@id/textViewTitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:gravity="center" />
 
+        <!-- Search EditText with updated background and rounded corners -->
         <EditText
             android:id="@+id/editTextSearch"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Buscar productos"
             android:padding="12dp"
-            android:background="@drawable/container_background"
+            android:background="@drawable/container_background_rounded"
             android:textColor="@color/background_color_dark"
             android:textColorHint="@color/primary_text_color"
             app:layout_constraintTop_toBottomOf="@id/textViewSearchPrompt"
@@ -66,111 +69,36 @@
             android:layout_margin="16dp"
             android:backgroundTint="@color/image_placeholder" />
 
+        <!-- Error Message TextView with updated styling -->
         <TextView
             android:id="@+id/textViewMensaje"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:text=""
             android:textColor="@android:color/holo_red_dark"
             android:textSize="16sp"
             android:visibility="gone"
+            android:layout_gravity="center"
+            android:fontFamily="sans-serif"
             app:layout_constraintTop_toBottomOf="@id/editTextSearch"
-            app:layout_constraintBottom_toTopOf="@id/cardView1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            tools:ignore="MissingConstraints" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView1"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
-            android:layout_margin="16dp"
-            app:cardElevation="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewMensaje">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/textViewCard1Title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:background="@color/secondary_color"
-                    android:fontFamily="sans-serif-medium"
-                    android:gravity="center"
-                    android:text="NOVEDADES"
-                    android:textColor="@color/background_color"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <ImageView
-                    android:id="@+id/imageViewCard1"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/image1" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardView2"
-            android:layout_width="0dp"
-            android:layout_height="575dp"
-            android:layout_margin="33dp"
-            app:cardElevation="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/cardView1">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/imageViewCard2Title"
-                    android:layout_width="197dp"
-                    android:layout_height="65dp"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="12dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/clientefeliz" />
-
-                <ImageView
-                    android:id="@+id/imageViewCard2"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:paddingTop="10dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/image4" />
-            </LinearLayout>
-        </androidx.cardview.widget.CardView>
-
+        <!-- RecyclerView for Product List -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerViewProductos"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:padding="8dp"
-            android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/cardView2"
+            android:padding="1dp"
+            android:clipToPadding="false"
+            android:scrollbars="vertical"
+            android:background="@color/white"
+            android:elevation="8dp"
+            app:layout_constraintTop_toBottomOf="@id/textViewMensaje"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:clipToPadding="false"
-            android:background="@color/white"
-            tools:listitem="@layout/item_producto"
-            android:elevation="8dp"
-            android:scrollbars="vertical"
             android:layout_marginTop="8dp"
-            android:backgroundTint="@color/background_color" />
+            tools:listitem="@layout/item_producto" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

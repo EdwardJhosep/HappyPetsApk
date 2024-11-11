@@ -46,7 +46,6 @@ public class ManageAdmin extends Fragment {
 
         // Referencias a los botones
         Button buttonAdminPersonal = view.findViewById(R.id.button_admin_personal);
-        Button buttonAdminProductos = view.findViewById(R.id.button_admin_productos);
         Button buttonAdminMascotas = view.findViewById(R.id.button_admin_mascotas);
         Button buttonAdminServicios = view.findViewById(R.id.button_admin_servicios); // Nuevo botón
 
@@ -57,21 +56,10 @@ public class ManageAdmin extends Fragment {
             startActivity(intent);
         });
 
-        buttonAdminProductos.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), Submenu_AdminProductos.class);
-            intent.putExtra(ARG_TOKEN, token); // Pasar el token al submenú
-            startActivity(intent);
-        });
+
 
         buttonAdminMascotas.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), Submenu_AdminMascotas.class);
-            intent.putExtra(ARG_TOKEN, token); // Pasar el token al submenú
-            startActivity(intent);
-        });
-
-        // Configurar el listener para el botón de servicios
-        buttonAdminServicios.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), Submenu_AdminServicios.class); // Llamar al submenú de servicios
             intent.putExtra(ARG_TOKEN, token); // Pasar el token al submenú
             startActivity(intent);
         });

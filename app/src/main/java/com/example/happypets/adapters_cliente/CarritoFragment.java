@@ -47,7 +47,6 @@ public class CarritoFragment extends BottomSheetDialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.listarcarritocliente, container, false);
         listView = view.findViewById(R.id.listViewCarrito);
-        getDialog().getWindow().setBackgroundDrawableResource(R.drawable.card_background);
 
         // Obtener el userId y token de los argumentos
         if (getArguments() != null) {

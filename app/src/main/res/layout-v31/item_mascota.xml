@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -22,7 +23,8 @@
         android:clipToOutline="true"
         android:contentDescription="Imagen de la mascota"
         android:padding="4dp"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        tools:ignore="HardcodedText" />
 
 
     <TextView
@@ -34,7 +36,8 @@
         android:textStyle="bold"
         android:layout_marginTop="4dp"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/mascotaImageView"/>
+        android:layout_below="@id/mascotaImageView"
+        tools:ignore="ObsoleteLayoutParam" />
 
     <TextView
         android:id="@+id/edadTextView"
@@ -44,7 +47,8 @@
         android:textColor="#FFC107"
         android:layout_marginTop="2dp"
         android:layout_below="@id/nombreTextView"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        tools:ignore="ObsoleteLayoutParam" />
 
     <TextView
         android:id="@+id/especieTextView"
@@ -54,7 +58,8 @@
         android:textColor="#4CAF50"
         android:layout_marginTop="2dp"
         android:layout_below="@id/edadTextView"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        tools:ignore="ObsoleteLayoutParam" />
 
     <TextView
         android:id="@+id/razaTextView"
@@ -64,7 +69,8 @@
         android:textColor="#2196F3"
         android:layout_marginTop="2dp"
         android:layout_below="@id/especieTextView"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        tools:ignore="ObsoleteLayoutParam" />
 
     <TextView
         android:id="@+id/sexoTextView"
@@ -74,5 +80,6 @@
         android:textColor="#9C27B0"
         android:layout_marginTop="2dp"
         android:layout_below="@id/razaTextView"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        tools:ignore="ObsoleteLayoutParam" />
 </LinearLayout>

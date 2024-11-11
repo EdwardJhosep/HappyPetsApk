@@ -1,27 +1,35 @@
 package com.example.happypets.models;
 
 public class Producto {
-    private int id;
-    private String nombre;
-    private String descripcion;
-    private String categoria;
-    private String precio;
-    private String descuento;
-    private String stock;
-    private String imagen;
-    private String colores; // Nuevo campo para los colores
+        private int id;
+        private String nombre;
+        private String descripcion;
+        private String categoria;
+        private String subCategoria; // Campo para la subcategoría
+        private String subSubCategoria; // Campo para la sub-subcategoría
+        private String precio;
+        private String descuento;
+        private String stock;
+        private String imagen;
+        private String colores; // Nuevo campo para los colores
 
-    public Producto(int id, String nombre, String descripcion, String categoria, String precio, String descuento, String stock, String imagen, String colores) {
-        this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.categoria = categoria;
-        this.precio = precio;
-        this.descuento = descuento;
-        this.stock = stock;
-        this.imagen = imagen;
-        this.colores = colores; // Inicializa el campo colores
-    }
+        // Constructor actualizado
+        public Producto(int id, String nombre, String descripcion, String categoria,
+                        String subCategoria, String subSubCategoria,
+                        String precio, String descuento, String stock,
+                        String imagen, String colores) {
+            this.id = id;
+            this.nombre = nombre;
+            this.descripcion = descripcion;
+            this.categoria = categoria;
+            this.subCategoria = subCategoria; // Inicializa subcategoría
+            this.subSubCategoria = subSubCategoria; // Inicializa sub-subcategoría
+            this.precio = precio;
+            this.descuento = descuento;
+            this.stock = stock;
+            this.imagen = imagen;
+            this.colores = colores; // Inicializa el campo colores
+        }
 
     // Métodos getter y setter
     public int getId() {
@@ -82,5 +90,25 @@ public class Producto {
         return colores;
     }
 
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    public String getSubCategoria() {
+        return subCategoria;
+    }
+
+    public void setSubCategoria(String subCategoria) {
+        this.subCategoria = subCategoria;
+    }
+
+    public String getSubSubCategoria() {
+        return subSubCategoria;
+    }
+
+    public void setSubSubCategoria(String subSubCategoria) {
+        this.subSubCategoria = subSubCategoria;
+    }
 
 }

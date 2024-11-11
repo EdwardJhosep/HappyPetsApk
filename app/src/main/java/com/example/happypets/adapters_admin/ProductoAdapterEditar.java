@@ -41,32 +41,33 @@ public class ProductoAdapterEditar extends RecyclerView.Adapter<ProductoAdapterE
         holder.nombreProducto.setText(TextUtils.isEmpty(producto.getNombre()) ? "Nombre no disponible" : producto.getNombre());
         holder.descripcionProducto.setText(TextUtils.isEmpty(producto.getDescripcion()) ? "Descripción no disponible" : producto.getDescripcion());
 
-        String precio = producto.getPrecio();
-        String descuento = producto.getDescuento();
         String colores = producto.getColores();  // Obtén los colores
 
-        if (TextUtils.isEmpty(precio)) {
-            holder.precioProducto.setText("Precio no disponible");
+        // Obtener el precio y el descuento
+        String precio = producto.getPrecio();
+        String descuento = producto.getDescuento(); // Asumiendo que es un porcentaje en formato de cadena
+
+        double precioOriginal = TextUtils.isEmpty(precio) ? 0 : Double.parseDouble(precio);
+        double descuentoPorcentaje = TextUtils.isEmpty(descuento) || descuento.equals("0") || "null".equals(descuento)
+                ? 0
+                : Double.parseDouble(descuento);
+
+        double precioConDescuento; // Declarar la variable sin inicializar
+        if (descuentoPorcentaje > 0 && descuentoPorcentaje <= 100) {
+            // Calcular el precio con descuento
+            precioConDescuento = precioOriginal - (precioOriginal * (descuentoPorcentaje / 100));
+            holder.precioProducto.setText(" ̶A̶n̶t̶:̶S̶/̶:̶" + precioOriginal + "\nS/. " + precioConDescuento);
+            holder.descuentoProducto.setVisibility(View.VISIBLE);
+            holder.descuentoProducto.setText("Descuento: " + descuentoPorcentaje + "%");
         } else {
-            double precioOriginal = Double.parseDouble(precio);
-            double descuentoValor = 0;  // Asignamos 0 como valor por defecto
-
-            // Si el descuento no está vacío ni es "0" ni "null", lo utilizamos
-            if (!TextUtils.isEmpty(descuento) && !descuento.equals("0") && !"null".equals(descuento)) {
-                descuentoValor = Double.parseDouble(descuento);
-            }
-
-            // Aplicamos el descuento si es mayor que 0
-            if (descuentoValor > 0) {
-                double precioConDescuento = precioOriginal - descuentoValor;
-                holder.precioProducto.setText("Antes: S/. " + precioOriginal + "\nAhora: S/. " + precioConDescuento);
-                holder.descuentoProducto.setVisibility(View.VISIBLE);
-                holder.descuentoProducto.setText("Descuento: S/. " + descuentoValor);
-            } else {
-                holder.precioProducto.setText("S/. " + precioOriginal);
-                holder.descuentoProducto.setVisibility(View.GONE);
-            }
+            precioConDescuento = precioOriginal; // Asignar precioOriginal si no hay descuento
+            holder.precioProducto.setText("S/. " + precioOriginal);
+            holder.descuentoProducto.setVisibility(View.GONE); // Ocultar si no hay descuento
         }
+
+
+
+
 
         // Mostrar colores
         if (TextUtils.isEmpty(colores)) {
