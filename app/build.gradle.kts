@@ -26,8 +26,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    buildFeatures {
+        viewBinding = true
     }
 }
 
@@ -47,6 +50,8 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.9.0")
     implementation ("com.google.code.gson:gson:2.8.6")
     implementation ("com.github.bumptech.glide:glide:4.12.0")
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
     implementation ("com.airbnb.android:lottie:5.0.0")
     implementation ("androidx.constraintlayout:constraintlayout:2.1.4")

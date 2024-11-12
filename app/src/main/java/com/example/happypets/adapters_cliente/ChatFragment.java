@@ -143,7 +143,21 @@ public class ChatFragment extends DialogFragment {
             String precio = producto.get("precio").getAsString();
             String imagenUrl = "https://api.happypetshco.com/ServidorProductos/" + producto.get("imagen").getAsString();
 
-            String respuesta = "Producto: " + nombre + "\nDescripción: " + descripcion + "\nPrecio: $" + precio;
+            // Verificar si el producto tiene descuento
+            String descuento = producto.has("descuento") ? producto.get("descuento").getAsString() : null;
+            double precioOriginal = Double.parseDouble(precio);
+            String precioConDescuento = precio;
+
+            // Si el producto tiene descuento, calcular el precio con descuento
+            if (descuento != null) {
+                double descuentoValor = Double.parseDouble(descuento);  // Descuento en porcentaje
+                double precioFinal = precioOriginal - (precioOriginal * descuentoValor / 100);
+                precioConDescuento = String.format("%.2f", precioFinal); // Formatear el precio con descuento
+            }
+
+            // Construir el mensaje de respuesta
+            String respuesta = "Producto: " + nombre + "\nDescripción: " + descripcion + "\nPrecio: S/" + precioConDescuento;
+
             faqMap.put(nombre.toLowerCase(), new ChatMessage(respuesta, false, imagenUrl));
         }
     }
@@ -171,7 +185,7 @@ public class ChatFragment extends DialogFragment {
         if (bestMatch != null) {
             response = bestMatch;
         } else {
-            response = new ChatMessage("Lo siento, no entiendo tu pregunta. ¿Podrías reformularla?", false, null);
+            response = new ChatMessage("Lo siento, no entiendo tu pregunta. ¡Solo Ingrese El Nombre Del Producto¡", false, null);
             playErrorSound();  // Reproducir sonido de error cuando no se encuentra una respuesta
         }
 

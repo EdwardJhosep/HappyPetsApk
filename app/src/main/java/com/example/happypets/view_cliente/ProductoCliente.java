@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.happypets.R;
+import com.example.happypets.adapters_cliente.CarritoFragment;
 import com.example.happypets.adapters_cliente.ProductoAdapter;
 import com.example.happypets.models.Producto;
 
@@ -26,10 +27,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class ProductoCliente extends Fragment {
 
@@ -73,7 +76,7 @@ public class ProductoCliente extends Fragment {
         recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, getResources().getDimensionPixelSize(R.dimen.grid_item_spacing), true)); // Espacio entre los productos
         productoAdapter = new ProductoAdapter(productoList, userId, token);
         recyclerView.setAdapter(productoAdapter);
-
+        new ListarCarritoTask().execute(userId);
         // Obtener productos de la API
         new GetProductosTask().execute("https://api.happypetshco.com/api/ListarProductos");
 
@@ -91,9 +94,12 @@ public class ProductoCliente extends Fragment {
             public void afterTextChanged(Editable s) {}
         });
 
-        // Acción del icono del carrito
-        iconCarrito.setOnClickListener(v -> {
-            // Código para mostrar el carrito
+        iconCarrito.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CarritoFragment carritoFragment = CarritoFragment.newInstance(userId, token);
+                carritoFragment.show(getChildFragmentManager(), carritoFragment.getTag());
+            }
         });
 
         return view;
@@ -144,7 +150,6 @@ public class ProductoCliente extends Fragment {
             }
             return result.toString();
         }
-
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
@@ -175,6 +180,10 @@ public class ProductoCliente extends Fragment {
                 }
 
                 productoListOriginal.addAll(productoList);
+
+                // Shuffle the product list to display items in random order
+                Collections.shuffle(productoList);
+
                 productoAdapter.notifyDataSetChanged();
 
             } catch (JSONException e) {
@@ -215,6 +224,83 @@ public class ProductoCliente extends Fragment {
                 if (position >= spanCount) {
                     outRect.top = spacing; // item top
                 }
+            }
+        }
+    }
+    private class ListarCarritoTask extends AsyncTask<String, Void, String> {
+
+        private static final String API_URL = "https://api.happypetshco.com/api/MostrarCarrito=";
+
+        // Declare carritoArray as an ArrayList to hold the cart items
+        private ArrayList<JSONObject> carritoArray;
+
+        // Constructor
+        public ListarCarritoTask() {
+            carritoArray = new ArrayList<>(); // Initialize the carritoArray
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            String userId = params[0];
+            String apiUrl = API_URL + userId;
+
+            try {
+                URL url = new URL(apiUrl);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setRequestProperty("Authorization", "Bearer " + token); // Establecer el token en el encabezado
+                connection.setDoInput(true);
+                connection.connect();
+
+                // Verificar el código de respuesta
+                int responseCode = connection.getResponseCode();
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    // Leer la respuesta
+                    try (InputStream inputStream = connection.getInputStream();
+                         InputStreamReader reader = new InputStreamReader(inputStream)) {
+                        StringBuilder response = new StringBuilder();
+                        int data;
+                        while ((data = reader.read()) != -1) {
+                            response.append((char) data);
+                        }
+                        return response.toString();
+                    }
+                } else {
+                    return null; // Retornar null si la respuesta no es OK
+                }
+            } catch (Exception e) {
+                e.printStackTrace(); // Log the exception
+                return null; // Return null on exception
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            if (result != null) {
+                try {
+                    JSONObject jsonResponse = new JSONObject(result);
+                    // Verificar si la respuesta contiene el campo 'carrito'
+                    if (jsonResponse.has("carrito")) {
+                        JSONArray jsonArray = jsonResponse.getJSONArray("carrito");
+                        carritoArray.clear(); // Clear the array before adding new items
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            carritoArray.add(jsonArray.getJSONObject(i)); // Populate the carritoArray with products
+                        }
+                        // Check if carritoArray has products
+                        if (carritoArray.size() > 0) {
+                            iconCarrito.setImageResource(R.drawable.ic_cart_full); // Ícono para carrito con productos
+                        } else {
+                            iconCarrito.setImageResource(R.drawable.ic_carrito); // Ícono para carrito vacío
+                        }
+                    } else {
+                        Toast.makeText(getActivity(), "No hay productos en el carrito", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity(), "Error al parsear la respuesta", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(getActivity(), "Error en la conexión o el servidor", Toast.LENGTH_SHORT).show();
             }
         }
     }

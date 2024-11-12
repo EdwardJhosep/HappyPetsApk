@@ -28,6 +28,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HappyPets"
         tools:targetApi="31">
+
+        <activity
+            android:name=".Login"
+            android:exported="false" />
         <activity
             android:name=".submenu_admin.GestionarCategoria"
             android:exported="false"
@@ -116,8 +120,9 @@
             android:exported="false"
             tools:ignore="Instantiatable" />
         <activity
-            android:name=".Login"
-            android:exported="true">
+            android:name=".vista_previa.InicioActivity"
+            android:exported="true"
+            tools:ignore="Instantiatable">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -27,6 +27,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.happypets.Login;
 import com.example.happypets.R;
 import com.example.happypets.adapters_cliente.ChatFragment;
+import com.example.happypets.vista_previa.InicioActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -93,7 +94,7 @@ public class MenuCliente extends AppCompatActivity {
             editor.apply();
 
             // Redirige al usuario a la actividad de inicio de sesión
-            Intent intent = new Intent(MenuCliente.this, Login.class);
+            Intent intent = new Intent(MenuCliente.this, InicioActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish(); // Cierra la actividad actual

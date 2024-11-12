@@ -95,18 +95,23 @@ public class CitasCliente extends Fragment {
         client.newCall(request).enqueue(new okhttp3.Callback() {
             @Override
             public void onFailure(okhttp3.Call call, IOException e) {
-                getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "Error al cargar los servicios", Toast.LENGTH_SHORT).show());
+                if (isAdded()) { // Verifica que el fragmento esté agregado antes de interactuar con la UI
+                    getActivity().runOnUiThread(() ->
+                            Toast.makeText(getActivity(), "Error al cargar los servicios", Toast.LENGTH_SHORT).show()
+                    );
+                }
             }
 
             @Override
             public void onResponse(okhttp3.Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && isAdded()) { // Verifica que el fragmento esté agregado
                     String responseBody = response.body().string();
 
                     Gson gson = new Gson();
                     Respuesta respuesta = gson.fromJson(responseBody, Respuesta.class);
 
                     servicioList = respuesta.getServicios();
+                    filteredServicioList.clear(); // Evita duplicados al añadir
                     filteredServicioList.addAll(servicioList);
 
                     getActivity().runOnUiThread(() -> {
@@ -114,14 +119,18 @@ public class CitasCliente extends Fragment {
                         recyclerView.setAdapter(servicioAdapterCliente);
                     });
                 } else {
-                    getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), "Error al cargar los servicios", Toast.LENGTH_SHORT).show());
+                    if (isAdded()) {
+                        getActivity().runOnUiThread(() ->
+                                Toast.makeText(getActivity(), "Error al cargar los servicios", Toast.LENGTH_SHORT).show()
+                        );
+                    }
                 }
             }
         });
     }
 
     private void filterServicios(String query) {
-        filteredServicioList.clear();
+        filteredServicioList.clear();  // Limpia antes de agregar nuevos elementos
 
         if (query.isEmpty()) {
             filteredServicioList.addAll(servicioList);
@@ -133,6 +142,8 @@ public class CitasCliente extends Fragment {
             }
         }
 
-        servicioAdapterCliente.notifyDataSetChanged();
+        if (isAdded()) { // Asegura que la UI esté lista para actualizar
+            servicioAdapterCliente.notifyDataSetChanged();
+        }
     }
 }
