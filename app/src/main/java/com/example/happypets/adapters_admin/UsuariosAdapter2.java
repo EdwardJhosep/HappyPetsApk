@@ -71,7 +71,7 @@ public class UsuariosAdapter2 extends RecyclerView.Adapter<UsuariosAdapter2.Usua
             if (usuario.getPermisos() != null && usuario.getPermisos().size() > 1) {
                 usuariosFiltrados.add(usuario);
             } else if (usuario.getPermisos() != null && usuario.getPermisos().size() == 1 &&
-                    !usuario.getPermisos().get(0).equals("Usuario")) {
+                    !usuario.getPermisos().get(0).equals("Cliente")) {
                 // Incluye usuarios que tienen un único permiso, siempre que no sea "Usuario"
                 usuariosFiltrados.add(usuario);
             }
@@ -90,7 +90,7 @@ public class UsuariosAdapter2 extends RecyclerView.Adapter<UsuariosAdapter2.Usua
                 // Añade el usuario si tiene más de un permiso
                 usuariosFiltrados.add(usuario);
             } else if (usuario.getPermisos() != null && usuario.getPermisos().size() == 1 &&
-                    !usuario.getPermisos().get(0).equals("Usuario") &&
+                    !usuario.getPermisos().get(0).equals("Cliente") &&
                     usuario.getDni() != null &&
                     usuario.getDni().toLowerCase().contains(dni.toLowerCase())) {
                 // Incluye usuarios que tienen un único permiso, siempre que no sea "Usuario"

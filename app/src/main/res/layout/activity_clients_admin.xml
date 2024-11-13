@@ -19,7 +19,7 @@
         android:id="@+id/buscarEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Buscar usuarios..."
+        android:hint="Ingreser El DNI..."
         android:padding="10dp"
         android:background="@drawable/edittext_background"
         android:layout_marginBottom="16dp"

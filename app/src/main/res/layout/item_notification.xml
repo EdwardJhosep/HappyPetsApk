@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/card_background"
+    android:layout_marginBottom="8dp">
+
+    <!-- Título del mensaje -->
+    <TextView
+        android:id="@+id/messageTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Message"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#212121"
+        android:layout_marginBottom="4dp"/>
+
+    <!-- Estado de la notificación -->
+    <TextView
+        android:id="@+id/statusTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Status"
+        android:textSize="14sp"
+        android:textColor="#282828"
+        android:layout_marginBottom="4dp"/>
+
+    <!-- Observaciones de la notificación -->
+    <TextView
+        android:id="@+id/observationsTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Observations"
+        android:textSize="14sp"
+        android:textColor="#282828" />
+
+</LinearLayout>

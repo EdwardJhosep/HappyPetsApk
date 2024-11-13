@@ -1,4 +1,3 @@
-<!-- dialog_dar_permiso.xml -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -12,37 +11,59 @@
         android:layout_height="wrap_content"
         android:text="Nombre del Usuario"
         android:textSize="18sp"
+        android:textColor="#000000"
         android:paddingBottom="8dp"/>
 
-    <!-- CheckBoxes para seleccionar permisos -->
-    <CheckBox
-        android:id="@+id/checkAdmin"
-        android:layout_width="wrap_content"
+    <!-- Agrupación de CheckBoxes para una mejor organización visual -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Administrador"/>
+        android:orientation="vertical"
+        android:paddingBottom="16dp">
 
-    <CheckBox
-        android:id="@+id/checkUsuario"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Usuario"/>
+        <CheckBox
+            android:id="@+id/checkAdmin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Administrador"
+            android:textColor="#FF5722" />
 
-    <CheckBox
-        android:id="@+id/checkCajero"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Cajero"/>
+        <CheckBox
+            android:id="@+id/checkUsuario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cliente"
+            android:textColor="#4CAF50" />
 
-    <CheckBox
-        android:id="@+id/checkVeterinario"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Veterinario"/>
+        <CheckBox
+            android:id="@+id/checkCajero"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cajero"
+            android:textColor="#3F51B5" />
+
+        <CheckBox
+            android:id="@+id/checkVeterinario"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Veterinario"
+            android:textColor="#009688" />
+
+        <!-- Nuevo CheckBox para Almacenero -->
+        <CheckBox
+            android:id="@+id/checkAlmacenero"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Almacenero"
+            android:textColor="#8BC34A" />
+    </LinearLayout>
 
     <Button
         android:id="@+id/darPermisoButton"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Dar Permiso"
+        android:backgroundTint="#FF5722"
+        android:textColor="#FFFFFF"
         android:layout_marginTop="16dp"/>
 </LinearLayout>

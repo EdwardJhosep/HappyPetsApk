@@ -261,7 +261,7 @@ public class CrearCitaDialogFragment extends DialogFragment {
             Mascota selectedMascota = (Mascota) mascotaSpinner.getSelectedItem();
 
             String idMascota = selectedMascota.getId();
-            String estado = "pendiente";
+            String estado = "Pendiente";
             String observaciones = "";
 
             if (isHospedaje && !TextUtils.isEmpty(horasHospedaje)) {

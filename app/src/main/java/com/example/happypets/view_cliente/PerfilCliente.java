@@ -98,6 +98,14 @@ public class PerfilCliente extends Fragment {
             agregarMascotaDialogFragment.show(getChildFragmentManager(), "agregarMascota");
         });
 
+        ImageButton notificationIcon = view.findViewById(R.id.notificationIcon);
+        notificationIcon.setOnClickListener(v -> {
+            NotificacionesDialogFragment notificacionesDialogFragment = NotificacionesDialogFragment.newInstance(userId, token);
+            notificacionesDialogFragment.show(getChildFragmentManager(), "notificacionesDialog");
+        });
+
+
+
 
 
         return view;

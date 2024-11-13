@@ -28,7 +28,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HappyPets"
         tools:targetApi="31">
-
+        <activity
+            android:name=".view_cliente.NotificacionesDialogFragment"
+            android:exported="false" />
         <activity
             android:name=".Login"
             android:exported="false" />

@@ -67,7 +67,7 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
     public void updateUsuarios(List<User> nuevosUsuarios) {
         List<User> usuariosFiltrados = new ArrayList<>();
         for (User usuario : nuevosUsuarios) {
-            if (usuario.getPermisos() != null && usuario.getPermisos().size() == 1 && usuario.getPermisos().get(0).equals("Usuario")) {
+            if (usuario.getPermisos() != null && usuario.getPermisos().size() == 1 && usuario.getPermisos().get(0).equals("Cliente")) {
                 usuariosFiltrados.add(usuario);
             }
         }
@@ -80,7 +80,7 @@ public class UsuariosAdapter extends RecyclerView.Adapter<UsuariosAdapter.Usuari
         for (User usuario : listaOriginal) {
             if (usuario.getPermisos() != null &&
                     usuario.getPermisos().size() == 1 &&
-                    usuario.getPermisos().get(0).equals("Usuario") &&
+                    usuario.getPermisos().get(0).equals("Cliente") &&
                     usuario.getDni() != null &&
                     usuario.getDni().toLowerCase().contains(dni.toLowerCase())) {
                 usuariosFiltrados.add(usuario);

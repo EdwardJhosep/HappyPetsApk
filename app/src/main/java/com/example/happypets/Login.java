@@ -209,7 +209,7 @@ public class Login extends AppCompatActivity {
                     JSONArray permisosArray = user.getJSONArray("permisos");
                     String permisos = permisosArray.length() > 0 ? permisosArray.getString(0) : "No tiene permisos";
 
-                    if ("Usuario".equals(permisos)) {
+                    if ("Cliente".equals(permisos)) {
                         saveLoginState(true, token);
                         Intent intent = new Intent(this, MenuCliente.class);
                         intent.putExtra("token", token);

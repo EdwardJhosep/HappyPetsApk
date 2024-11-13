@@ -38,6 +38,7 @@ public class DarPermisoDialogFragment extends DialogFragment {
     private CheckBox checkUsuario;
     private CheckBox checkCajero;
     private CheckBox checkVeterinario;
+    private CheckBox checkAlmacenero; // Nuevo CheckBox para Almacenero
 
     // Constructor modificado
     public DarPermisoDialogFragment(String token, String userId, User usuario) {
@@ -61,6 +62,7 @@ public class DarPermisoDialogFragment extends DialogFragment {
         checkUsuario = view.findViewById(R.id.checkUsuario);
         checkCajero = view.findViewById(R.id.checkCajero);
         checkVeterinario = view.findViewById(R.id.checkVeterinario);
+        checkAlmacenero = view.findViewById(R.id.checkAlmacenero); // Inicialización del nuevo CheckBox
 
         // Muestra el nombre del usuario en el TextView
         nombreTextView.setText(usuario.getNombres());
@@ -80,9 +82,10 @@ public class DarPermisoDialogFragment extends DialogFragment {
     private void marcarCheckBoxes(List<String> permisos) {
         // Marca los CheckBox según los permisos del usuario
         checkAdmin.setChecked(permisos.contains("Administrador"));
-        checkUsuario.setChecked(permisos.contains("Usuario"));
+        checkUsuario.setChecked(permisos.contains("Cliente"));
         checkCajero.setChecked(permisos.contains("Cajero"));
         checkVeterinario.setChecked(permisos.contains("Veterinario"));
+        checkAlmacenero.setChecked(permisos.contains("Almacenero")); // Marca si el usuario tiene permiso de Almacenero
     }
 
     private void darPermiso() {
@@ -95,9 +98,10 @@ public class DarPermisoDialogFragment extends DialogFragment {
         // Obtener los permisos seleccionados
         StringBuilder permisosSeleccionados = new StringBuilder();
         if (checkAdmin.isChecked()) permisosSeleccionados.append("\"Administrador\",");
-        if (checkUsuario.isChecked()) permisosSeleccionados.append("\"Usuario\",");
+        if (checkUsuario.isChecked()) permisosSeleccionados.append("\"Cliente\",");
         if (checkCajero.isChecked()) permisosSeleccionados.append("\"Cajero\",");
         if (checkVeterinario.isChecked()) permisosSeleccionados.append("\"Veterinario\",");
+        if (checkAlmacenero.isChecked()) permisosSeleccionados.append("\"Almacenero\","); // Agrega el permiso de Almacenero si está seleccionado
 
         // Eliminar la última coma si es necesario
         if (permisosSeleccionados.length() > 0) {

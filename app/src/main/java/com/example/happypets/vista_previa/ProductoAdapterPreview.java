@@ -195,7 +195,6 @@ public class ProductoAdapterPreview extends RecyclerView.Adapter<ProductoAdapter
             super(itemView);
             nombreProducto = itemView.findViewById(R.id.nombreProducto);
             descripcionProducto = itemView.findViewById(R.id.descripcionProducto);
-            coloresProducto = itemView.findViewById(R.id.coloresProducto);
             precioProducto = itemView.findViewById(R.id.precioProducto);
             descuentoProducto = itemView.findViewById(R.id.descuentoProducto); // Añade el descuento
             imagenProducto = itemView.findViewById(R.id.imagenProducto);
