@@ -75,14 +75,10 @@ public class NotificacionesDialogFragment extends DialogFragment {
         }
 
 
-        adapter = new NotificationAdapter(getContext(), notificationsList);
+        adapter = new NotificationAdapter(getContext(), notificationsList, userId);
         petsListView.setAdapter(adapter);
 
-        // Verifica la conexión a Internet antes de intentar obtener notificaciones
-        if (!isNetworkAvailable()) {
-            Toast.makeText(getContext(), "No hay conexión a internet", Toast.LENGTH_SHORT).show();
-            return view;
-        }
+
 
         // Llamada a la API para obtener notificaciones
         new FetchNotificationsTask().execute("https://api.happypetshco.com/api/NotiNovedades=" + userId);
@@ -156,15 +152,18 @@ public class NotificacionesDialogFragment extends DialogFragment {
                         notificationsList.clear();
                         for (int i = 0; i < notifications.length(); i++) {
                             JSONObject notification = notifications.getJSONObject(i);
+
+                            String id = notification.getString("id"); // Asegúrate de que el id esté presente en la respuesta
+
+                            // Extraemos los demás datos de la notificación
                             String message = notification.getJSONObject("data").getString("mensaje");
                             String status = notification.getJSONObject("data").getString("estado");
                             String observations = notification.getJSONObject("data").getString("observaciones");
 
-                            notificationsList.add(new Notification(message, status, observations));
-
-                            // Muestra la notificación en la bandeja del sistema
-                            showNotification(message, "Nueva Notificación de HappyPets");
+                            // Añadimos la notificación a la lista
+                            notificationsList.add(new Notification(id, message, status, observations));
                         }
+                        // Actualizamos el adaptador para reflejar los cambios
                         adapter.notifyDataSetChanged();
                     } else {
                         Toast.makeText(getContext(), "No se encontraron notificaciones", Toast.LENGTH_SHORT).show();
@@ -183,8 +182,11 @@ public class NotificacionesDialogFragment extends DialogFragment {
         private String message;
         private String status;
         private String observations;
+        private String id;
 
-        public Notification(String message, String status, String observations) {
+
+        public Notification(String id,String message, String status, String observations) {
+            this.id = id;
             this.message = message;
             this.status = status;
             this.observations = observations;
@@ -201,54 +203,15 @@ public class NotificacionesDialogFragment extends DialogFragment {
         public String getObservations() {
             return observations;
         }
-    }
 
-    private void showNotification(String message, String title) {
-        // Crea el canal de notificaciones (para Android 8.0 y superior)
-        NotificationManager notificationManager = (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-
-        if (notificationManager == null) {
-            Log.e("Notification", "Notification Manager is null.");
-            return;
+        // Getters y setters
+        public String getId() {
+            return id;
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = notificationManager.getNotificationChannel(CHANNEL_ID);
-            if (channel == null) {
-                CharSequence name = "Notificaciones";
-                String description = "Notificaciones de novedades de HappyPets";
-                int importance = NotificationManager.IMPORTANCE_HIGH;
-                channel = new NotificationChannel(CHANNEL_ID, name, importance);
-                channel.setDescription(description);
-                channel.enableLights(true);
-                channel.setLightColor(Color.BLUE);
-                channel.enableVibration(true);
-                channel.setVibrationPattern(new long[]{0, 500, 1000});
-                notificationManager.createNotificationChannel(channel);
-            }
+        public void setId(String id) {
+            this.id = id;
         }
 
-        Intent intent = new Intent(getContext(), InicioActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getContext(), CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_notificacion) // Icono por defecto para la notificación
-                .setContentTitle(title)
-                .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_HIGH) // Prioridad alta para la notificación
-                .setAutoCancel(true) // La notificación desaparecerá al hacer clic
-                .setColor(ContextCompat.getColor(getContext(), R.color.primary_color)) // Color personalizado para la notificación
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(message)) // Permite expandir el mensaje si es largo
-                .setDefaults(NotificationCompat.DEFAULT_SOUND | NotificationCompat.DEFAULT_VIBRATE) // Agrega sonido y vibración por defecto
-                .setContentIntent(pendingIntent); // Configura el PendingIntent que abrirá InicioActivity cuando se haga clic
-
-        notificationManager.notify((int) System.currentTimeMillis(), notificationBuilder.build());
-    }
-
-    // Verifica si hay conexión a internet antes de intentar obtener notificaciones
-    private boolean isNetworkAvailable() {
-        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnected();
     }
 }

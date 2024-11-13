@@ -1,40 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@drawable/card_background"
-    android:layout_marginBottom="8dp">
+    android:layout_margin="10dp"
+    android:elevation="6dp"
+    android:padding="4dp"
+    android:radius="12dp">
 
-    <!-- Título del mensaje -->
-    <TextView
-        android:id="@+id/messageTextView"
+    <!-- Container for text elements and image -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Message"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="#212121"
-        android:layout_marginBottom="4dp"/>
+        android:orientation="horizontal"
+        android:background="@drawable/spinner_popup_background"
+        android:layout_marginTop="8dp"
+        android:padding="10dp">
 
-    <!-- Estado de la notificación -->
-    <TextView
-        android:id="@+id/statusTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Status"
-        android:textSize="14sp"
-        android:textColor="#282828"
-        android:layout_marginBottom="4dp"/>
+        <ImageView
+            android:id="@+id/profileImageView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_notificacion"
+            android:contentDescription="Profile Picture"
+            android:layout_gravity="center_vertical"
+            android:scaleType="centerCrop"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/circular_background"/>
 
-    <!-- Observaciones de la notificación -->
-    <TextView
-        android:id="@+id/observationsTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Observations"
-        android:textSize="14sp"
-        android:textColor="#282828" />
+        <!-- Notification Content (text) -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-</LinearLayout>
+            <!-- User's Name and Time -->
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:id="@+id/messageTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User Name"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:layout_gravity="center_vertical"/>
+            </LinearLayout>
+
+            <!-- Notification Message -->
+            <TextView
+                android:id="@+id/statusTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="You have a new notification!"
+                android:textSize="14sp"
+                android:textColor="#212121"
+                android:layout_marginBottom="4dp"/>
+
+            <!-- Optional Status (or button) -->
+            <TextView
+                android:id="@+id/observationsTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Status"
+                android:textSize="12sp"
+                android:textColor="#282828"
+                android:layout_marginBottom="4dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

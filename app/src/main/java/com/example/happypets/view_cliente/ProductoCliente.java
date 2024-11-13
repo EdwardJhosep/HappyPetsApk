@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.work.Constraints;
 import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
@@ -115,22 +116,37 @@ public class ProductoCliente extends Fragment {
     }
 
     private void startNotificationWork() {
+        // Datos de entrada que se pasarán al Worker
         Data inputData = new Data.Builder()
                 .putString("userId", userId)
                 .putString("token", token)
                 .build();
 
+        // Establecer restricciones (por ejemplo, no ejecutar si la batería es baja)
         Constraints constraints = new Constraints.Builder()
                 .setRequiresBatteryNotLow(true)
                 .build();
 
-        PeriodicWorkRequest notificationWorkRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 15, TimeUnit.MINUTES)
+        // Solicitar un trabajo que se ejecute una vez después de 1 hora
+        OneTimeWorkRequest initialWorkRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)
+                .setInputData(inputData)
+                .setConstraints(constraints)
+                .setInitialDelay(1, TimeUnit.HOURS) // Retraso de 1 hora
+                .build();
+
+        // Encolar el trabajo inicial (que se ejecutará solo una vez después de 1 hora)
+        WorkManager.getInstance(getContext()).enqueue(initialWorkRequest);
+
+        // Luego, configurar un trabajo periódico para que se ejecute cada hora
+        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 1, TimeUnit.HOURS)
                 .setInputData(inputData)
                 .setConstraints(constraints)
                 .build();
 
-        WorkManager.getInstance(getContext()).enqueue(notificationWorkRequest);
+        // Encolar el trabajo periódico para que se repita cada hora indefinidamente
+        WorkManager.getInstance(getContext()).enqueue(periodicWorkRequest);
     }
+
 
     private void filter(String text) {
         ArrayList<Producto> filteredList = new ArrayList<>();
