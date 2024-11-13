@@ -50,6 +50,8 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp:4.9.0")
     implementation ("com.google.code.gson:gson:2.8.6")
     implementation ("com.github.bumptech.glide:glide:4.12.0")
+    implementation ("androidx.work:work-runtime:2.7.1")
+    implementation ("com.google.guava:guava:31.1-android")
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")

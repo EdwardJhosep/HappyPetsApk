@@ -7,12 +7,9 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.MediaController;
 import android.widget.Toast;
 import android.widget.VideoView;
@@ -25,7 +22,6 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.happypets.Login;
 import com.example.happypets.R;
 import com.example.happypets.view_cliente.MenuCliente;
-import com.example.happypets.vista_previa.ProductoAdapterPreview;
 import com.example.happypets.models.Producto;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -70,6 +66,7 @@ public class InicioActivity extends AppCompatActivity {
             // The user is not logged in, show the login screen
             Log.d("LoginState", "User is not logged in.");
         }
+
 
 
 

@@ -16,7 +16,12 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
+import com.example.happypets.NotificationWorker;
 import com.example.happypets.R;
 import com.example.happypets.adapters_cliente.CarritoFragment;
 import com.example.happypets.adapters_cliente.ProductoAdapter;
@@ -33,6 +38,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 public class ProductoCliente extends Fragment {
 
@@ -65,22 +71,24 @@ public class ProductoCliente extends Fragment {
             token = getArguments().getString("token");
         }
 
-        // Inicialización de los elementos de la vista
+        // Initialize views
         textViewMensaje = view.findViewById(R.id.textViewMensaje);
         editTextSearch = view.findViewById(R.id.editTextSearch);
         recyclerView = view.findViewById(R.id.recyclerViewProductos);
         iconCarrito = view.findViewById(R.id.iconCarrito);
 
-        // Configuración del RecyclerView
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2)); // 2 columnas
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, getResources().getDimensionPixelSize(R.dimen.grid_item_spacing), true)); // Espacio entre los productos
+        // Set up RecyclerView
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(2, getResources().getDimensionPixelSize(R.dimen.grid_item_spacing), true));
         productoAdapter = new ProductoAdapter(productoList, userId, token);
         recyclerView.setAdapter(productoAdapter);
-        new ListarCarritoTask().execute(userId);
-        // Obtener productos de la API
+
+        // Start periodic notification task
+        startNotificationWork();
+
+        // Fetch products and set up search filter
         new GetProductosTask().execute("https://api.happypetshco.com/api/ListarProductos");
 
-        // Filtro de búsqueda
         editTextSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -94,15 +102,34 @@ public class ProductoCliente extends Fragment {
             public void afterTextChanged(Editable s) {}
         });
 
-        iconCarrito.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CarritoFragment carritoFragment = CarritoFragment.newInstance(userId, token);
-                carritoFragment.show(getChildFragmentManager(), carritoFragment.getTag());
-            }
+        // Handle cart icon click
+        iconCarrito.setOnClickListener(v -> {
+            CarritoFragment carritoFragment = CarritoFragment.newInstance(userId, token);
+            carritoFragment.show(getChildFragmentManager(), carritoFragment.getTag());
         });
 
+        // Load cart items
+        new ListarCarritoTask().execute(userId);
+
         return view;
+    }
+
+    private void startNotificationWork() {
+        Data inputData = new Data.Builder()
+                .putString("userId", userId)
+                .putString("token", token)
+                .build();
+
+        Constraints constraints = new Constraints.Builder()
+                .setRequiresBatteryNotLow(true)
+                .build();
+
+        PeriodicWorkRequest notificationWorkRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 15, TimeUnit.MINUTES)
+                .setInputData(inputData)
+                .setConstraints(constraints)
+                .build();
+
+        WorkManager.getInstance(getContext()).enqueue(notificationWorkRequest);
     }
 
     private void filter(String text) {
