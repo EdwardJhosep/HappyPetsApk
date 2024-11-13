@@ -73,9 +73,8 @@ public class NotificacionesDialogFragment extends DialogFragment {
             userId = getArguments().getString("userId");
             token = getArguments().getString("token");
         }
-
-
-        adapter = new NotificationAdapter(getContext(), notificationsList, userId);
+        // Pass the token along with the userId to the adapter
+        adapter = new NotificationAdapter(getContext(), notificationsList, userId, token);
         petsListView.setAdapter(adapter);
 
 

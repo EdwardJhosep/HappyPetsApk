@@ -137,15 +137,16 @@ public class ProductoCliente extends Fragment {
         // Encolar el trabajo inicial (que se ejecutará solo una vez después de 1 hora)
         WorkManager.getInstance(getContext()).enqueue(initialWorkRequest);
 
-        // Luego, configurar un trabajo periódico para que se ejecute cada hora
-        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 1, TimeUnit.HOURS)
+        // Luego, configurar un trabajo periódico para que se ejecute cada 15 minutos
+        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 15, TimeUnit.MINUTES)
                 .setInputData(inputData)
                 .setConstraints(constraints)
                 .build();
 
-        // Encolar el trabajo periódico para que se repita cada hora indefinidamente
+        // Encolar el trabajo periódico para que se repita cada 15 minutos indefinidamente
         WorkManager.getInstance(getContext()).enqueue(periodicWorkRequest);
     }
+
 
 
     private void filter(String text) {

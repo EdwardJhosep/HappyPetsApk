@@ -2,33 +2,51 @@ package com.example.happypets.adapters_cliente;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.happypets.R;
 import com.example.happypets.view_cliente.NotificacionesDialogFragment.Notification;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NotificationAdapter extends BaseAdapter {
 
     private Context context;
     private String userId;  // Store userId in adapter
     private List<Notification> notifications;
+    private String token;  // Store userId in adapter
+
 
     // Update the constructor to accept userId
-    public NotificationAdapter(Context context, List<Notification> notifications, String userId) {
+    public NotificationAdapter(Context context, List<Notification> notifications, String userId, String token) {
         this.context = context;
         this.notifications = notifications;
-        this.userId = userId;  // Now userId is properly set
+        this.userId = userId;  // Store userId in adapter
+        this.token = token;  // Store token in adapter
     }
+
 
     @Override
     public int getCount() {
@@ -51,12 +69,12 @@ public class NotificationAdapter extends BaseAdapter {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             convertView = inflater.inflate(R.layout.item_notification, parent, false);
         }
-
         // Bind data to the views
         Notification notification = notifications.get(position);
         TextView messageTextView = convertView.findViewById(R.id.messageTextView);
         TextView statusTextView = convertView.findViewById(R.id.statusTextView);
         TextView observationsTextView = convertView.findViewById(R.id.observationsTextView);
+        CheckBox checkBox = convertView.findViewById(R.id.checkbox_notification); // Add checkbox view
 
         // Cambiar color solo a los títulos
         SpannableString messageText = new SpannableString("Mensaje: " + notification.getMessage());
@@ -71,12 +89,78 @@ public class NotificationAdapter extends BaseAdapter {
         observationsText.setSpan(new ForegroundColorSpan(Color.parseColor("#EB5D25")), 0, 14, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);  // Color azul para "Observaciones"
         observationsTextView.setText(observationsText);
 
-        // Optionally, you can use userId here for some specific logic if needed
-        convertView.setOnClickListener(v -> {
-            String notificationId = notification.getId();  // Asegúrate de tener el método getId() en tu clase Notification.
-            Toast.makeText(context, "ID de notificación: " + notificationId + " for user: " + userId, Toast.LENGTH_SHORT).show();
+        // Check if the notification is already marked as read (this could be part of your Notification object)
+
+        // When checkbox is clicked, update notification as read in the database via API
+        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            String notificationId = notification.getId();  // Get notification ID
+            if (isChecked) {
+                // Get current date and time for `read_at`
+                String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+                // Call API to mark notification as read with the current timestamp
+                new MarkNotificationTask().execute(notificationId, currentDateTime);
+            }
         });
 
         return convertView;
     }
+
+    private class MarkNotificationTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            String notificationId = params[0];
+            String currentDateTime = params[1];
+
+            if (notificationId == null || notificationId.isEmpty() || userId == null || userId.isEmpty()) {
+                return "Error: ID de notificación o usuario inválido.";
+            }
+
+            try {
+                // URL with specific format
+                String urlString = "https://api.happypetshco.com/api/NotiNovedadesUpdate=" + notificationId + "=" + userId;
+                URL url = new URL(urlString);
+
+                // Open the connection
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                connection.setRequestProperty("Authorization", "Bearer " + token);  // Pass the token here
+
+                // Get the server response
+                int responseCode = connection.getResponseCode();
+
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    return "✔";
+                } else {
+                    // Read the error stream to get the error message
+                    InputStream errorStream = connection.getErrorStream();
+                    if (errorStream != null) {
+                        String errorResponse = new BufferedReader(new InputStreamReader(errorStream))
+                                .lines()
+                                .collect(Collectors.joining("\n"));
+                        return ": " + errorResponse;
+                    } else {
+                        return "Error desconocido al actualizar el estado de la notificación.";
+                    }
+                }
+
+            } catch (MalformedURLException e) {
+                Log.e("API Error", "URL malformada: " + e.getMessage(), e);
+                return "Error: URL malformada.";
+            } catch (IOException e) {
+                Log.e("API Error", "Error de conexión: " + e.getMessage(), e);
+                return "Error de conexión. Intenta más tarde.";
+            } catch (Exception e) {
+                Log.e("API Error", "Error inesperado: " + e.getMessage(), e);
+                return "Error inesperado al procesar la solicitud.";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }
