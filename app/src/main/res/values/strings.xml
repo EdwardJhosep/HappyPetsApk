@@ -1,6 +1,6 @@
 <!-- res/values/strings.xml -->
 <resources>
-    <string name="app_name">HappyPets</string>
+    <string name="app_name">HappyPets_Hnc</string>
     <string name="username">Usuario</string>
     <string name="password">Contraseña</string>
     <string name="confirm_password">Confirmar Contraseña</string>

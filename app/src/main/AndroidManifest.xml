@@ -30,7 +30,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HappyPets"
         tools:targetApi="31">
-
+        <activity
+            android:name=".perfilview.AgregarMascotaActivity"
+            android:exported="false" />
+        <activity
+            android:name=".perfilview.VerCitasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".perfilview.HistorialNotificacionesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".perfilview.MisComprasActivity"
+            android:exported="false" />
+        <activity
+            android:name=".perfilview.DatosPersonalesActivity"
+            android:exported="false" />
 
         <service
             android:name=".NotificationWorker"

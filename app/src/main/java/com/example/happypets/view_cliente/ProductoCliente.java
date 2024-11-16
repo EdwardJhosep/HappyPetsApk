@@ -116,36 +116,25 @@ public class ProductoCliente extends Fragment {
     }
 
     private void startNotificationWork() {
-        // Datos de entrada que se pasarán al Worker
         Data inputData = new Data.Builder()
                 .putString("userId", userId)
                 .putString("token", token)
                 .build();
 
-        // Establecer restricciones (por ejemplo, no ejecutar si la batería es baja)
         Constraints constraints = new Constraints.Builder()
                 .setRequiresBatteryNotLow(true)
                 .build();
 
-        // Solicitar un trabajo que se ejecute una vez después de 1 hora
-        OneTimeWorkRequest initialWorkRequest = new OneTimeWorkRequest.Builder(NotificationWorker.class)
-                .setInputData(inputData)
-                .setConstraints(constraints)
-                .setInitialDelay(1, TimeUnit.HOURS) // Retraso de 1 hora
-                .build();
-
-        // Encolar el trabajo inicial (que se ejecutará solo una vez después de 1 hora)
-        WorkManager.getInstance(getContext()).enqueue(initialWorkRequest);
-
-        // Luego, configurar un trabajo periódico para que se ejecute cada 15 minutos
-        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 15, TimeUnit.MINUTES)
+        // Set the interval to 2 hours (120 minutes)
+        PeriodicWorkRequest notificationWorkRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 2, TimeUnit.HOURS)
                 .setInputData(inputData)
                 .setConstraints(constraints)
                 .build();
 
-        // Encolar el trabajo periódico para que se repita cada 15 minutos indefinidamente
-        WorkManager.getInstance(getContext()).enqueue(periodicWorkRequest);
+        // Enqueue the periodic work
+        WorkManager.getInstance(getContext()).enqueue(notificationWorkRequest);
     }
+
 
 
 

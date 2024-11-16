@@ -1,0 +1,136 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/main"
+    android:background="@color/background_color"
+    android:padding="16dp">
+
+    <!-- Título -->
+    <TextView
+        android:id="@+id/textViewTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Datos Personales"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#333333"
+        android:layout_marginBottom="24dp"
+        android:layout_gravity="center"/>
+
+    <!-- Foto de perfil -->
+    <ImageView
+        android:id="@+id/imageViewProfile"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:src="@drawable/usuario"
+        android:contentDescription="Foto de perfil"
+        android:layout_marginBottom="16dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/circle_background"/>
+
+    <!-- Contenedor para los datos personales -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:elevation="6dp"
+        android:radius="12dp"
+        android:backgroundTint="@android:color/white">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_background"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- ID, oculto pero presente -->
+            <TextView
+                android:id="@+id/textViewId"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ID: "
+                android:visibility="gone"
+                android:textSize="16sp"
+                android:padding="8dp"/>
+
+            <!-- Datos personales -->
+            <TextView
+                android:id="@+id/textViewDni"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="DNI: "
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="#555555"/>
+
+            <TextView
+                android:id="@+id/textViewNombres"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nombres: "
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="#555555"/>
+
+            <TextView
+                android:id="@+id/textViewApellidos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Apellidos: "
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="#555555"/>
+
+            <TextView
+                android:id="@+id/textViewTelefono"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Teléfono: "
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="#555555"/>
+
+            <TextView
+                android:id="@+id/textViewUbicacion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ubicación: "
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="#555555"/>
+
+            <TextView
+                android:id="@+id/textViewEspecialidad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Especialidad: "
+                android:textSize="16sp"
+                android:padding="8dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="#555555"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Botón de editar -->
+    <Button
+        android:id="@+id/buttonEdit"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/primary_color"
+        android:text="Editar"
+        android:textColor="#ffffff"
+        android:layout_gravity="center"
+        android:layout_marginTop="24dp"
+        android:padding="12dp"
+        android:layout_width="match_parent"
+        android:textSize="16sp"
+        android:layout_marginBottom="16dp"/>
+
+</LinearLayout>

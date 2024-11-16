@@ -6,15 +6,17 @@ public class User {
     private String id; // Agregar el campo ID
     private String dni;
     private String nombres;
+    private String apellidos; // Agregar el campo apellidos
     private String telefono;
     private String ubicacion;
     private List<String> permisos; // Campo para los permisos
 
-    // Modificar el constructor para incluir el ID
-    public User(String id, String dni, String nombres, String telefono, String ubicacion, List<String> permisos) {
+    // Modificar el constructor para incluir el ID y apellidos
+    public User(String id, String dni, String nombres, String apellidos, String telefono, String ubicacion, List<String> permisos) {
         this.id = id; // Inicializa el ID
         this.dni = dni;
         this.nombres = nombres;
+        this.apellidos = apellidos; // Inicializa el campo apellidos
         this.telefono = telefono;
         this.ubicacion = ubicacion;
         this.permisos = permisos; // Inicializa la lista de permisos
@@ -31,6 +33,10 @@ public class User {
 
     public String getNombres() {
         return nombres;
+    }
+
+    public String getApellidos() {
+        return apellidos; // Agregar el getter para apellidos
     }
 
     public String getTelefono() {
@@ -56,6 +62,10 @@ public class User {
 
     public void setNombres(String nombres) {
         this.nombres = nombres;
+    }
+
+    public void setApellidos(String apellidos) {
+        this.apellidos = apellidos; // Agregar el setter para apellidos
     }
 
     public void setTelefono(String telefono) {

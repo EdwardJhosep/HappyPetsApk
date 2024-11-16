@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/historialnoti"
+        android:title="Historial de Notificaiones"
+        android:icon="@drawable/ic_notificacion"/>
+
+    <item
+        android:id="@+id/vercitas"
+        android:title="Ver Citas"
+        android:icon="@drawable/ic_appointments" />
+
+    <item
+        android:id="@+id/verpedidos"
+        android:title="Ver Pedidos"
+        android:icon="@drawable/ic_cart_full"/>
+
+</menu>

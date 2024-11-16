@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/card_background"
+    android:gravity="center_vertical">
+
+        <!-- Título del formulario -->
+    <TextView
+    android:id="@+id/textViewTitle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Editar Datos de Usuario"
+    android:textSize="18sp"
+    android:textColor="#333333"
+    android:textStyle="bold"
+    android:gravity="center"
+    android:layout_marginBottom="16dp" />
+
+    <!-- Campo de ubicación -->
+    <EditText
+    android:id="@+id/editTextUbicacion"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Ubicación"
+    android:inputType="text"
+    android:padding="12dp"
+    android:layout_marginBottom="12dp"
+    android:background="@drawable/edittext_background"
+        android:textColor="#333333"/>
+
+    <!-- Campo de teléfono -->
+    <EditText
+    android:id="@+id/editTextTelefono"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:hint="Teléfono"
+    android:inputType="phone"
+    android:padding="12dp"
+    android:layout_marginBottom="16dp"
+    android:background="@drawable/edittext_background"
+    android:textColor="#333333"/>
+
+    <!-- Contenedor de botones -->
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="end">
+
+<!-- Botón de guardar -->
+<Button
+    android:id="@+id/buttonSave"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Guardar"
+    android:layout_marginEnd="8dp"
+    android:textColor="#FFFFFF"
+    android:backgroundTint="#4CAF50"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"/>
+
+<!-- Botón de cancelar -->
+<Button
+    android:id="@+id/buttonCancel"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Cancelar"
+    android:textColor="#FFFFFF"
+    android:backgroundTint="#F44336"
+    android:layout_marginStart="8dp"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"/>
+    </LinearLayout>
+</LinearLayout>

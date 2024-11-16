@@ -30,10 +30,12 @@ public class CarritoAdapter extends DialogFragment {
     private String productId;
     private String productPrice;
     private String token;
-    private String imagenUrl; // Variable para almacenar la URL de la imagen
+    private String imagenUrl;
     private TextView textViewImporte;
     private EditText editTextColor;
     private String[] coloresArray;
+
+    private View selectedColorCircle = null;
 
     public static CarritoAdapter newInstance(String userId, String productId, String productPrice, String token, String colores, String imagenUrl) {
         CarritoAdapter fragment = new CarritoAdapter();
@@ -79,7 +81,7 @@ public class CarritoAdapter extends DialogFragment {
 
             // Mostrar precio del producto
             TextView textViewProductPrice = view.findViewById(R.id.textViewProductPrice);
-            textViewProductPrice.setText("Precio: S/. " + productPrice);
+            textViewProductPrice.setText("S/. " + productPrice);
         }
 
         // Configurar el botón de cerrar
@@ -128,11 +130,41 @@ public class CarritoAdapter extends DialogFragment {
             colorCircle.setOnClickListener(v -> {
                 // Cambiar el color en el EditText sin modificar el fondo
                 editTextColor.setText(color.trim());
+
+                // Si ya hay un círculo seleccionado, quitarle el borde
+                if (selectedColorCircle != null) {
+                    selectedColorCircle.setBackground(createCircleDrawable(((TextView) selectedColorCircle.getTag()).getText().toString())); // Reestablecer el círculo previo
+                }
+
+                // Marcar el nuevo círculo como seleccionado, cambiando su borde
+                selectedColorCircle = colorCircle;
+                selectedColorCircle.setBackground(createCircleDrawableWithBorder(color.trim())); // Aplicar borde destacado
+
             });
+
+            // Guarda el color del círculo en el tag para más tarde
+            TextView colorText = new TextView(getContext());
+            colorText.setText(color.trim());
+            colorCircle.setTag(colorText);
 
             // Agrega el círculo al layout donde deseas mostrarlo
             ((ViewGroup) view.findViewById(R.id.colorCirclesContainer)).addView(colorCircle);
         }
+    }
+
+    // Método para crear un círculo con borde destacado
+    private Drawable createCircleDrawableWithBorder(String colorName) {
+        int color = getColorFromName(colorName);
+
+        // Crear un drawable de forma circular
+        GradientDrawable circleDrawable = new GradientDrawable();
+        circleDrawable.setShape(GradientDrawable.OVAL);
+        circleDrawable.setColor(color);
+
+        // Configurar el borde para el color seleccionado
+        circleDrawable.setStroke(8, Color.BLACK); // Cambiar el grosor del borde para resaltar el círculo
+
+        return circleDrawable;
     }
 
     private Drawable createCircleDrawable(String colorName) {
@@ -211,7 +243,15 @@ public class CarritoAdapter extends DialogFragment {
             return;
         }
 
+        // Obtener el color seleccionado
         String color = editTextColor.getText().toString().trim();
+
+        // Verificar si se ha seleccionado un color
+        if (color.isEmpty()) {
+            showToast("Debe seleccionar un color");
+            return;
+        }
+
         double importe = cantidad * Double.parseDouble(productPrice);
 
         // Crear el JSON para enviar al servidor
@@ -260,6 +300,7 @@ public class CarritoAdapter extends DialogFragment {
         }).start();
     }
 
+
     // Método para mostrar un Toast en el hilo principal
     private void showToast(final String message) {
         if (getActivity() != null) {
@@ -271,7 +312,11 @@ public class CarritoAdapter extends DialogFragment {
     public void onStart() {
         super.onStart();
         if (getDialog() != null && getDialog().getWindow() != null) {
-            getDialog().getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            // Ajusta el tamaño del diálogo a un valor razonable
+            getDialog().getWindow().setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.95),  // 95% del ancho de la pantalla
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
         }
     }
 }

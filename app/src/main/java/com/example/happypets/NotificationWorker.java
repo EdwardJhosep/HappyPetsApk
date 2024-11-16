@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 import android.util.Log;
@@ -27,6 +28,9 @@ import java.net.URL;
 public class NotificationWorker extends Worker {
 
     private static final String CHANNEL_ID = "notificaciones_channel";
+    private static final long NOTIFICATION_INTERVAL = 2 * 60 * 60 * 1000; // 2 hours in milliseconds
+    private static final String PREFS_NAME = "NotificationPrefs";
+    private static final String LAST_NOTIFICATION_TIME_KEY = "lastNotificationTime";
 
     public NotificationWorker(@NonNull Context context, @NonNull WorkerParameters params) {
         super(context, params);
@@ -47,7 +51,21 @@ public class NotificationWorker extends Worker {
                     for (int i = 0; i < notifications.length(); i++) {
                         JSONObject notification = notifications.getJSONObject(i);
                         String message = notification.getJSONObject("data").getString("mensaje");
-                        showNotification(getApplicationContext(), message, "Nueva Notificación de HappyPets");
+
+                        // Get the last notification time from SharedPreferences
+                        SharedPreferences prefs = getApplicationContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
+                        long lastNotificationTime = prefs.getLong(LAST_NOTIFICATION_TIME_KEY, 0);
+
+                        // Check if 2 hours have passed since the last notification
+                        long currentTime = System.currentTimeMillis();
+                        if (currentTime - lastNotificationTime > NOTIFICATION_INTERVAL) {
+                            showNotification(getApplicationContext(), message, "Nueva Notificación de HappyPets");
+
+                            // Save the current time as the last notification time
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putLong(LAST_NOTIFICATION_TIME_KEY, currentTime);
+                            editor.apply();
+                        }
                     }
                 }
             }

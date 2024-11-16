@@ -27,5 +27,11 @@
     //COLOR DE DISEÑO
     <color name="fondlogin">#E7FFFFFF</color>
     <color name="transparente">#00FFFFFF</color>
+    <color name="secondary_colorr">#4EFF7B7B</color>
+    <color name="ticket_background">#F3F4F6</color>
+    <color name="colorPrimary">#4CAF50</color>
+    <color name="primary_text">#333333</color>
+    <color name="textColor">#444444</color>
+    <color name="operation_code_color">#FF5722</color> <!-- Un naranja vibrante -->
 
 </resources>

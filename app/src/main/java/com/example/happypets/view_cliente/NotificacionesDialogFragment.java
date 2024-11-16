@@ -47,7 +47,7 @@ public class NotificacionesDialogFragment extends DialogFragment {
 
     private String userId;
     private String token;
-    private ListView petsListView;
+    private ListView notificationListViewNoLeidas;
     private NotificationAdapter adapter;
     private List<Notification> notificationsList = new ArrayList<>();
 
@@ -66,7 +66,7 @@ public class NotificacionesDialogFragment extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_notificaciones, container, false);
-        petsListView = view.findViewById(R.id.petsListView);
+        notificationListViewNoLeidas = view.findViewById(R.id.notificationListViewNoLeidas);
         getDialog().getWindow().setBackgroundDrawableResource(R.drawable.card_background);
 
         if (getArguments() != null) {
@@ -75,7 +75,7 @@ public class NotificacionesDialogFragment extends DialogFragment {
         }
         // Pass the token along with the userId to the adapter
         adapter = new NotificationAdapter(getContext(), notificationsList, userId, token);
-        petsListView.setAdapter(adapter);
+        notificationListViewNoLeidas.setAdapter(adapter);
 
 
 

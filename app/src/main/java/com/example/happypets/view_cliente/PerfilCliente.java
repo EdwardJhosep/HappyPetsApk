@@ -2,14 +2,14 @@ package com.example.happypets.view_cliente;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,10 +24,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.happypets.Login;
 import com.example.happypets.R;
 import com.example.happypets.adapters_cliente.MascotaAdapter;
 import com.example.happypets.models.Mascota;
+import com.example.happypets.perfilview.AgregarMascotaActivity;
+import com.example.happypets.perfilview.DatosPersonalesActivity;
+import com.example.happypets.perfilview.HistorialNotificacionesActivity;
+import com.example.happypets.perfilview.MisComprasActivity;
+import com.example.happypets.perfilview.VerCitasActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -73,15 +77,11 @@ public class PerfilCliente extends Fragment {
             token = getArguments().getString("token");
         }
 
-        TextView dniTextView = view.findViewById(R.id.dniTextView);
-        TextView phoneTextView = view.findViewById(R.id.phoneTextView);
         TextView nombreTextView = view.findViewById(R.id.nombreTextView);
         @SuppressLint({"MissingInflatedId", "LocalSuppress"})
         TextView userIdTextView = view.findViewById(R.id.userIdTextView);
 
-        dniTextView.setText("DNI: " + dni);
-        phoneTextView.setText("Teléfono: " + phoneNumber);
-        nombreTextView.setText("Nombre: " + nombreCompleto);
+        nombreTextView.setText("HOLA: " + nombreCompleto);
         userIdTextView.setText("ID de Usuario: " + userId);
 
         petsListView = view.findViewById(R.id.petsListView);
@@ -92,11 +92,8 @@ public class PerfilCliente extends Fragment {
 
         obtenerHistorialMascotas(userId);
 
-        ImageButton addPetButton = view.findViewById(R.id.addPetButton);
-        addPetButton.setOnClickListener(v -> {
-            AgregarMascotaDialogFragment agregarMascotaDialogFragment = AgregarMascotaDialogFragment.newInstance(userId, token);
-            agregarMascotaDialogFragment.show(getChildFragmentManager(), "agregarMascota");
-        });
+        // Set up button clicks
+        setupButtonClicks(view);
 
         ImageButton notificationIcon = view.findViewById(R.id.notificationIcon);
         notificationIcon.setOnClickListener(v -> {
@@ -104,12 +101,52 @@ public class PerfilCliente extends Fragment {
             notificacionesDialogFragment.show(getChildFragmentManager(), "notificacionesDialog");
         });
 
-
-
-
-
         return view;
     }
+
+    private void setupButtonClicks(View view) {
+        String token = getArguments().getString("token");
+        String userId = getArguments().getString("userId");
+
+        // Button for "Datos Personales"
+        view.findViewById(R.id.button_personal_data).setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), DatosPersonalesActivity.class);
+            intent.putExtra("token", token);
+            intent.putExtra("userId", userId);
+            startActivity(intent);
+        });
+
+        // Button for "Mis Compras"
+        view.findViewById(R.id.button_my_purchases).setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), MisComprasActivity.class);
+            intent.putExtra("token", token);
+            intent.putExtra("userId", userId);
+            startActivity(intent);
+        });
+
+        view.findViewById(R.id.button_notifications_history).setOnClickListener(v -> {
+            // Navigate to the "Historial de Notificaciones" screen and send token and userId
+            Intent intent = new Intent(getContext(), HistorialNotificacionesActivity.class);
+            intent.putExtra("token", token);
+            intent.putExtra("userId", userId);
+            startActivity(intent);
+        });
+
+        view.findViewById(R.id.button_view_appointments).setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), VerCitasActivity.class);
+            intent.putExtra("token", token);
+            intent.putExtra("userId", userId);
+            startActivity(intent);
+        });
+
+        view.findViewById(R.id.button_add_pets).setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), AgregarMascotaActivity.class);
+            intent.putExtra("token", token);
+            intent.putExtra("userId", userId);
+            startActivity(intent);
+        });
+    }
+
 
     private void obtenerHistorialMascotas(String userId) {
         if (userId == null || userId.isEmpty()) {

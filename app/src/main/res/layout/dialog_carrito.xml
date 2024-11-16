@@ -4,8 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp"
-    android:background="@drawable/circle_button_background">
+    android:padding="8dp"
+    android:background="@drawable/edittext_background">
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -23,17 +23,24 @@
             android:textSize="26sp"
             android:textStyle="bold"
             android:gravity="center"
-            android:padding="16dp"
+            android:padding="6dp"
             android:textColor="@color/secondary_color"
             android:fontFamily="sans-serif-medium" />
     </androidx.cardview.widget.CardView>
 
-    <ImageView
-        android:id="@+id/imageViewProduct"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        android:layout_marginBottom="16dp" />
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageViewProduct"
+            android:layout_width="196dp"
+            android:layout_height="153dp"
+            android:layout_marginBottom="16dp"
+            android:scaleType="centerCrop"
+            android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -46,28 +53,28 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="12dp"
+            android:padding="2dp"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textViewProductPrice"
-                android:layout_width="wrap_content"
+                android:layout_width="409dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:text="Precio:"
-                android:textSize="18sp"
-                android:textStyle="bold"
                 android:textColor="@color/discount_color"
-                android:layout_marginBottom="4dp" />
+                android:textSize="24sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/textViewCantidad"
-                android:layout_width="wrap_content"
+                android:layout_width="409dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
                 android:text="Cantidad:"
-                android:textSize="18sp"
-                android:textStyle="bold"
                 android:textColor="@color/primary_text_color"
-                android:layout_marginBottom="4dp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <EditText
                 android:id="@+id/editTextCantidad"
@@ -83,16 +90,17 @@
                 android:drawableStart="@drawable/circle_background" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="409dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
                 android:text="Seleccione el color:"
-                android:textSize="18sp"
-                android:textStyle="bold"
                 android:textColor="@color/primary_text_color"
-                android:layout_marginBottom="8dp" />
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:id="@+id/colorCirclesContainer"
+                android:background="@drawable/card_background"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -107,14 +115,15 @@
                 android:background="@drawable/edittext_background"
                 android:focusable="false"
                 android:layout_marginBottom="16dp"
-                android:textColor="@color/primary_color" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/textViewImporte"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Importe:"
-                android:textSize="20sp"
+                android:textSize="28sp"
+                android:textAlignment="center"
                 android:textStyle="bold"
                 android:padding="8dp"
                 android:textColor="@color/verde" />
@@ -136,7 +145,7 @@
             android:text="Cerrar"
             android:layout_marginEnd="8dp"
             android:backgroundTint="@color/red_color"
-            android:padding="12dp"
+            android:padding="2dp"
             android:textColor="@android:color/white"
             app:cornerRadius="12dp"
             android:fontFamily="sans-serif-medium"/>
@@ -148,7 +157,7 @@
             android:layout_weight="1"
             android:text="Confirmar Pedido"
             android:backgroundTint="@color/primary_color"
-            android:padding="12dp"
+            android:padding="2dp"
             android:textColor="@android:color/white"
             app:cornerRadius="12dp"
             android:fontFamily="sans-serif-medium"/>

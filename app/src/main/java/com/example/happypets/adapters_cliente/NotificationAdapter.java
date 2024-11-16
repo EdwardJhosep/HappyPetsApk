@@ -139,7 +139,7 @@ public class NotificationAdapter extends BaseAdapter {
                         String errorResponse = new BufferedReader(new InputStreamReader(errorStream))
                                 .lines()
                                 .collect(Collectors.joining("\n"));
-                        return ": " + errorResponse;
+                        return "✔" + errorResponse;
                     } else {
                         return "Error desconocido al actualizar el estado de la notificación.";
                     }
