@@ -57,7 +57,6 @@ public class MenuCliente extends AppCompatActivity {
                     } else if (item.getItemId() == R.id.navigation_appointments) {
                         selectedFragment = CitasCliente.newInstance(userId, token); // Pasar userId y token
                     } else if (item.getItemId() == R.id.navigation_profile) {
-                        // Pasar dni, phoneNumber, nombres, userId y token al fragmento
                         selectedFragment = PerfilCliente.newInstance(dni, phoneNumber, nombres, userId, token);
                     } else if (item.getItemId() == R.id.navigation_ubication) {
                         selectedFragment = new Ubication();

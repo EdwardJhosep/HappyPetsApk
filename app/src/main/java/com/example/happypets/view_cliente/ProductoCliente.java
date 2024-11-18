@@ -116,24 +116,31 @@ public class ProductoCliente extends Fragment {
     }
 
     private void startNotificationWork() {
+        // Datos de entrada para el Worker
         Data inputData = new Data.Builder()
                 .putString("userId", userId)
                 .putString("token", token)
                 .build();
 
+        // Configurar restricciones (ej.: no ejecutar si la batería es baja)
         Constraints constraints = new Constraints.Builder()
-                .setRequiresBatteryNotLow(true)
+                .setRequiresBatteryNotLow(true) // No ejecutar con batería baja
                 .build();
 
-        // Set the interval to 2 hours (120 minutes)
-        PeriodicWorkRequest notificationWorkRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 2, TimeUnit.HOURS)
+        // Cancelar trabajos existentes con la misma etiqueta
+        WorkManager.getInstance(getContext()).cancelAllWorkByTag("NotificationWork");
+
+        // Trabajo periódico: ejecuta cada 1 hora (cambiar según la necesidad)
+        PeriodicWorkRequest periodicWorkRequest = new PeriodicWorkRequest.Builder(NotificationWorker.class, 1, TimeUnit.HOURS) // Repetición cada 1 hora
                 .setInputData(inputData)
                 .setConstraints(constraints)
+                .addTag("NotificationWork") // Etiqueta única para gestionar trabajos
                 .build();
 
-        // Enqueue the periodic work
-        WorkManager.getInstance(getContext()).enqueue(notificationWorkRequest);
+        // Encolar el trabajo periódico
+        WorkManager.getInstance(getContext()).enqueue(periodicWorkRequest);
     }
+
 
 
 

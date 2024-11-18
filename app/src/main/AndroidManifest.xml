@@ -39,6 +39,7 @@
         <activity
             android:name=".perfilview.HistorialNotificacionesActivity"
             android:exported="false" />
+
         <activity
             android:name=".perfilview.MisComprasActivity"
             android:exported="false" />

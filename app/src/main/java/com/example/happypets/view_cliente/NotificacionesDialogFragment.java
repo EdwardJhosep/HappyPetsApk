@@ -2,19 +2,11 @@ package com.example.happypets.view_cliente;
 
 import android.Manifest;
 import android.app.Dialog;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
+import com.example.happypets.models.Notification;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,13 +17,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.happypets.R;
 import com.example.happypets.adapters_cliente.NotificationAdapter;
-import com.example.happypets.vista_previa.InicioActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -177,40 +167,4 @@ public class NotificacionesDialogFragment extends DialogFragment {
         }
     }
 
-    public static class Notification {
-        private String message;
-        private String status;
-        private String observations;
-        private String id;
-
-
-        public Notification(String id,String message, String status, String observations) {
-            this.id = id;
-            this.message = message;
-            this.status = status;
-            this.observations = observations;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public String getStatus() {
-            return status;
-        }
-
-        public String getObservations() {
-            return observations;
-        }
-
-        // Getters y setters
-        public String getId() {
-            return id;
-        }
-
-        public void setId(String id) {
-            this.id = id;
-        }
-
-    }
 }

@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class NotificationAdapter extends BaseAdapter {
+public class NotificationsAdapter extends BaseAdapter {
 
     private Context context;
     private String userId;  // Store userId in adapter
@@ -40,7 +40,7 @@ public class NotificationAdapter extends BaseAdapter {
 
 
     // Update the constructor to accept userId
-    public NotificationAdapter(Context context, List<Notification> notifications, String userId, String token) {
+    public NotificationsAdapter(Context context, List<Notification> notifications, String userId, String token) {
         this.context = context;
         this.notifications = notifications;
         this.userId = userId;  // Store userId in adapter
@@ -68,14 +68,13 @@ public class NotificationAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.item_notification, parent, false);
+            convertView = inflater.inflate(R.layout.item_notifications, parent, false);
         }
         // Bind data to the views
         Notification notification = notifications.get(position);
         TextView messageTextView = convertView.findViewById(R.id.messageTextView);
         TextView statusTextView = convertView.findViewById(R.id.statusTextView);
         TextView observationsTextView = convertView.findViewById(R.id.observationsTextView);
-        CheckBox checkBox = convertView.findViewById(R.id.checkbox_notification); // Add checkbox view
 
         // Cambiar color solo a los títulos
         SpannableString messageText = new SpannableString("Mensaje: " + notification.getMessage());
@@ -89,20 +88,6 @@ public class NotificationAdapter extends BaseAdapter {
         SpannableString observationsText = new SpannableString("Observaciones: " + notification.getObservations());
         observationsText.setSpan(new ForegroundColorSpan(Color.parseColor("#EB5D25")), 0, 14, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);  // Color azul para "Observaciones"
         observationsTextView.setText(observationsText);
-
-        // Check if the notification is already marked as read (this could be part of your Notification object)
-
-        // When checkbox is clicked, update notification as read in the database via API
-        checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            String notificationId = notification.getId();  // Get notification ID
-            if (isChecked) {
-                // Get current date and time for `read_at`
-                String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
-                // Call API to mark notification as read with the current timestamp
-                new MarkNotificationTask().execute(notificationId, currentDateTime);
-            }
-        });
-
         return convertView;
     }
 
