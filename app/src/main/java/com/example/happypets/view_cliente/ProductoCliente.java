@@ -319,16 +319,23 @@ public class ProductoCliente extends Fragment {
             if (result != null) {
                 try {
                     JSONObject jsonResponse = new JSONObject(result);
+
                     // Verificar si la respuesta contiene el campo 'carrito'
                     if (jsonResponse.has("carrito")) {
                         JSONArray jsonArray = jsonResponse.getJSONArray("carrito");
-                        carritoArray.clear(); // Clear the array before adding new items
+                        carritoArray.clear(); // Limpiar el array antes de agregar nuevos elementos
+
+                        // Filtrar solo los productos con estado "Pendiente"
                         for (int i = 0; i < jsonArray.length(); i++) {
-                            carritoArray.add(jsonArray.getJSONObject(i)); // Populate the carritoArray with products
+                            JSONObject product = jsonArray.getJSONObject(i);
+                            if (product.getString("estado").equalsIgnoreCase("Pendiente")) {
+                                carritoArray.add(product); // Agregar solo productos pendientes
+                            }
                         }
-                        // Check if carritoArray has products
+
+                        // Actualizar ícono del carrito según los productos pendientes
                         if (carritoArray.size() > 0) {
-                            iconCarrito.setImageResource(R.drawable.ic_cart_full); // Ícono para carrito con productos
+                            iconCarrito.setImageResource(R.drawable.ic_cart_full); // Ícono para carrito con productos pendientes
                         } else {
                             iconCarrito.setImageResource(R.drawable.ic_carrito); // Ícono para carrito vacío
                         }

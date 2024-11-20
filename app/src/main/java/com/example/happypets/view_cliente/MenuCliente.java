@@ -195,10 +195,11 @@ public class MenuCliente extends AppCompatActivity {
 
         FloatingActionButton fabChat = findViewById(R.id.fab_chat);
         fabChat.setOnClickListener(view -> {
-            // Crear una instancia de ChatDialogFragment
-            ChatFragment chatDialogFragment = new ChatFragment();
+            // Crear una instancia de ChatFragment y pasar el nombre del usuario
+            ChatFragment chatDialogFragment = ChatFragment.newInstance(nombres);  // Pasa el nombre aquí
             chatDialogFragment.show(getSupportFragmentManager(), "chatDialog");
         });
+
 
 
 

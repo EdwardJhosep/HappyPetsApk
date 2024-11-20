@@ -1,10 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:padding="8dp"
     android:background="@color/white">
 
+    <!-- Título del chat -->
     <TextView
         android:id="@+id/textViewTitle"
         android:layout_width="match_parent"
@@ -16,6 +18,7 @@
         android:textAlignment="center"
         android:textStyle="bold" />
 
+    <!-- RecyclerView para los mensajes -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_chat"
         android:layout_width="match_parent"
@@ -23,43 +26,71 @@
         android:layout_weight="1"
         android:padding="8dp"
         android:layout_marginBottom="8dp"
-        android:clipToPadding="false" />
+        android:clipToPadding="false"
+        android:overScrollMode="never" />
 
+    <!-- Espacio vacío para el margen inferior -->
     <View
         android:layout_width="match_parent"
-        android:layout_height="16dp" />
+        android:layout_height="8dp" />
 
-    <EditText
-        android:id="@+id/editTextMessage"
+    <!-- Barra de entrada de texto y botón de micrófono -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Escribe un mensaje"
-        android:background="@drawable/container_background_rounded"
-        android:padding="12dp"
-        android:layout_marginBottom="8dp" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="8dp"
+        android:background="@drawable/chat_input_background">
 
+        <EditText
+            android:id="@+id/editTextMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/chat_input_background"
+            android:hint="Escribe un mensaje"
+            android:textColor="@color/black"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:textSize="16sp"
+            android:layout_marginEnd="8dp"
+            android:maxLines="3" />
+
+        <!-- Botón de micrófono -->
+        <ImageButton
+            android:id="@+id/imageButtonMicrophone"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:contentDescription="Micrófono"
+            android:src="@drawable/ic_microphone"
+            app:tint="@color/primary_color" />
+    </LinearLayout>
+
+    <!-- Botón de enviar -->
     <Button
         android:id="@+id/buttonSend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
         android:text="Enviar"
-        android:layout_gravity="end"
+        android:textColor="@android:color/white"
         android:layout_marginTop="8dp"
         android:backgroundTint="@color/primary_color"
-        android:textColor="@android:color/white"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="8dp"
-        android:background="@drawable/card_background" />
+        android:textSize="16sp"
+        android:layout_gravity="center" />
 
+    <!-- Botón de cerrar -->
     <Button
         android:id="@+id/buttonClose"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:text="Cerrar"
+        android:textColor="@android:color/white"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/red_color"
-    android:textColor="@android:color/white"
-    android:paddingHorizontal="16dp"
-    android:paddingVertical="8dp"/>
+        android:textSize="16sp"
+        android:layout_gravity="center" />
+
 </LinearLayout>

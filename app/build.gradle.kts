@@ -52,6 +52,8 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     implementation ("androidx.work:work-runtime:2.7.1")
     implementation ("com.google.guava:guava:31.1-android")
+    implementation ("com.tomergoldst.android:tooltips:1.1.1")
+    implementation ("androidx.appcompat:appcompat:1.7.0")
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
     annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")

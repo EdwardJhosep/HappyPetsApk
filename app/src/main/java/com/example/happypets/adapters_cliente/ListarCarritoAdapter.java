@@ -84,8 +84,14 @@ public class ListarCarritoAdapter extends BaseAdapter {
                             .into(ivProducto);
                 }
 
-                // Configurar el botón de eliminar
-                buttonEliminar.setOnClickListener(v -> eliminarProducto(id));
+                buttonEliminar.setOnClickListener(v -> {
+                    new android.app.AlertDialog.Builder(context)
+                            .setTitle("Eliminar Producto")
+                            .setMessage("¿Estás seguro de que deseas eliminar este producto del carrito?")
+                            .setPositiveButton("Sí", (dialog, which) -> eliminarProducto(id))
+                            .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                            .show();
+                });
             }
         } catch (Exception e) {
             Log.e("ListarCarritoAdapter", "Error al cargar el producto en getView: " + e.getMessage(), e);

@@ -100,18 +100,37 @@ public class CarritoFragment extends BottomSheetDialogFragment {
             if (result != null) {
                 try {
                     JSONObject jsonResponse = new JSONObject(result);
+
                     // Verificar si la respuesta contiene el campo 'carrito'
                     if (jsonResponse.has("carrito")) {
                         JSONArray jsonArray = jsonResponse.getJSONArray("carrito");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            productos.add(jsonArray.getJSONObject(i));
-                        }
 
-                        // Crear el adaptador y configurarlo en el ListView
-                        ListarCarritoAdapter adapter = new ListarCarritoAdapter(getActivity(), productos, userId, token);
-                        listView.setAdapter(adapter);
+                        if (jsonArray.length() > 0) { // Verificar que el carrito no esté vacío
+                            boolean tieneProductosConfirmados = false;
+
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject item = jsonArray.getJSONObject(i);
+                                productos.add(item);
+
+                                // Verificar si algún producto tiene el campo "pagado" como "Confirmado"
+                                String pagado = item.optString("pagado", "");
+                                if (pagado.equals("Confirmado")) {
+                                    tieneProductosConfirmados = true;
+                                }
+                            }
+
+                            if (tieneProductosConfirmados) {
+                                // Crear el adaptador y configurarlo en el ListView
+                                ListarCarritoAdapter adapter = new ListarCarritoAdapter(getActivity(), productos, userId, token);
+                                listView.setAdapter(adapter);
+                            } else {
+                                Toast.makeText(getActivity(), "No hay productos confirmados en el carrito", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(getActivity(), "El carrito está vacío", Toast.LENGTH_SHORT).show();
+                        }
                     } else {
-                        Toast.makeText(getActivity(), "No hay productos en el carrito", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "No hay información del carrito", Toast.LENGTH_SHORT).show();
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
