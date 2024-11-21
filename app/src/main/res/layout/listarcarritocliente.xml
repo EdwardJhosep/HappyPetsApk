@@ -27,7 +27,7 @@
         android:padding="8dp" />
 
     <Button
-        android:id="@+id/btnContinuarCompra"
+        android:id="@+id/btnConfirmarCompra"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Continuar Compra"
@@ -36,4 +36,12 @@
         android:backgroundTint="@color/discount_color"
         android:layout_margin="8dp"
         android:padding="12dp" />
+    <TextView
+        android:id="@+id/tvTotal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total: S/ 0.00"
+        android:visibility="gone"
+        android:textSize="18sp"
+        android:layout_marginTop="20dp"/>
 </LinearLayout>

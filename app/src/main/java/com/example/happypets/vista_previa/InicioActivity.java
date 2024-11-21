@@ -203,8 +203,21 @@ public class InicioActivity extends AppCompatActivity {
                 }
 
                 // Ordenar los productos por el descuento de mayor a menor
-                productosConDescuento.sort((p1, p2) -> Double.compare(
-                        Double.parseDouble(p2.getDescuento()), Double.parseDouble(p1.getDescuento())));
+                productosConDescuento.sort((p1, p2) -> {
+                    try {
+                        double descuento1 = p1.getDescuento() != null && !p1.getDescuento().isEmpty()
+                                ? Double.parseDouble(p1.getDescuento())
+                                : 0.0;
+                        double descuento2 = p2.getDescuento() != null && !p2.getDescuento().isEmpty()
+                                ? Double.parseDouble(p2.getDescuento())
+                                : 0.0;
+                        return Double.compare(descuento2, descuento1);
+                    } catch (NumberFormatException e) {
+                        Log.e("SortError", "Error al convertir descuento: " + e.getMessage());
+                        return 0; // Mantener el orden actual en caso de error
+                    }
+                });
+
 
                 // Tomar solo los dos productos con mayor descuento
                 if (productosConDescuento.size() > 2) {

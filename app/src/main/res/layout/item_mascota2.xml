@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="100dp"
+    android:layout_height="222dp"
+    android:layout_weight="0.5"
+    android:padding="8dp"
+    android:layout_margin="8dp"
+    android:orientation="vertical"
+    android:backgroundTint="#FFFFFF"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="6dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="222dp"
+        android:orientation="vertical"
+        android:padding="5dp">
+
+        <!-- View (estado) en la parte superior derecha de la imagen -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/mascotaImageView"
+                android:layout_width="95dp"
+                android:layout_height="95dp"
+                android:layout_gravity="center"
+                android:background="@drawable/circle_background"
+                android:clipToOutline="true"
+                android:contentDescription="Imagen de la mascota"
+                android:scaleType="centerCrop" />
+
+            <!-- Estado en la parte superior derecha de la imagen -->
+            <View
+                android:id="@+id/estadoView"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/circle_green" />
+        </RelativeLayout>
+
+        <!-- Otros campos -->
+        <TextView
+            android:id="@+id/nombreTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:padding="2dp"
+            android:textColor="#000000"
+            android:textSize="19sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/edadTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:padding="2dp"
+            android:textColor="#232323"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/especieTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:padding="2dp"
+            android:textColor="#232323"
+            android:textSize="16sp" />
+
+        <!-- ImageButton para ver historial -->
+        <ImageButton
+            android:id="@+id/verHistorialButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="3dp"
+            android:contentDescription="Ver historial"
+            android:src="@drawable/ic_historial"
+        android:background="?android:attr/selectableItemBackground" />
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -2,10 +2,13 @@ package com.example.happypets.adapters_cliente;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,12 +28,25 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class CarritoFragment extends BottomSheetDialogFragment {
+public class CarritoFragment extends BottomSheetDialogFragment implements ListarCarritoAdapter.OnSelectedProductsChangedListener {
 
     private String userId;
-    private String token; // Variable para el token
+    private String token;
     private ArrayList<JSONObject> productos = new ArrayList<>();
     private ListView listView;
+    private OnProductosSeleccionadosListener listener;
+    private ArrayList<String> selectedProductIds = new ArrayList<>();
+    private OnTotalCalculadoListener totalListener;
+
+    // Interfaz para la selección de productos
+    public interface OnProductosSeleccionadosListener {
+        void onProductosSeleccionados(ArrayList<String> idsSeleccionados);
+    }
+
+    // Interfaz para el cálculo del total
+    public interface OnTotalCalculadoListener {
+        void onTotalCalculado(double total);  // Método para manejar el total calculado
+    }
 
     // Método para crear una nueva instancia del fragmento
     public static CarritoFragment newInstance(String userId, String token) {
@@ -40,6 +56,16 @@ public class CarritoFragment extends BottomSheetDialogFragment {
         args.putString("token", token); // Agregar token a los argumentos
         fragment.setArguments(args);
         return fragment;
+    }
+
+    // Configurar la interfaz para comunicación con el fragmento
+    public void setOnProductosSeleccionadosListener(OnProductosSeleccionadosListener listener) {
+        this.listener = listener;
+    }
+
+    // Configurar el listener para el total calculado
+    public void setOnTotalCalculadoListener(OnTotalCalculadoListener listener) {
+        this.totalListener = listener;
     }
 
     @Nullable
@@ -55,7 +81,50 @@ public class CarritoFragment extends BottomSheetDialogFragment {
             new ListarCarritoTask().execute(userId);
         }
 
+        // Configurar el botón "Confirmar compra"
+        Button btnConfirmarCompra = view.findViewById(R.id.btnConfirmarCompra);
+        btnConfirmarCompra.setOnClickListener(v -> confirmarCompra());
+
         return view;
+    }
+
+    private void confirmarCompra() {
+        // Obtener el TextView del total
+        TextView totalTextView = getView().findViewById(R.id.tvTotal);
+
+        if (totalTextView != null) {
+            // Obtener el texto del TextView, que es el total calculado
+            String totalText = totalTextView.getText().toString();
+
+            // Extraer el valor numérico del total (asumiendo que el formato es "Total: S/ XX.XX")
+            String totalString = totalText.replace("Total: S/ ", "").trim();
+
+            try {
+                double total = Double.parseDouble(totalString);  // Convertir el string a double
+
+                // Verificar si hay productos seleccionados
+                if (!selectedProductIds.isEmpty()) {
+                    // Mostrar los productos seleccionados como un Toast (puedes personalizar esto más)
+                    Toast.makeText(getActivity(), "IDs seleccionados: " + selectedProductIds, Toast.LENGTH_SHORT).show();
+
+                    // Enviar el total al listener
+                    if (totalListener != null) {
+                        totalListener.onTotalCalculado(total);  // Enviar el total al listener
+                    }
+
+                    // Crear un nuevo fragmento y pasar el total al mismo
+                    FormularioConfirmarCompraFragment formFragment = FormularioConfirmarCompraFragment.newInstance(selectedProductIds, total, token);
+                    formFragment.show(getChildFragmentManager(), formFragment.getTag()); // Usar getChildFragmentManager() para fragmentos dentro de otro fragmento
+                } else {
+                    Toast.makeText(getActivity(), "No se han seleccionado productos.", Toast.LENGTH_SHORT).show();
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                Toast.makeText(getActivity(), "Error al obtener el total", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(getActivity(), "Error al acceder al total", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private class ListarCarritoTask extends AsyncTask<String, Void, String> {
@@ -106,25 +175,28 @@ public class CarritoFragment extends BottomSheetDialogFragment {
                         JSONArray jsonArray = jsonResponse.getJSONArray("carrito");
 
                         if (jsonArray.length() > 0) { // Verificar que el carrito no esté vacío
-                            boolean tieneProductosConfirmados = false;
+                            boolean tieneProductosPendientes = false;
+
+                            productos.clear();
 
                             for (int i = 0; i < jsonArray.length(); i++) {
                                 JSONObject item = jsonArray.getJSONObject(i);
-                                productos.add(item);
 
-                                // Verificar si algún producto tiene el campo "pagado" como "Confirmado"
-                                String pagado = item.optString("pagado", "");
-                                if (pagado.equals("Confirmado")) {
-                                    tieneProductosConfirmados = true;
+                                // Verificar si el producto tiene el campo "estado" como "Pendiente"
+                                String estado = item.optString("estado", "");
+                                if (estado.equals("Pendiente")) {
+                                    productos.add(item);
+                                    tieneProductosPendientes = true;
                                 }
                             }
 
-                            if (tieneProductosConfirmados) {
+                            if (tieneProductosPendientes) {
                                 // Crear el adaptador y configurarlo en el ListView
                                 ListarCarritoAdapter adapter = new ListarCarritoAdapter(getActivity(), productos, userId, token);
+                                adapter.setOnSelectedProductsChangedListener(CarritoFragment.this);  // Establecer el listener
                                 listView.setAdapter(adapter);
                             } else {
-                                Toast.makeText(getActivity(), "No hay productos confirmados en el carrito", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getActivity(), "No hay productos Pendiente en el carrito", Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             Toast.makeText(getActivity(), "El carrito está vacío", Toast.LENGTH_SHORT).show();
@@ -139,6 +211,23 @@ public class CarritoFragment extends BottomSheetDialogFragment {
             } else {
                 Toast.makeText(getActivity(), "Error en la conexión o el servidor", Toast.LENGTH_SHORT).show();
             }
+        }
+    }
+
+    // Método de la interfaz para manejar la selección de productos
+    @Override
+    public void onSelectedProductsChanged(ArrayList<String> selectedProductIds, double total) {
+        this.selectedProductIds = selectedProductIds; // Actualizar la lista de productos seleccionados
+
+        Log.d("Total Carrito", "Total calculado: " + total);
+
+        TextView totalTextView = getView().findViewById(R.id.tvTotal);  // Asume que tienes un TextView con id 'tvTotal'
+        if (totalTextView != null) {
+            totalTextView.setText("Total: S/ " + String.format("%.2f", total));  // Mostrar el total calculado
+        }
+
+        if (totalListener != null) {
+            totalListener.onTotalCalculado(total);  // Notificar al listener el total calculado
         }
     }
 }

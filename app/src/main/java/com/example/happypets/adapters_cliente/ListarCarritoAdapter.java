@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -30,12 +31,26 @@ public class ListarCarritoAdapter extends BaseAdapter {
     private ArrayList<JSONObject> productos;
     private String userId;
     private String token;
+    private ArrayList<String> selectedProductIds = new ArrayList<>(); // Lista de IDs seleccionados
+    private double totalSum = 0.0; // Suma total de los productos seleccionados
+
+    // Interfaz para comunicación con el fragmento
+    public interface OnSelectedProductsChangedListener {
+        void onSelectedProductsChanged(ArrayList<String> selectedProductIds, double totalSum);
+    }
+
+    private OnSelectedProductsChangedListener listener;
 
     public ListarCarritoAdapter(Context context, ArrayList<JSONObject> productos, String userId, String token) {
         this.context = context;
         this.productos = productos;
         this.userId = userId;
         this.token = token;
+    }
+
+    // Add this method to allow setting the listener
+    public void setOnSelectedProductsChangedListener(OnSelectedProductsChangedListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -65,6 +80,7 @@ public class ListarCarritoAdapter extends BaseAdapter {
         TextView tvImporte = convertView.findViewById(R.id.tvImporte);
         ImageView ivProducto = convertView.findViewById(R.id.ivProducto);
         ImageButton buttonEliminar = convertView.findViewById(R.id.buttonEliminar);
+        CheckBox checkboxProducto = convertView.findViewById(R.id.checkBoxSeleccionar); // Checkbox
 
         try {
             JSONObject producto = productos.get(position);
@@ -84,6 +100,18 @@ public class ListarCarritoAdapter extends BaseAdapter {
                             .into(ivProducto);
                 }
 
+                // Lógica para selección del checkbox
+                checkboxProducto.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (isChecked) {
+                        selectedProductIds.add(id); // Añadir ID del producto a la lista
+                        updateTotalSum();
+                    } else {
+                        selectedProductIds.remove(id); // Eliminar ID del producto de la lista
+                        updateTotalSum();
+                    }
+                });
+
+                // Lógica para eliminar producto
                 buttonEliminar.setOnClickListener(v -> {
                     new android.app.AlertDialog.Builder(context)
                             .setTitle("Eliminar Producto")
@@ -100,6 +128,40 @@ public class ListarCarritoAdapter extends BaseAdapter {
 
         return convertView;
     }
+
+    private void updateTotalSum() {
+        totalSum = 0.0;
+        StringBuilder selectedProducts = new StringBuilder("Productos seleccionados: ");
+
+        // Calcular la suma total y generar la lista de productos seleccionados
+        for (String id : selectedProductIds) {
+            for (JSONObject producto : productos) {
+                try {
+                    if (producto.getString("id").equals(id)) {
+                        double importe = Double.parseDouble(producto.getString("importe"));
+                        totalSum += importe;
+                        String productName = producto.getJSONObject("producto").optString("nm_producto", "Nombre no disponible");
+                        selectedProducts.append(productName).append(" (ID: ").append(id).append("), ");
+                    }
+                } catch (Exception e) {
+                    Log.e("ListarCarritoAdapter", "Error al calcular el total: " + e.getMessage(), e);
+                }
+            }
+        }
+
+        // Añadir el total al final de la cadena de productos seleccionados
+        selectedProducts.append("\nTotal: ").append(String.format("%.2f", totalSum));
+
+        Log.d("ListarCarritoAdapter", selectedProducts.toString());
+
+        // Notificar al fragmento sobre los productos seleccionados y el total
+        if (listener != null) {
+            listener.onSelectedProductsChanged(selectedProductIds, totalSum);  // Pasar el total junto con los IDs
+        }
+    }
+
+
+
     private void eliminarProducto(String id) {
         new Thread(() -> {
             try {
@@ -108,12 +170,11 @@ public class ListarCarritoAdapter extends BaseAdapter {
                 Request request = new Request.Builder()
                         .url(url)
                         .delete()
-                        .addHeader("Authorization", "Bearer " + token) // Asegúrate de incluir el token
+                        .addHeader("Authorization", "Bearer " + token)
                         .build();
 
                 try (Response response = client.newCall(request).execute()) {
                     if (response.isSuccessful()) {
-                        // Si la eliminación fue exitosa, actualiza la lista
                         ((Activity) context).runOnUiThread(() -> {
                             productos.removeIf(producto -> producto.optString("id").equals(id));
                             notifyDataSetChanged();
@@ -134,3 +195,4 @@ public class ListarCarritoAdapter extends BaseAdapter {
         new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show());
     }
 }
+

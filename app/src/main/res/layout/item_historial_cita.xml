@@ -1,0 +1,147 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp"
+    android:background="@android:color/white">
+
+    <!-- Contenedor Fecha y Hora -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="1dp"
+        android:background="#90EE90"
+        android:gravity="center"> <!-- Centra el contenido -->
+
+        <!-- Título de Fecha y Hora -->
+        <TextView
+            android:id="@+id/citaFechaHoraTitulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Fecha y hora"
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:textSize="27sp" />
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="#D6FFD6">
+        <TextView
+            android:id="@+id/citaFechaHora"
+            android:layout_width="382dp"
+            android:layout_height="wrap_content"
+            android:text="Fecha y hora"
+            android:paddingTop="12dp"
+            android:textColor="#000000"
+            android:textSize="14sp"
+            android:background="@drawable/fondoverde"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="#D6FFD6">
+
+        <TextView
+            android:id="@+id/citaSintomas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Síntomas"
+            android:textSize="14sp"
+            android:background="@drawable/fondoverde"/>
+    </LinearLayout>
+
+    <!-- Contenedor Estado -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="#D6FFD6">
+
+        <TextView
+            android:id="@+id/citaEstado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Estado"
+            android:textSize="14sp"
+            android:background="@drawable/fondoverde"/>
+    </LinearLayout>
+
+    <!-- Contenedor Tratamiento -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="#D6FFD6">
+
+        <TextView
+            android:id="@+id/citaTratamiento"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Tratamiento"
+            android:textSize="14sp"
+            android:background="@drawable/fondoverde" />
+    </LinearLayout>
+
+    <!-- Contenedor Importe -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="#D6FFD6">
+
+        <TextView
+            android:id="@+id/citaImporte"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Importe"
+            android:textSize="14sp"
+            android:background="@drawable/fondoverde"/>
+    </LinearLayout>
+
+    <!-- Contenedor Observaciones -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="#D6FFD6">
+
+        <TextView
+            android:id="@+id/citaObservaciones"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Observaciones"
+            android:textSize="14sp"
+            android:background="@drawable/fondoverde" />
+    </LinearLayout>
+
+    <!-- Contenedor Próxima Cita -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="#D6FFD6">
+
+        <TextView
+            android:id="@+id/citaProximaCita"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Próxima Cita"
+            android:textSize="14sp"
+            android:background="@drawable/fondoverde"/>
+    </LinearLayout>
+</LinearLayout>
