@@ -1,28 +1,95 @@
-<!-- fragment_formulario_confirmar_compra.xml -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#FFFFFF">
 
+    <!-- Título -->
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Confirmar Compra"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp"
+        android:textColor="#000000" />
+
+    <!-- Productos seleccionados -->
     <TextView
         android:id="@+id/tvProductIds"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Productos seleccionados"
-        android:textSize="16sp" />
+        android:text="Productos seleccionados:"
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"
+        android:textColor="#555555" />
 
+    <!-- Total -->
     <TextView
         android:id="@+id/tvTotal"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
         android:text="Total: S/ 0.00"
-        android:textSize="18sp"
-        android:layout_marginTop="20dp"/>
+        android:textSize="38sp"
+        android:textStyle="bold"
+        android:textColor="#4CAF50"
+        android:layout_marginBottom="16dp" />
 
+    <!-- Imágenes de medios de pago -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="20dp"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/imgEfectivo"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_pago_en_tienda"
+            android:contentDescription="Pago en efectivo"
+            android:scaleType="fitCenter"
+            android:layout_marginEnd="8dp" />
+
+        <ImageView
+            android:id="@+id/imgTarjeta"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:src="@drawable/tarjeta_de_credito"
+            android:contentDescription="Pago con tarjeta"
+            android:scaleType="fitCenter"
+            android:layout_marginEnd="8dp" />
+
+        <ImageView
+            android:id="@+id/imgYape"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_weight="1"
+            android:src="@drawable/ic_yape"
+            android:contentDescription="Pago con Yape"
+            android:scaleType="fitCenter" />
+    </LinearLayout>
+
+    <!-- Botón de confirmar compra -->
     <Button
         android:id="@+id/btnFinalizarCompra"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Confirmar compra" />
+        android:text="Confirmar compra"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#4CAF50"
+        android:padding="12dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp" />
 </LinearLayout>

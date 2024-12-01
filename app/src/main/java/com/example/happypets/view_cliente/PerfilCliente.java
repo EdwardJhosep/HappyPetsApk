@@ -148,6 +148,13 @@ public class PerfilCliente extends Fragment {
     }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Actualiza la lista de mascotas cada vez que el fragmento se vuelve a mostrar
+        obtenerHistorialMascotas(userId);
+    }
+
     private void obtenerHistorialMascotas(String userId) {
         if (userId == null || userId.isEmpty()) {
             Log.e("API_ERROR", "El userId es nulo o vacío");
@@ -169,13 +176,13 @@ public class PerfilCliente extends Fragment {
                         Log.d("API_RESPONSE", response.toString());
                         try {
                             JSONArray mascotasArray = response.getJSONArray("mascotas");
-                            petsList.clear();
+                            petsList.clear(); // Limpia la lista antes de agregar nuevos elementos
 
                             if (mascotasArray.length() > 0) {
                                 for (int i = 0; i < mascotasArray.length(); i++) {
                                     JSONObject mascota = mascotasArray.getJSONObject(i);
                                     petsList.add(new Mascota(
-                                            mascota.getString("id"), // Asegúrate de obtener el ID de la respuesta
+                                            mascota.getString("id"),
                                             mascota.getString("nombre"),
                                             mascota.getString("edad"),
                                             mascota.getString("especie"),
@@ -185,7 +192,7 @@ public class PerfilCliente extends Fragment {
                                             mascota.getString("imagen")
                                     ));
                                 }
-                                petsAdapter.notifyDataSetChanged();
+                                petsAdapter.notifyDataSetChanged(); // Notifica al adaptador que los datos han cambiado
                             } else {
                                 if (getContext() != null) {
                                     Toast.makeText(getContext(), "No se encontraron mascotas", Toast.LENGTH_SHORT).show();

@@ -80,7 +80,15 @@
             android:textStyle="bold"
             android:layout_marginTop="4dp"
             android:text="Categoría:"/>
-
+        <TextView
+            android:id="@+id/stockProducto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stock: 0"
+            android:textSize="16sp"
+            android:visibility="gone"
+            android:layout_marginTop="16dp"
+            android:textColor="@android:color/black" />
         <LinearLayout
             android:id="@+id/layoutColoresSeleccionados"
             android:layout_width="wrap_content"

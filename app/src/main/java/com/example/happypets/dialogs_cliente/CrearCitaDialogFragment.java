@@ -35,6 +35,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.happypets.R;
 import com.example.happypets.models.Mascota;
@@ -64,6 +65,7 @@ public class CrearCitaDialogFragment extends DialogFragment {
     private Spinner mascotaSpinner;
     private CheckBox yapeCheckBox;
     private CheckBox efectivoCheckBox;
+    private EditText sintomasEditText;
 
     private ArrayList<Mascota> petsList = new ArrayList<>();
 
@@ -104,24 +106,24 @@ public class CrearCitaDialogFragment extends DialogFragment {
             tipoServicio = getArguments().getString("tipoServicio");
         }
 
-        // Handle visibility based on service type
         horasHospedajeEditText = view.findViewById(R.id.horasHospedajeEditText);
+        sintomasEditText = view.findViewById(R.id.sintomasEditText);
 
-        // List of possible variations of "Hospedaje"
         List<String> hospedajeVariations = Arrays.asList("Hospedaje", "hospedaje", "HOSPEDAJE", "hospeda", "HOSPEDAEJE", "hospedaje");
 
-        // Check if tipoServicio contains any variation of "Hospedaje"
         boolean isHospedaje = hospedajeVariations.stream().anyMatch(variation -> tipoServicio != null && tipoServicio.toLowerCase().contains(variation.toLowerCase()));
 
         if (isHospedaje) {
             horasHospedajeEditText.setVisibility(View.VISIBLE);
+            sintomasEditText.setVisibility(View.GONE);
         } else {
             horasHospedajeEditText.setVisibility(View.GONE);
+            sintomasEditText.setVisibility(View.VISIBLE);
         }
 
         yapeCheckBox = view.findViewById(R.id.yapeCheckBox);
         efectivoCheckBox = view.findViewById(R.id.efectivoCheckBox);
-
+        sintomasEditText = view.findViewById(R.id.sintomasEditText);
         fechaEditText = view.findViewById(R.id.fechaEditText);
         horaEditText = view.findViewById(R.id.horaEditText);
         userIdTextView = view.findViewById(R.id.userIdTextView);
@@ -130,28 +132,23 @@ public class CrearCitaDialogFragment extends DialogFragment {
 
 
         horaEditText.setOnClickListener(v -> {
-            // Obtener la hora y minuto actual
             Calendar calendar = Calendar.getInstance();
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
 
-            // Crear el TimePickerDialog
             TimePickerDialog timePickerDialog = new TimePickerDialog(
                     getContext(),
                     (timePicker, hourOfDay, minuteOfHour) -> {
-                        // Verificar si la hora seleccionada está fuera del rango
                         if (hourOfDay < 8 || hourOfDay > 17) {
-                            // Mostrar un mensaje de error si la hora seleccionada está fuera del rango
                             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                             builder.setMessage("Por favor, seleccione una hora entre 8 AM y 5 PM.")
                                     .setTitle("Hora no válida")
-                                    .setPositiveButton("Aceptar", (dialog, id) -> dialog.dismiss()) // Botón para cerrar el AlertDialog
+                                    .setPositiveButton("Aceptar", (dialog, id) -> dialog.dismiss())
                                     .create()
                                     .show();
-                            return; // Salir para no actualizar el EditText
+                            return;
                         }
 
-                        // Convertir a formato de 12 horas
                         String amPm;
                         if (hourOfDay >= 12) {
                             amPm = "PM";
@@ -161,24 +158,20 @@ public class CrearCitaDialogFragment extends DialogFragment {
                             hourOfDay = hourOfDay == 0 ? 12 : hourOfDay;
                         }
 
-                        // Formatear la hora seleccionada
                         String selectedTime = String.format("%02d:%02d %s", hourOfDay, minuteOfHour, amPm);
                         horaEditText.setText(selectedTime); // Establecer la hora en el EditText
                     },
                     hour, minute, false); // 'false' para formato de 12 horas
 
-            // Mostrar el TimePickerDialog
             timePickerDialog.show();
         });
 
         fechaEditText.setOnClickListener(v -> {
-            // Obtener la fecha actual
             Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
             int dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH);
 
-            // Crear el DatePickerDialog con el DatePicker real
             DatePickerDialog datePickerDialog = new DatePickerDialog(
                     getContext(),
                     new DatePickerDialog.OnDateSetListener() {
@@ -191,13 +184,10 @@ public class CrearCitaDialogFragment extends DialogFragment {
                     },
                     year, month, dayOfMonth);
 
-            // Obtener la fecha actual en milisegundos
             long currentDateMillis = calendar.getTimeInMillis();
 
-            // Establecer la fecha mínima seleccionable en el DatePicker a la fecha actual
             datePickerDialog.getDatePicker().setMinDate(currentDateMillis);
 
-            // Mostrar el DatePickerDialog
             datePickerDialog.show();
         });
 
@@ -251,8 +241,8 @@ public class CrearCitaDialogFragment extends DialogFragment {
             String fecha = fechaEditText.getText().toString().trim();
             String hora = horaEditText.getText().toString().trim();
             String horasHospedaje = horasHospedajeEditText.getText().toString().trim(); // Obtener horas de hospedaje
+            String sintomas = sintomasEditText.getText().toString().trim();
 
-            // Check if fields are empty
             if (TextUtils.isEmpty(fecha) || TextUtils.isEmpty(hora) || mascotaSpinner.getSelectedItem() == null) {
                 Toast.makeText(getContext(), "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show();
                 return;
@@ -262,12 +252,11 @@ public class CrearCitaDialogFragment extends DialogFragment {
 
             String idMascota = selectedMascota.getId();
             String estado = "Pendiente";
-            String observaciones = "";
 
             if (isHospedaje && !TextUtils.isEmpty(horasHospedaje)) {
-                crearCita(fecha, hora, idMascota, estado, observaciones, servicioId, horasHospedaje);
+                crearCita(fecha, hora, idMascota, estado, sintomas, servicioId, horasHospedaje);
             } else {
-                crearCita(fecha, hora, idMascota, estado, observaciones, servicioId, null);
+                crearCita(fecha, hora, idMascota, estado, sintomas, servicioId, null);
             }
         });
         return view;
@@ -327,10 +316,9 @@ public class CrearCitaDialogFragment extends DialogFragment {
 
                                     @Override
                                     public View getView(int position, View convertView, ViewGroup parent) {
-                                        // Este método maneja la vista del item seleccionado
                                         View view = super.getView(position, convertView, parent);
                                         TextView textView = (TextView) view.findViewById(android.R.id.text1);
-                                        textView.setText(petsList.get(position).getNombre()); // Solo mostrar nombre
+                                        textView.setText(petsList.get(position).getNombre());
                                         return view;
                                     }
                                 };
@@ -368,7 +356,7 @@ public class CrearCitaDialogFragment extends DialogFragment {
         Volley.newRequestQueue(getContext()).add(jsonObjectRequest);
     }
 
-    private void crearCita(String fecha, String hora, String idMascota, String estado, String observaciones, String idServicio, String horasHospedaje) {
+    private void crearCita(String fecha, String hora, String idMascota, String estado, String sintomas, String idServicio, String horasHospedaje) {
         String url = "https://api.happypetshco.com/api/NuevaCita";
 
         // Crear un objeto JSON con los datos de la cita
@@ -377,11 +365,10 @@ public class CrearCitaDialogFragment extends DialogFragment {
             requestBody.put("fecha", fecha);
             requestBody.put("hora", hora);
             requestBody.put("id_mascota", idMascota);
-            requestBody.put("estado", estado);  // Esto es opcional
-            requestBody.put("observaciones", observaciones);  // Esto es opcional
-            requestBody.put("id_servicio", idServicio);  // Usamos el ID del servicio
+            requestBody.put("estado", estado);
+            requestBody.put("sintomas", sintomas);
+            requestBody.put("id_servicio", idServicio);
 
-            // Si el servicio es de tipo "Hospedaje" y se ingresaron horas de hospedaje, agregarlas al JSON
             if (horasHospedaje != null) {
                 requestBody.put("horas_hospedaje", horasHospedaje);
             }
@@ -401,7 +388,6 @@ public class CrearCitaDialogFragment extends DialogFragment {
             return;
         }
 
-        // Crear la solicitud POST
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.POST, // Método POST
                 url,
@@ -409,7 +395,6 @@ public class CrearCitaDialogFragment extends DialogFragment {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        // Aquí puedes manejar la respuesta de éxito
                         Log.d("API_RESPONSE", response.toString());
                         Toast.makeText(getContext(), "Cita creada exitosamente", Toast.LENGTH_SHORT).show();
                         dismiss(); // Cerrar el diálogo
@@ -418,7 +403,6 @@ public class CrearCitaDialogFragment extends DialogFragment {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // Aquí puedes manejar el error de la solicitud
                         Log.e("API_ERROR", "Error de red: " + error.getMessage());
                         Toast.makeText(getContext(), "Error al crear la cita", Toast.LENGTH_SHORT).show();
                     }

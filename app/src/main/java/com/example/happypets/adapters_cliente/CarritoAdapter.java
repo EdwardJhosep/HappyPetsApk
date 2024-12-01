@@ -1,5 +1,6 @@
 package com.example.happypets.adapters_cliente;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
@@ -37,7 +38,7 @@ public class CarritoAdapter extends DialogFragment {
 
     private View selectedColorCircle = null;
 
-    public static CarritoAdapter newInstance(String userId, String productId, String productPrice, String token, String colores, String imagenUrl) {
+    public static CarritoAdapter newInstance(String userId, String productId, String productPrice, String token, String colores, String imagenUrl, String stock) {
         CarritoAdapter fragment = new CarritoAdapter();
         Bundle args = new Bundle();
         args.putString("USER_ID", userId);
@@ -45,10 +46,12 @@ public class CarritoAdapter extends DialogFragment {
         args.putString("PRODUCT_PRICE", productPrice);
         args.putString("TOKEN", token);
         args.putString("colores", colores);
-        args.putString("IMAGEN_URL", imagenUrl); // Agregar URL de imagen
+        args.putString("IMAGEN_URL", imagenUrl);
+        args.putString("STOCK", stock); // Add stock to the Bundle
         fragment.setArguments(args);
         return fragment;
     }
+
 
     @Nullable
     @Override
@@ -235,11 +238,19 @@ public class CarritoAdapter extends DialogFragment {
         try {
             cantidad = Integer.parseInt(cantidadStr);
             if (cantidad <= 0) {
-                showToast("La cantidad debe ser mayor que 0");
+                showAlert("La cantidad debe ser mayor que 0");
                 return;
             }
+
+            // Verificar si la cantidad solicitada excede el stock
+            int stockDisponible = Integer.parseInt(getArguments().getString("STOCK"));
+            if (cantidad > stockDisponible) {
+                // Si la cantidad excede el stock, preguntar al usuario si desea continuar con la cantidad disponible
+                showStockDialog(stockDisponible);
+                return; // No continuar con el proceso hasta que el usuario confirme
+            }
         } catch (NumberFormatException e) {
-            showToast("Cantidad no válida");
+            showAlert("Cantidad no válida");
             return;
         }
 
@@ -248,7 +259,7 @@ public class CarritoAdapter extends DialogFragment {
 
         // Verificar si se ha seleccionado un color
         if (color.isEmpty()) {
-            showToast("Debe seleccionar un color");
+            showAlert("Debe seleccionar un color");
             return;
         }
 
@@ -264,7 +275,7 @@ public class CarritoAdapter extends DialogFragment {
             jsonObject.put("id_usuario", userId);
         } catch (JSONException e) {
             e.printStackTrace();
-            showToast("Error al crear el objeto JSON");
+            showAlert("Error al crear el objeto JSON");
             return;
         }
 
@@ -290,23 +301,43 @@ public class CarritoAdapter extends DialogFragment {
                     showToast("Producto agregado al carrito correctamente");
                     dismiss(); // Cerrar el diálogo
                 } else {
-                    showToast("Error al agregar el producto al carrito");
+                    showAlert("Error al agregar el producto al carrito");
                 }
 
             } catch (Exception e) {
                 e.printStackTrace();
-                showToast("Error en la conexión");
+                showAlert("Error en la conexión");
             }
         }).start();
     }
 
+    private void showStockDialog(int stockDisponible) {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Stock insuficiente")
+                .setMessage("Solo hay " + stockDisponible + " unidades disponibles. ¿Deseas agregar esa cantidad al carrito?")
+                .setPositiveButton("Sí", (dialog, which) -> {
+                    // Si el usuario acepta, agregar la cantidad disponible al carrito
+                    addToCart(String.valueOf(stockDisponible));
+                })
+                .setNegativeButton("No", null)
+                .show();
+    }
 
-    // Método para mostrar un Toast en el hilo principal
     private void showToast(final String message) {
         if (getActivity() != null) {
             getActivity().runOnUiThread(() -> Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show());
         }
     }
+    private void showAlert(String message) {
+        new AlertDialog.Builder(getContext())
+                .setTitle("¡Error!")
+                .setMessage(message)
+                .setIcon(android.R.drawable.ic_dialog_alert) // Icono de advertencia
+                .setPositiveButton("OK", null)
+                .create()
+                .show();
+    }
+
 
     @Override
     public void onStart() {

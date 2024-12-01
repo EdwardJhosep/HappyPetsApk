@@ -10,8 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
@@ -51,6 +51,10 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
 
         // Mostrar categoría, subcategoría y sub-subcategoría
         holder.categoriaProducto.setText(TextUtils.isEmpty(producto.getCategoria()) ? "Categoría no disponible" : producto.getCategoria());
+
+        // Mostrar stock
+        String stock = producto.getStock();
+        holder.stockProducto.setText(TextUtils.isEmpty(stock) ? "Stock no disponible" : "Stock: " + stock);
 
         // Obtener colores seleccionados
         String colores = producto.getColores();
@@ -112,12 +116,22 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
 
         final String productPrice = (descuentoPorcentaje > 0) ? String.valueOf(precioConDescuento) : String.valueOf(precioOriginal);
         holder.imageButtonCarrito.setOnClickListener(v -> {
-            // Pasar los colores y la imagen al CarritoAdapter
-            CarritoAdapter carritoDialog = CarritoAdapter.newInstance(userId, String.valueOf(producto.getId()), productPrice, token, colores, imagenUrl); // Usar imagenUrl aquí
+            // Usar directamente 'stock' si ya está definido en el contexto
+            // Pasar los colores, la imagen, y el stock al CarritoAdapter
+            CarritoAdapter carritoDialog = CarritoAdapter.newInstance(
+                    userId,
+                    String.valueOf(producto.getId()),
+                    productPrice,
+                    token,
+                    colores,
+                    imagenUrl,
+                    stock // Usar 'stock' sin redeclararlo
+            );
             carritoDialog.show(((AppCompatActivity) holder.itemView.getContext()).getSupportFragmentManager(), "CarritoDialog");
         });
-    }
 
+
+    }
 
     @Override
     public int getItemCount() {
@@ -180,10 +194,9 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
         layout.addView(colorView); // Añadir el View al layout
     }
 
-
     public static class ProductoViewHolder extends RecyclerView.ViewHolder {
 
-        TextView nombreProducto, descripcionProducto, precioProducto, coloresProducto, descuentoProducto;
+        TextView nombreProducto, descripcionProducto, precioProducto, coloresProducto, descuentoProducto, stockProducto;
         TextView categoriaProducto;
         ImageView imagenProducto, imageButtonCarrito; // Añadir el botón del carrito
         LinearLayout layoutColoresSeleccionados; // Añadir layout para colores seleccionados
@@ -196,11 +209,9 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Produc
             descuentoProducto = itemView.findViewById(R.id.descuentoProducto); // Añade el descuento
             imagenProducto = itemView.findViewById(R.id.imagenProducto);
             imageButtonCarrito = itemView.findViewById(R.id.imageButtonCarrito); // Asegúrate de que este ID es correcto
-            layoutColoresSeleccionados = itemView.findViewById(R.id.layoutColoresSeleccionados); // Cambia el ID según tu diseño
-
-            // Inicializar las vistas para las nuevas categorías
+            layoutColoresSeleccionados = itemView.findViewById(R.id.layoutColoresSeleccionados);
+            stockProducto = itemView.findViewById(R.id.stockProducto); // Añadir stock
             categoriaProducto = itemView.findViewById(R.id.categoriaProducto);
         }
     }
-
 }

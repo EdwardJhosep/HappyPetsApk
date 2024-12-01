@@ -76,7 +76,7 @@ public class Ubication extends Fragment {
         });
 
         // Cargar la URL en el WebView
-        webView.loadUrl("https://player.onirix.com/projects/855ab066d4c94bc5ac414a5dddc2cd3e/webar?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQ1NzQ2LCJwcm9qZWN0SWQiOjkzMjAyLCJyb2xlIjozLCJpYXQiOjE3MzA3NDk5MDF9.b6_4CFOFjCN37iP0r71qxHiLFShk3BPJxlTjUZeRuRo&background=%23f59acf&preview=true&hide_controls=true&ar_button=true");
+        webView.loadUrl("https://player.onirix.com/projects/10dc87dfba0c419aaf058b435052d919/webar?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQ2NjY2LCJwcm9qZWN0SWQiOjk1MDAyLCJyb2xlIjozLCJpYXQiOjE3MzIzMjE0NTV9.yQhY_OOpdAdkeuTRQpHqDtmCzUrpUv8HfKaieKe44V8&background=alpha&preview=true&hide_controls=true&ar_button=false");
 
         return view;
     }

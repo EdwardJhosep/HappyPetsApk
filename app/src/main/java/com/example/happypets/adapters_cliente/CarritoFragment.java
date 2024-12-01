@@ -183,7 +183,7 @@ public class CarritoFragment extends BottomSheetDialogFragment implements Listar
                                 JSONObject item = jsonArray.getJSONObject(i);
 
                                 // Verificar si el producto tiene el campo "estado" como "Pendiente"
-                                String estado = item.optString("estado", "");
+                                String estado = item.optString("pagado", "");
                                 if (estado.equals("Pendiente")) {
                                     productos.add(item);
                                     tieneProductosPendientes = true;

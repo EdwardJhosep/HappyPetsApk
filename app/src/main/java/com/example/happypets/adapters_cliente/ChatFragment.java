@@ -29,12 +29,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.happypets.R;
 import com.example.happypets.models.ChatMessage;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.IOException;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -108,7 +111,7 @@ public class ChatFragment extends DialogFragment {
                     } else {
                         // Get the user's name and greet
                         String userName = getArguments().getString(ARG_USER_NAME);
-                        speakOut("¡Hola " + userName + "! ¿En qué producto estás pensando?");
+                        speakOut("¡Hola " + userName + "! ¿En qué puedo ayudarte?");
                     }
                 } else {
                     Toast.makeText(getContext(), "Error al inicializar el TextToSpeech", Toast.LENGTH_SHORT).show();
@@ -167,28 +170,83 @@ public class ChatFragment extends DialogFragment {
 
         for (int i = 0; i < productosArray.size(); i++) {
             JsonObject producto = productosArray.get(i).getAsJsonObject();
-            String nombre = producto.get("nm_producto").getAsString();
-            String descripcion = producto.get("descripcion").getAsString();
-            String precio = producto.get("precio").getAsString();
-            String imagenUrl = "https://api.happypetshco.com/ServidorProductos/" + producto.get("imagen").getAsString();
 
-            // Check if the product has a discount
-            String descuento = producto.has("descuento") ? producto.get("descuento").getAsString() : null;
-            double precioOriginal = Double.parseDouble(precio);
-            String precioConDescuento = precio;
+            // Use a helper method to handle possible JsonNull values
+            String nombre = getJsonString(producto, "nm_producto");
+            String descripcion = getJsonString(producto, "descripcion");
+            String precio = getJsonString(producto, "precio");
+            String imagenUrl = "https://api.happypetshco.com/ServidorProductos/" + getJsonString(producto, "imagen");
+
+            // Check if the product has a discount (use getAsString() safely)
+            String descuento = producto.has("descuento") ? getJsonString(producto, "descuento") : null;
+
+            // Validate and parse the precio field safely
+            double precioOriginal = parseDoubleSafe(precio); // Using the safe method to parse precio
+            String precioConDescuento = String.valueOf(precioOriginal);
 
             // If the product has a discount, calculate the price with the discount
             if (descuento != null) {
-                double descuentoValor = Double.parseDouble(descuento);  // Discount in percentage
+                double descuentoValor = parseDoubleSafe(descuento);  // Discount in percentage
                 double precioFinal = precioOriginal - (precioOriginal * descuentoValor / 100);
                 precioConDescuento = String.format("%.2f", precioFinal); // Format the price with discount
             }
 
-            // Create the product object with associated tags
             List<String> tags = List.of(nombre.toLowerCase(), descripcion.toLowerCase()); // Add relevant tags
-            faqMap.put(nombre.toLowerCase(), new ChatMessage("Producto: " + nombre + "\nDescripción: " + descripcion + "\nPrecio: " + precioConDescuento + " soles", false, imagenUrl, tags));
+            faqMap.put(nombre.toLowerCase(), new ChatMessage(
+                    "¡Tenemos el producto que buscas!\n\n" +
+                            "Producto: " + nombre + "\nDescripción: " + descripcion + "\nPrecio: " + precioConDescuento + " soles\n\n" +
+                            "Para realizar tu compra, solo tienes que dirigirte al apartado de productos, buscarlo y ¡listo!",
+                    false,
+                    imagenUrl,
+                    tags
+            ));
         }
+
+        // Add the "horarios" entry to the FAQ map
+// Añadir las entradas de FAQ con un enfoque informativo para la app o web
+        faqMap.put("hola", new ChatMessage("¡Hola! Bienvenido a nuestra clínica veterinaria HappyPets. Puedes agendar citas, consultar nuestros servicios y mucho más desde nuestra app o página web. ¿En qué te puedo ayudar?", false, null, null));
+        faqMap.put("adios", new ChatMessage("¡Hasta luego! Gracias por confiar en HappyPets. Recuerda que siempre puedes acceder a nuestra app o página web para más información.", false, null, null));
+        faqMap.put("gracias", new ChatMessage("¡De nada! Estamos aquí para ayudarte. Recuerda que puedes realizar varias gestiones a través de nuestra app o web.", false, null, null));
+        faqMap.put("cita", new ChatMessage("Claro, puedes agendar tu cita directamente desde nuestra app o página web. Solo selecciona el día y la hora que prefieras.", false, null, null));
+        faqMap.put("horarios", new ChatMessage("Nuestros horarios de atención son de lunes a sábado, de 8:00 AM a 6:00 PM. Puedes agendar tu cita en cualquier momento a través de nuestra app o web. ¿Cómo puedo ayudarte?", false, null, null));
+        faqMap.put("emergencia", new ChatMessage("Para emergencias, por favor llama directamente al número de contacto de emergencia: 987-654-321. También puedes solicitar ayuda urgente a través de nuestra app.", false, null, null));
+        faqMap.put("servicios", new ChatMessage("Ofrecemos consultas, vacunación, desparasitación, cirugía, estética y más. Puedes obtener más detalles y agendar tus citas en nuestra app o página web.", false, null, null));
+        faqMap.put("ubicacion", new ChatMessage("Estamos ubicados en Jirón Aguilar 649, Huánuco. Puedes consultar nuestra ubicación y agendar tu cita en nuestra app o web.", false, null, null));
+        faqMap.put("vacunacion", new ChatMessage("Ofrecemos un esquema completo de vacunación. Puedes agendar una cita para vacunación directamente desde nuestra app o página web. ¿Te interesa?", false, null, null));
+        faqMap.put("esterilizacion", new ChatMessage("La esterilización es un procedimiento seguro que ayuda a prevenir enfermedades y controlar la población. Si deseas más información o agendar una cita, puedes hacerlo fácilmente en nuestra app o web.", false, null, null));
+        faqMap.put("alimentacion", new ChatMessage("Podemos recomendarte la dieta adecuada para tu mascota según su edad, raza y necesidades. Puedes consultar nuestras recomendaciones a través de la app o página web.", false, null, null));
+        faqMap.put("bano", new ChatMessage("Ofrecemos servicios de baño, corte de pelo y estética para tu mascota. Puedes agendar tu turno para estos servicios cómodamente desde nuestra app o página web.", false, null, null));
+        faqMap.put("vacaciones", new ChatMessage("Ofrecemos servicio de hospedaje para mascotas durante tus vacaciones. Puedes obtener más información y reservar el servicio a través de nuestra app o web.", false, null, null));
+        faqMap.put("adopcion", new ChatMessage("Contamos con un programa de adopción para dar hogar a mascotas que lo necesitan. Si deseas conocer más sobre el proceso o adoptar una mascota, puedes consultar los detalles en nuestra app o página web.", false, null, null));
+        faqMap.put("contacto", new ChatMessage("Puedes contactarnos al 123-456-789 o escribirnos por WhatsApp al mismo número. También puedes obtener toda la información que necesites desde nuestra app o página web.", false, null, null));
+        faqMap.put("producto", new ChatMessage("Tenemos una amplia variedad de productos para el cuidado de tu mascota, desde alimentos hasta accesorios. Puedes consultar todos nuestros productos solo ingresando o diciendo el nombre", false, null, null));
+
     }
+
+
+    // Helper method to get a string value from a JsonObject safely
+    private String getJsonString(JsonObject jsonObject, String key) {
+        JsonElement element = jsonObject.get(key);
+        if (element != null && !element.isJsonNull()) {
+            return element.getAsString();
+        }
+        return ""; // Return a default value if the element is null or doesn't exist
+    }
+
+    // Helper method to safely parse a double value, returns 0.0 if parsing fails
+    private double parseDoubleSafe(String value) {
+        try {
+            if (value != null && !value.isEmpty()) {
+                return Double.parseDouble(value);
+            }
+        } catch (NumberFormatException e) {
+            // Handle the case where the value is not a valid double (e.g., empty string or non-numeric)
+            e.printStackTrace(); // Optionally log the error
+        }
+        return 0.0; // Return a default value (e.g., 0.0) if the value is invalid
+    }
+
+
 
     private void sendMessage() {
         String userMessage = editTextMessage.getText().toString().trim();
@@ -211,14 +269,19 @@ public class ChatFragment extends DialogFragment {
         ChatMessage bestMatch = null;
         List<String> similarProducts = new ArrayList<>();
 
+        // Inicializar los sinónimos si no se ha hecho ya
+        if (synonymsMap.isEmpty()) {
+            initializeSynonyms();
+        }
+
         // Normalizar el mensaje del usuario
         String normalizedUserMessage = normalizeString(userMessage);
 
-        // Primero, buscar una coincidencia exacta basada en el nombre del producto o etiquetas
+        // Buscar coincidencia exacta o sinónimos basados en las etiquetas o nombre del producto
         for (Map.Entry<String, ChatMessage> entry : faqMap.entrySet()) {
             ChatMessage chatMessage = entry.getValue();
 
-            // Verificar coincidencia exacta en las etiquetas o nombre del producto
+            // Verificar si el mensaje del usuario coincide exactamente con alguna etiqueta o el texto
             if (chatMessage.getTags() != null) {
                 for (String tag : chatMessage.getTags()) {
                     if (normalizeString(tag).equals(normalizedUserMessage)) {
@@ -228,6 +291,18 @@ public class ChatFragment extends DialogFragment {
                 }
             }
 
+            // Verificar si el mensaje contiene la palabra clave principal o alguno de sus sinónimos
+            if (bestMatch == null) {
+                // Buscar coincidencias con los sinónimos
+                for (String synonym : synonymsMap.getOrDefault(entry.getKey(), Collections.emptyList())) {
+                    if (normalizedUserMessage.contains(normalizeString(synonym))) {
+                        bestMatch = chatMessage;
+                        break;
+                    }
+                }
+            }
+
+            // Si se encuentra una coincidencia, detener la búsqueda
             if (bestMatch != null) {
                 break;
             }
@@ -239,6 +314,7 @@ public class ChatFragment extends DialogFragment {
                 ChatMessage chatMessage = entry.getValue();
                 if (chatMessage.getTags() != null) {
                     for (String tag : chatMessage.getTags()) {
+                        // Buscar productos cuyo tag contenga la palabra clave
                         if (normalizeString(tag).contains(normalizedUserMessage)) {
                             similarProducts.add(chatMessage.getText());
                         }
@@ -256,8 +332,27 @@ public class ChatFragment extends DialogFragment {
 
         return bestMatch;
     }
+    private Map<String, List<String>> synonymsMap = new HashMap<>();
 
-    // Método para normalizar cadenas
+    private void initializeSynonyms() {
+        synonymsMap.put("hola", Arrays.asList("saludos", "buenos días", "hey","hola"));
+        synonymsMap.put("adios", Arrays.asList("hasta luego", "adiós", "nos vemos","adios"));
+        synonymsMap.put("gracias", Arrays.asList("de nada", "muchas gracias", "te lo agradezco","gracias"));
+        synonymsMap.put("cita", Arrays.asList("agendar", "programar", "reservar cita","cita"));
+        synonymsMap.put("horarios", Arrays.asList("horario de atención", "hora", "horario","horarios"));
+        synonymsMap.put("emergencia", Arrays.asList("urgencia", "emergente", "situación urgente","emergencia"));
+        synonymsMap.put("servicios", Arrays.asList("servicios disponibles", "atenciones", "tratamientos","servicios"));
+        synonymsMap.put("ubicacion", Arrays.asList("dirección", "localización", "donde estamos","ubicacion","ubicado"));
+        synonymsMap.put("vacunacion", Arrays.asList("vacuna", "vacunas", "esquema de vacunación","vacunacion"));
+        synonymsMap.put("esterilizacion", Arrays.asList("esterilizar", "operación de esterilización", "esterilización","esterilizacion"));
+        synonymsMap.put("alimentacion", Arrays.asList("dieta", "comida", "alimento","alimentacion"));
+        synonymsMap.put("bano", Arrays.asList("baño", "higiene", "limpieza","bano"));
+        synonymsMap.put("vacaciones", Arrays.asList("hospedaje", "vacaciones para mascotas", "alojamiento","vacaciones"));
+        synonymsMap.put("adopcion", Arrays.asList("adoptar", "dar en adopción", "programa de adopción","adopcion"));
+        synonymsMap.put("contacto", Arrays.asList("información de contacto", "cómo contactarnos", "teléfono","contacto"));
+        synonymsMap.put("producto", Arrays.asList("artículo", "bien", "mercancía", "artículo disponible", "producto disponible","producto","venden"));
+
+    }
     private String normalizeString(String input) {
         if (input == null) {
             return "";

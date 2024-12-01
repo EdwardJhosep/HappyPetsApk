@@ -1,10 +1,147 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".perfilview.AgregarMascotaActivity">
+    android:background="@color/background_color"
+    android:padding="5dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@color/background_color"
+        android:paddingTop="40dp">
+
+        <!-- Título de la actividad -->
+        <TextView
+            android:id="@+id/tvTitulo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Agregar Mascota"
+            android:textSize="24sp"
+            android:textColor="#2C3E50"
+            android:layout_marginBottom="30dp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+        <!-- Campo de nombre de la mascota -->
+        <EditText
+            android:id="@+id/etNombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre de la Mascota"
+            android:textColorHint="#7F8C8D"
+            android:padding="12dp"
+            android:background="@drawable/container_background"
+            android:textColor="#2C3E50"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Campo de edad y spinner para la unidad de edad -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="16dp">
+
+            <EditText
+                android:id="@+id/etEdad"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="Edad"
+                android:textColorHint="#7F8C8D"
+                android:inputType="number"
+                android:padding="12dp"
+                android:layout_weight="1"
+                android:background="@drawable/container_background"
+                android:textColor="#2C3E50"
+                android:layout_marginEnd="8dp"/>
+
+            <Spinner
+                android:id="@+id/spEdad"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <!-- Campo de especie -->
+        <EditText
+            android:id="@+id/etEspecie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Especie"
+            android:textColorHint="#7F8C8D"
+            android:padding="12dp"
+            android:background="@drawable/container_background"
+            android:textColor="#2C3E50"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Campo de raza -->
+        <EditText
+            android:id="@+id/etRaza"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Raza"
+            android:textColorHint="#7F8C8D"
+            android:padding="12dp"
+            android:background="@drawable/container_background"
+            android:textColor="#2C3E50"
+            android:layout_marginBottom="16dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@drawable/container_background"
+            android:layout_marginBottom="16dp">
+
+            <!-- Texto a la izquierda del Spinner -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Seleccione el sexo"
+                android:textSize="16sp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:gravity="center_vertical" />
+
+            <!-- Spinner para seleccionar el sexo -->
+            <Spinner
+                android:id="@+id/spSexo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivImagen"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/card_background"
+            android:contentDescription="Imagen de la mascota"
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"/>
+
+        <!-- Botón para tomar foto -->
+        <Button
+            android:id="@+id/tomarfot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Tomar Foto"
+            android:textColor="#ffffff" />
+
+        <!-- Botón para agregar la mascota -->
+        <Button
+            android:id="@+id/btnAgregarMascota"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/secondary_color"
+            android:text="Agregar Mascota"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+</ScrollView>

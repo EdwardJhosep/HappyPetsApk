@@ -1,5 +1,6 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -67,8 +68,26 @@
         android:drawablePadding="8dp"
         android:textColorHint="@android:color/darker_gray"
         android:layout_marginBottom="12dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sintomas del paciente"
+        android:textSize="16sp"
+        android:textColor="@android:color/black"
+        android:paddingBottom="8dp"/>
 
-    <!-- Etiqueta para la selección de mascota -->
+    <!-- Hora de la cita -->
+    <EditText
+        android:id="@+id/sintomasEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ingrese los síntomas"
+        android:inputType="textMultiLine"
+        android:background="@drawable/card_background"
+        android:padding="12dp"
+        android:layout_marginBottom="12dp"
+        android:textColorHint="@android:color/darker_gray"/>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -89,7 +108,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/spinner_popup_background"
-            android:padding="12dp"/>
+            android:padding="12dp"
+            tools:ignore="TouchTargetSizeCheck" />
 
         <!-- Ícono de despliegue superpuesto -->
         <ImageView

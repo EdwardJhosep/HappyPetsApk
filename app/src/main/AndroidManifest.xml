@@ -11,6 +11,8 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
@@ -67,10 +69,7 @@
             android:name=".view_cliente.Ubication"
             android:exported="false"
             tools:ignore="Instantiatable" />
-        <activity
-            android:name=".view_cliente.AgregarMascotaDialogFragment"
-            android:exported="false"
-            tools:ignore="Instantiatable" />
+
         <activity
             android:name=".submenu_admin.Submenu_AdminPersonal"
             android:exported="false" />

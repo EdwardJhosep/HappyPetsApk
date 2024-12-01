@@ -1,6 +1,7 @@
 package com.example.happypets;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -150,20 +151,20 @@ public class Login extends AppCompatActivity {
 
     private void handleError(VolleyError error) {
         if (error.networkResponse == null) {
-            Toast.makeText(this, "No hay conexión a Internet. Verifique su conexión.", Toast.LENGTH_SHORT).show();
+            showAlert("No hay conexión a Internet. Verifique su conexión.");
         } else {
             switch (error.networkResponse.statusCode) {
                 case 400:
-                    Toast.makeText(this, "Error en la solicitud. Datos no válidos.", Toast.LENGTH_SHORT).show();
+                    showAlert("Error en la solicitud. Datos no válidos.");
                     break;
                 case 401:
-                    Toast.makeText(this, "Credenciales incorrectas. Por favor, intente de nuevo.", Toast.LENGTH_SHORT).show();
+                    showAlert("Credenciales incorrectas. Por favor, intente de nuevo.");
                     break;
                 case 404:
-                    Toast.makeText(this, "Usuario no encontrado. Verifique su DNI.", Toast.LENGTH_SHORT).show();
+                    showAlert("Usuario no encontrado. Verifique su DNI.");
                     break;
                 default:
-                    Toast.makeText(this, "Error en la autenticación. Intente más tarde.", Toast.LENGTH_SHORT).show();
+                    showAlert("Error en la autenticación. Intente más tarde.");
                     break;
             }
         }
@@ -221,21 +222,29 @@ public class Login extends AppCompatActivity {
                         startActivity(intent);
                         finish();
                     } else {
-                        Toast.makeText(this, "Permisos no reconocidos: " + permisos, Toast.LENGTH_SHORT).show();
+                        showAlert("Permisos no reconocidos: " + permisos);
                     }
                 } else {
-                    Toast.makeText(this, "No se encontraron permisos para el usuario.", Toast.LENGTH_SHORT).show();
+                    showAlert("No se encontraron permisos para el usuario.");
                     Log.d("PermissionsCheck", "El objeto 'usuarios' no contiene el campo 'permiso'.");
                 }
             } else {
-                Toast.makeText(this, "No se encontraron datos de usuario.", Toast.LENGTH_SHORT).show();
+                showAlert("No se encontraron datos de usuario.");
             }
         } catch (JSONException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Error al procesar los datos del usuario: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            showAlert("Error al procesar los datos del usuario: " + e.getMessage());
         }
     }
-
+    private void showAlert(String message) {
+        new AlertDialog.Builder(this)
+                .setTitle("¡Error!")
+                .setMessage(message)
+                .setIcon(android.R.drawable.ic_dialog_alert) // Icono de advertencia
+                .setPositiveButton("OK", null)
+                .create()
+                .show();
+    }
     private void saveLoginState(boolean isLoggedIn, String token) {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

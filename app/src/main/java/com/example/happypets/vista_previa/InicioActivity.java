@@ -1,7 +1,12 @@
 package com.example.happypets.vista_previa;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -51,6 +56,9 @@ public class InicioActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        if (!isInternetAvailable()) {
+            showNoInternetDialog();
+        }
 
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false); // Default value is false if not found
@@ -116,6 +124,39 @@ public class InicioActivity extends AppCompatActivity {
             }
         });
 
+    }
+    private boolean isInternetAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager != null) {
+            NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+            return activeNetwork != null && activeNetwork.isConnected();
+        }
+        return false;
+    }
+    private void showNoInternetDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Sin Conexión a Internet")
+                .setMessage("No hay conexión a Internet. Verifique su conexión y reintente.")
+                .setCancelable(false) // No permite cerrar la alerta tocando fuera de ella
+                .setPositiveButton("Reintentar", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Reintentar la verificación de conexión
+                        if (isInternetAvailable()) {
+                            dialog.dismiss(); // Cerrar el diálogo si la conexión es exitosa
+                        } else {
+                            Toast.makeText(InicioActivity.this, "Todavía sin conexión. Intente más tarde.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Salir", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Cerrar la aplicación si el usuario decide salir
+                        finishAffinity(); // Cierra la actividad y todas las actividades anteriores
+                    }
+                })
+                .show();
     }
     private void setupAutoSlide() {
         handler = new Handler(Looper.getMainLooper());
