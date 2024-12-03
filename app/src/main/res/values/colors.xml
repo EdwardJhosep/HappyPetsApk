@@ -33,5 +33,6 @@
     <color name="primary_text">#333333</color>
     <color name="textColor">#444444</color>
     <color name="operation_code_color">#FF5722</color> <!-- Un naranja vibrante -->
+    <color name="link_color">#1933C3</color> <!-- Cambia el color según tu diseño -->
 
 </resources>

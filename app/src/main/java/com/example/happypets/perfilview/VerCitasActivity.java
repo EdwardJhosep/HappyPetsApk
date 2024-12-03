@@ -25,7 +25,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -214,6 +219,31 @@ public class VerCitasActivity extends AppCompatActivity {
                             }
                         }
 
+                        // Formato de fecha para parsear
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+                        // Ordenar las citas por fecha (más reciente primero)
+                        Collections.sort(citasList, new Comparator<JSONObject>() {
+                            @Override
+                            public int compare(JSONObject o1, JSONObject o2) {
+                                try {
+                                    // Extraer las fechas de las citas
+                                    String fecha1 = o1.getString("fecha");
+                                    String fecha2 = o2.getString("fecha");
+
+                                    // Parsear las fechas a objetos Date
+                                    Date date1 = dateFormat.parse(fecha1);
+                                    Date date2 = dateFormat.parse(fecha2);
+
+                                    // Comparar las fechas (más reciente primero)
+                                    return date2.compareTo(date1);  // Orden descendente (más reciente primero)
+                                } catch (JSONException | ParseException e) {
+                                    e.printStackTrace();
+                                }
+                                return 0;  // Si ocurre un error, no cambia el orden
+                            }
+                        });
+
                         // Crear el adaptador y asociarlo al ListView
                         HistorialCitasAdapter adapter = new HistorialCitasAdapter(VerCitasActivity.this, citasList);
                         ListView listView = findViewById(R.id.listViewCitas);
@@ -244,5 +274,4 @@ public class VerCitasActivity extends AppCompatActivity {
 
         Volley.newRequestQueue(this).add(jsonObjectRequest);
     }
-
 }

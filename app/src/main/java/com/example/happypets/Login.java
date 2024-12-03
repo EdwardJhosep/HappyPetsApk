@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -37,6 +39,8 @@ public class Login extends AppCompatActivity {
     private EditText etUsername;
     private EditText etPassword;
     private ProgressBar progressBar;
+    private TextView forgotPassword;
+
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -60,6 +64,7 @@ public class Login extends AppCompatActivity {
         etUsername = findViewById(R.id.etUsername);
         etPassword = findViewById(R.id.etPassword);
         progressBar = findViewById(R.id.progressBar);
+        forgotPassword = findViewById(R.id.forgotPassword);
 
         // Configura el Listener para el Padding en la vista principal
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -75,19 +80,39 @@ public class Login extends AppCompatActivity {
         // Asigna el método al botón de inicio de sesión
         Button btnLogin = findViewById(R.id.btnLogin);
         btnLogin.setOnClickListener(this::onLoginButtonClick);
+
+        forgotPassword.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse("https://es.happypetshco.com/Restablecer"));
+            startActivity(intent);
+        });
+    }
+    public void onRegisterButtonClick(View view) {
+        // Crear un AlertDialog con los términos y condiciones
+        new AlertDialog.Builder(this)
+                .setTitle("Términos y Condiciones")
+                .setMessage("Por favor, lee y acepta los términos y condiciones antes de registrarte. \n\n" +
+                        "Al registrarte en nuestra aplicación, aceptas los siguientes términos y condiciones:" +
+                        "\n\n1. Acepto que los datos proporcionados sean usados en el sistema para el propósito de registro y gestión de servicios." +
+                        "\n2. Entiendo que mi información será almacenada de acuerdo con la política de privacidad de la aplicación." +
+                        "\n3. Acepto recibir comunicaciones relacionadas con el servicio, incluyendo actualizaciones, promociones y notificaciones importantes." +
+                        "\n4. Entiendo que el uso de la aplicación está sujeto a las reglas establecidas en los términos de servicio.")
+                .setPositiveButton("Aceptar", (dialog, which) -> {
+                    MainActivity registerDialogFragment = new MainActivity();
+                    registerDialogFragment.setOnRegisterCompleteListener(new MainActivity.OnRegisterCompleteListener() {
+                        @Override
+                        public void onRegisterComplete(String dni, String password) {
+                            authenticateUser(dni, password);
+                        }
+                    });
+                    registerDialogFragment.show(getSupportFragmentManager(), "registerDialog");
+                })
+                .setNegativeButton("Cancelar", (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .setCancelable(false)
+                .show();
     }
 
-    public void onRegisterButtonClick(View view) {
-        MainActivity registerDialogFragment = new MainActivity();
-        registerDialogFragment.setOnRegisterCompleteListener(new MainActivity.OnRegisterCompleteListener() {
-            @Override
-            public void onRegisterComplete(String dni, String password) {
-                // Hacer login automáticamente con los datos del registro
-                authenticateUser(dni, password);
-            }
-        });
-        registerDialogFragment.show(getSupportFragmentManager(), "registerDialog");
-    }
 
     public void onLoginButtonClick(View view) {
         String dni = etUsername.getText().toString().trim();

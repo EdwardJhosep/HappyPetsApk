@@ -227,65 +227,6 @@ public class DashboardAdmin extends Fragment {
                 "<div class='card' style='flex: 1; min-width: 150px;'><i class='fas fa-dollar-sign fa-2x'></i><br>Ganancias<br><strong>S/ 10,000</strong></div>" +
                 "<div class='card' style='flex: 1; min-width: 150px;'><i class='fas fa-user fa-2x'></i><br>Clientes<br><strong>"+userCount+"</strong></div>" +
                 "</div>" +
-                // Gráfico de Ventas
-                "<h2 style='text-align:center;'>Ventas Semanales</h2>" +
-                "<div id='chart1' style='max-width:650px; margin: 35px auto;'></div>" +
-
-                // Gráfico de Tipos de Productos
-                "<h2 style='text-align:center;'>Tipos de Productos</h2>" +
-                "<div id='chart2' style='max-width:650px; margin: 35px auto;'></div>" +
-
-                // Gráfico de Clientes Nuevos
-                "<h2 style='text-align:center;'>Clientes Nuevos por Mes</h2>" +
-                "<div id='chart3' style='max-width:650px; margin: 35px auto;'></div>" +
-
-                "<script>" +
-                // Gráfico de Ventas Semanales
-                "    var options1 = {" +
-                "        chart: {" +
-                "            type: 'bar'," +
-                "            height: 350" +
-                "        }," +
-                "        series: [{" +
-                "            name: 'Ventas'," +
-                "            data: [30, 40, 35, 50, 49, 60, 70]" +
-                "        }]," +
-                "        xaxis: {" +
-                "            categories: ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']" +
-                "        }" +
-                "    };" +
-                "    var chart1 = new ApexCharts(document.querySelector('#chart1'), options1);" +
-                "    chart1.render();" +
-
-                // Gráfico de Tipos de Productos
-                "    var options2 = {" +
-                "        chart: {" +
-                "            type: 'pie'," +
-                "            height: 350" +
-                "        }," +
-                "        series: [44, 55, 41, 17, 15]," +
-                "        labels: ['Producto A', 'Producto B', 'Producto C', 'Producto D', 'Producto E']" +
-                "    };" +
-                "    var chart2 = new ApexCharts(document.querySelector('#chart2'), options2);" +
-                "    chart2.render();" +
-
-                // Gráfico de Clientes Nuevos por Mes
-                "    var options3 = {" +
-                "        chart: {" +
-                "            type: 'line'," +
-                "            height: 350" +
-                "        }," +
-                "        series: [{" +
-                "            name: 'Clientes Nuevos'," +
-                "            data: [10, 41, 35, 51, 49, 62, 69, 91, 148]" +
-                "        }]," +
-                "        xaxis: {" +
-                "            categories: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep']" +
-                "        }" +
-                "    };" +
-                "    var chart3 = new ApexCharts(document.querySelector('#chart3'), options3);" +
-                "    chart3.render();" +
-                "</script>" +
                 "</div>" +
                 "</body>" +
                 "</html>";

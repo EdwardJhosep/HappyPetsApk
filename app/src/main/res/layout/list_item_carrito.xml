@@ -109,6 +109,7 @@
                 android:textColor="@color/verde"
                 android:fontFamily="sans-serif"
                 android:paddingBottom="8dp" />
+
             <TextView
                 android:id="@+id/textViewTipoPago"
                 android:layout_width="match_parent"
@@ -130,5 +131,18 @@
                 android:fontFamily="sans-serif"
                 android:gravity="center_horizontal" />
         </LinearLayout>
+
+        <!-- Botón para descargar la boleta -->
+        <Button
+            android:id="@+id/btnGenerarPdf"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:padding="10dp"
+            android:text="Descargar Boleta"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="@android:color/white"
+            android:layout_gravity="center_horizontal" />
+
     </LinearLayout>
 </LinearLayout>

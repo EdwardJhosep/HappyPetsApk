@@ -204,11 +204,11 @@ public class ChatFragment extends DialogFragment {
 
         // Add the "horarios" entry to the FAQ map
 // Añadir las entradas de FAQ con un enfoque informativo para la app o web
-        faqMap.put("hola", new ChatMessage("¡Hola! Bienvenido a nuestra clínica veterinaria HappyPets. Puedes agendar citas, consultar nuestros servicios y mucho más desde nuestra app o página web. ¿En qué te puedo ayudar?", false, null, null));
+        faqMap.put("hola", new ChatMessage("¡Hola! Bienvenido a nuestra clínica veterinaria HappyPets. Puedes agendar citas, consultar nuestros servicios y mucho más desde nuestra app o página web. ", false, null, null));
         faqMap.put("adios", new ChatMessage("¡Hasta luego! Gracias por confiar en HappyPets. Recuerda que siempre puedes acceder a nuestra app o página web para más información.", false, null, null));
         faqMap.put("gracias", new ChatMessage("¡De nada! Estamos aquí para ayudarte. Recuerda que puedes realizar varias gestiones a través de nuestra app o web.", false, null, null));
         faqMap.put("cita", new ChatMessage("Claro, puedes agendar tu cita directamente desde nuestra app o página web. Solo selecciona el día y la hora que prefieras.", false, null, null));
-        faqMap.put("horarios", new ChatMessage("Nuestros horarios de atención son de lunes a sábado, de 8:00 AM a 6:00 PM. Puedes agendar tu cita en cualquier momento a través de nuestra app o web. ¿Cómo puedo ayudarte?", false, null, null));
+        faqMap.put("horarios", new ChatMessage("Nuestros horarios de atención son de lunes a sábado, de 8:00 AM a 6:00 PM. Puedes agendar tu cita en cualquier momento a través de nuestra app o web.", false, null, null));
         faqMap.put("emergencia", new ChatMessage("Para emergencias, por favor llama directamente al número de contacto de emergencia: 987-654-321. También puedes solicitar ayuda urgente a través de nuestra app.", false, null, null));
         faqMap.put("servicios", new ChatMessage("Ofrecemos consultas, vacunación, desparasitación, cirugía, estética y más. Puedes obtener más detalles y agendar tus citas en nuestra app o página web.", false, null, null));
         faqMap.put("ubicacion", new ChatMessage("Estamos ubicados en Jirón Aguilar 649, Huánuco. Puedes consultar nuestra ubicación y agendar tu cita en nuestra app o web.", false, null, null));

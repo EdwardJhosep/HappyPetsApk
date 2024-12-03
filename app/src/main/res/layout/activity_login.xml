@@ -1,8 +1,8 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/fondologin">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -66,7 +66,6 @@
                 android:inputType="textPassword"
                 android:padding="12dp"
                 android:textColorHint="@color/hint_text_color" />
-
             <ProgressBar
                 android:id="@+id/progressBar"
                 android:layout_width="wrap_content"
@@ -75,6 +74,20 @@
                 app:layout_constraintTop_toBottomOf="@id/tilPassword"
                 android:visibility="gone" />
         </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/forgotPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="¿Olvidaste tu contraseña?"
+            android:textColor="@color/link_color"
+            android:textSize="14sp"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="onForgotPasswordClick"
+            app:layout_constraintEnd_toEndOf="@id/tilPassword"
+            app:layout_constraintTop_toBottomOf="@id/tilPassword" />
 
         <Button
             android:id="@+id/btnLogin"
@@ -90,7 +103,7 @@
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tilPassword" />
+            app:layout_constraintTop_toBottomOf="@id/forgotPassword" />
 
         <Button
             android:id="@+id/registro"
@@ -112,17 +125,16 @@
         <!-- TextView for footer -->
         <TextView
             android:id="@+id/tvFooter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="322dp"
-            android:layout_marginBottom="16dp"
+            android:layout_width="232dp"
+            android:layout_height="36dp"
+            android:layout_marginTop="332dp"
             android:text="Desarrollado por RJ ENTERPRISES"
             android:textAlignment="center"
-            android:textColor="@android:color/white"
+            android:textColor="@color/background_color_dark"
             android:textSize="14sp"
-            app:layout_constraintTop_toBottomOf="@id/registro"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/registro" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

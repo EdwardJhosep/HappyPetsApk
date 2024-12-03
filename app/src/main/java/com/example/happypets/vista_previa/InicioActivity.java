@@ -51,7 +51,7 @@ public class InicioActivity extends AppCompatActivity {
     private VideoView videoView;
 
     private List<Integer> images = Arrays.asList(
-            R.drawable.inicio1, R.drawable.inicio2, R.drawable.inicio3, R.drawable.inicio4
+            R.drawable.inicio1, R.drawable.iniciodos, R.drawable.inicio3, R.drawable.inicio4
     );
     @Override
     protected void onCreate(Bundle savedInstanceState) {
