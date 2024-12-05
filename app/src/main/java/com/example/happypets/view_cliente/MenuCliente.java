@@ -199,11 +199,6 @@ public class MenuCliente extends AppCompatActivity {
             ChatFragment chatDialogFragment = ChatFragment.newInstance(nombres);  // Pasa el nombre aquí
             chatDialogFragment.show(getSupportFragmentManager(), "chatDialog");
         });
-
-
-
-
-        // Llamar a getUserData() para obtener los datos del usuario
         getUserData();
     }
 }

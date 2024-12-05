@@ -132,38 +132,18 @@ public class CrearCitaDialogFragment extends DialogFragment {
 
 
         horaEditText.setOnClickListener(v -> {
-            Calendar calendar = Calendar.getInstance();
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            int minute = calendar.get(Calendar.MINUTE);
+            // Lista de horas disponibles
+            String[] opcionesHoras = {"8:00 AM", "10:00 AM", "12:00 PM", "2:00 PM", "4:00 PM"};
 
-            TimePickerDialog timePickerDialog = new TimePickerDialog(
-                    getContext(),
-                    (timePicker, hourOfDay, minuteOfHour) -> {
-                        if (hourOfDay < 8 || hourOfDay > 17) {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                            builder.setMessage("Por favor, seleccione una hora entre 8 AM y 5 PM.")
-                                    .setTitle("Hora no válida")
-                                    .setPositiveButton("Aceptar", (dialog, id) -> dialog.dismiss())
-                                    .create()
-                                    .show();
-                            return;
-                        }
-
-                        String amPm;
-                        if (hourOfDay >= 12) {
-                            amPm = "PM";
-                            hourOfDay = hourOfDay == 12 ? 12 : hourOfDay - 12;
-                        } else {
-                            amPm = "AM";
-                            hourOfDay = hourOfDay == 0 ? 12 : hourOfDay;
-                        }
-
-                        String selectedTime = String.format("%02d:%02d %s", hourOfDay, minuteOfHour, amPm);
-                        horaEditText.setText(selectedTime); // Establecer la hora en el EditText
-                    },
-                    hour, minute, false); // 'false' para formato de 12 horas
-
-            timePickerDialog.show();
+            // Crear un AlertDialog con las opciones
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+            builder.setTitle("Seleccione una hora")
+                    .setItems(opcionesHoras, (dialog, which) -> {
+                        // Establecer la hora seleccionada en el EditText
+                        horaEditText.setText(opcionesHoras[which]);
+                    })
+                    .create()
+                    .show();
         });
 
         fechaEditText.setOnClickListener(v -> {

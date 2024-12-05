@@ -1,6 +1,8 @@
 package com.example.happypets.adapters_cliente;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.example.happypets.R;
+import com.example.happypets.view_cliente.MenuCliente;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -136,9 +139,22 @@ public class FormularioConfirmarCompraFragment extends BottomSheetDialogFragment
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Toast.makeText(context, result, Toast.LENGTH_LONG).show();
             if (result.equals("Pedido confirmado correctamente.")) {
-                fragment.dismiss();
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("¡Pedido Confirmado!")
+                        .setMessage("Puedes ir a recoger tu pedido en la tienda física HappyPets - Jirón Aguilar 649, Huánuco.")
+                        .setPositiveButton("Aceptar", (dialog, which) -> {
+                            Intent intent = new Intent(context, MenuCliente.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            intent.putExtra("token", token);
+                            context.startActivity(intent);
+                            fragment.dismiss();
+                        });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            } else {
+                // Mostrar mensaje de error en caso de fallo
+                Toast.makeText(context, result, Toast.LENGTH_LONG).show();
             }
         }
     }

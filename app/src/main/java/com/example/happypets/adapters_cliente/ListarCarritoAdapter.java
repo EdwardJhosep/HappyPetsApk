@@ -176,8 +176,11 @@ public class ListarCarritoAdapter extends BaseAdapter {
                 try (Response response = client.newCall(request).execute()) {
                     if (response.isSuccessful()) {
                         ((Activity) context).runOnUiThread(() -> {
+                            // Eliminar el producto de la lista
                             productos.removeIf(producto -> producto.optString("id").equals(id));
-                            notifyDataSetChanged();
+                            selectedProductIds.remove(id);  // Eliminar el ID del producto de la lista seleccionada
+                            updateTotalSum();  // Recalcular la suma total
+                            notifyDataSetChanged();  // Actualizar la vista del adaptador
                             mostrarToast("Producto eliminado del carrito.");
                         });
                     } else {
@@ -190,6 +193,7 @@ public class ListarCarritoAdapter extends BaseAdapter {
             }
         }).start();
     }
+
 
     private void mostrarToast(final String mensaje) {
         new Handler(Looper.getMainLooper()).post(() -> Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show());

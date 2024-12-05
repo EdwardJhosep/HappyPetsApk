@@ -96,7 +96,7 @@ public class Ubication extends Fragment {
 
     // Método para cargar el WebView después de que se haya concedido el permiso
     private void loadWebView() {
-        webView.loadUrl("https://player.onirix.com/projects/10dc87dfba0c419aaf058b435052d919/webar?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQ2NjY2LCJwcm9qZWN0SWQiOjk1MDAyLCJyb2xlIjozLCJpYXQiOjE3MzIzMjE0NTV9.yQhY_OOpdAdkeuTRQpHqDtmCzUrpUv8HfKaieKe44V8&background=alpha&preview=true&hide_controls=true&ar_button=false");
+        webView.loadUrl("https://player.onirix.com/projects/c71ba637fa3649a1b17dad4676b9f5b9/webar?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjQ3MjU4LCJwcm9qZWN0SWQiOjk2MjUxLCJyb2xlIjozLCJpYXQiOjE3MzMzNTIxOTV9.1hg-PnTQfTjl8PTQHJZkZhGZ_j-2tR0W_Mr-ogKC5oA&launchpad=true");
     }
 
     // Método para solicitar permiso de ubicación al usuario si no se ha concedido

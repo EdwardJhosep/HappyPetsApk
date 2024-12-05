@@ -105,7 +105,6 @@ public class CarritoFragment extends BottomSheetDialogFragment implements Listar
                 // Verificar si hay productos seleccionados
                 if (!selectedProductIds.isEmpty()) {
                     // Mostrar los productos seleccionados como un Toast (puedes personalizar esto más)
-                    Toast.makeText(getActivity(), "IDs seleccionados: " + selectedProductIds, Toast.LENGTH_SHORT).show();
 
                     // Enviar el total al listener
                     if (totalListener != null) {
@@ -183,7 +182,7 @@ public class CarritoFragment extends BottomSheetDialogFragment implements Listar
                                 JSONObject item = jsonArray.getJSONObject(i);
 
                                 // Verificar si el producto tiene el campo "estado" como "Pendiente"
-                                String estado = item.optString("pagado", "");
+                                String estado = item.optString("estado", "");
                                 if (estado.equals("Pendiente")) {
                                     productos.add(item);
                                     tieneProductosPendientes = true;
